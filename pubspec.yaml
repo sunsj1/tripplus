@@ -1,0 +1,55 @@
+name: tripplus
+description: "EV Charging Station Assistant"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.4
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+
+  # State Management
+  flutter_riverpod: ^2.6.1
+
+  # Networking
+  dio: ^5.7.0
+
+  # Local Database
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+
+  # Code Generation (runtime)
+  freezed_annotation: ^2.4.4
+  json_annotation: ^4.9.0
+
+  # Location
+  geolocator: ^13.0.2
+
+  # Google Maps
+  google_maps_flutter: ^2.10.0
+
+  # Environment
+  flutter_dotenv: ^5.2.1
+
+  # Logging
+  logger: ^2.5.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+  # Code Generation (build-time)
+  build_runner: ^2.4.13
+  freezed: ^2.5.7
+  json_serializable: ^6.9.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - .env

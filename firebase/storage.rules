@@ -1,0 +1,10 @@
+// MVP: Firebase Storage is not enabled. This deny-all policy is valid if you ever
+// turn Storage on and need a safe default before implementing uploads.
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

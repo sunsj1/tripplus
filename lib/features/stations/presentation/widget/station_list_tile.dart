@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tripplus/core/theme/app_colors.dart';
 import 'package:tripplus/core/theme/app_text_styles.dart';
 import 'package:tripplus/features/charging/domain/models/charging_station.dart';
+import 'package:tripplus/features/community/presentation/widgets/community_rating_pulse.dart';
 
-class StationListTile extends StatelessWidget {
+class StationListTile extends ConsumerWidget {
   final ChargingStation station;
   final VoidCallback? onTap;
 
@@ -26,7 +28,7 @@ class StationListTile extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final dist = station.distanceKm ?? 0;
     final isOperational = station.isOperational == true;
     final cost = _formatCost();
@@ -114,6 +116,7 @@ class StationListTile extends StatelessWidget {
                       ),
                     ],
                   ),
+                  CommunityRatingPulse(station: station),
                 ],
               ),
             ),

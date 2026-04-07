@@ -1,18 +1,21 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:tripplus/core/theme/app_colors.dart';
 import 'package:tripplus/core/theme/app_text_styles.dart';
-import 'package:tripplus/features/shell/presentation/view/app_shell.dart';
+import 'package:tripplus/features/auth/data/auth_repository.dart';
+import 'package:tripplus/features/auth/presentation/providers/auth_providers.dart';
 
-class OnboardingScreen extends StatefulWidget {
+class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
 
   @override
-  State<OnboardingScreen> createState() => _OnboardingScreenState();
+  ConsumerState<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
-class _OnboardingScreenState extends State<OnboardingScreen>
+class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
     with TickerProviderStateMixin {
   late final AnimationController _bgController;
   late final AnimationController _contentController;
@@ -123,20 +126,34 @@ class _OnboardingScreenState extends State<OnboardingScreen>
     super.dispose();
   }
 
-  void _navigateToHome() {
-    Navigator.of(context).pushReplacement(
-      PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            const AppShell(),
-        transitionsBuilder: (context, anim, secondaryAnim, child) =>
-            FadeTransition(
-          opacity: CurvedAnimation(parent: anim, curve: Curves.easeIn),
-          child: child,
-        ),
-        transitionDuration: const Duration(milliseconds: 600),
-      ),
-    );
+  bool _googleBusy = false;
+
+  Future<void> _onGoogleSignIn() async {
+    setState(() => _googleBusy = true);
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      await ref.read(authRepositoryProvider).signInWithGoogle();
+    } on AuthCanceledException {
+      // User closed the sheet — no message.
+    } on GoogleSignInException catch (e) {
+      messenger.showSnackBar(
+        SnackBar(content: Text(e.description ?? 'Google sign-in failed')),
+      );
+    } catch (e) {
+      messenger.showSnackBar(SnackBar(content: Text('$e')));
+    } finally {
+      if (mounted) setState(() => _googleBusy = false);
+    }
   }
+
+  // Phone / OTP entry (disabled for MVP — Google sign-in only).
+  // void _onPhoneSignIn() {
+  //   Navigator.of(context).push<void>(
+  //     MaterialPageRoute<void>(
+  //       builder: (context) => const PhoneSignInScreen(),
+  //     ),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -242,7 +259,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
 
                     const Spacer(flex: 3),
 
-                    // CTA
+                    // Sign-in: Google only (phone OTP UI commented for MVP).
                     FadeTransition(
                       opacity: _ctaFade,
                       child: SlideTransition(
@@ -251,24 +268,46 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                           children: [
                             SizedBox(
                               width: double.infinity,
-                              height: 56,
-                              child: _AnimatedCTA(
-                                onPressed: _navigateToHome,
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            Center(
-                              child: TextButton(
-                                onPressed: _navigateToHome,
-                                child: Text(
-                                  'Sign In',
-                                  style: AppTextStyles.titleSmall.copyWith(
-                                    color: AppColors.textOnDark
-                                        .withValues(alpha: 0.7),
+                              height: 52,
+                              child: FilledButton.icon(
+                                onPressed: _googleBusy ? null : _onGoogleSignIn,
+                                style: FilledButton.styleFrom(
+                                  backgroundColor: AppColors.primary,
+                                  foregroundColor: AppColors.textOnDark,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(14),
                                   ),
                                 ),
+                                icon: _googleBusy
+                                    ? const SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          color: AppColors.textOnDark,
+                                        ),
+                                      )
+                                    : const Icon(Icons.login, size: 22),
+                                label: const Text('Continue with Google'),
                               ),
                             ),
+                            // SizedBox(height: 12),
+                            // SizedBox(
+                            //   width: double.infinity,
+                            //   height: 52,
+                            //   child: FilledButton.icon(
+                            //     onPressed: _onPhoneSignIn,
+                            //     style: FilledButton.styleFrom(
+                            //       backgroundColor: AppColors.primary,
+                            //       foregroundColor: AppColors.textOnDark,
+                            //       shape: RoundedRectangleBorder(
+                            //         borderRadius: BorderRadius.circular(14),
+                            //       ),
+                            //     ),
+                            //     icon: const Icon(Icons.sms_outlined, size: 22),
+                            //     label: const Text('Continue with phone (OTP)'),
+                            //   ),
+                            // ),
                           ],
                         ),
                       ),
@@ -278,84 +317,6 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                 ),
               ),
             ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Animated "Get Started" button with scale feedback
-// ---------------------------------------------------------------------------
-class _AnimatedCTA extends StatefulWidget {
-  final VoidCallback onPressed;
-  const _AnimatedCTA({required this.onPressed});
-
-  @override
-  State<_AnimatedCTA> createState() => _AnimatedCTAState();
-}
-
-class _AnimatedCTAState extends State<_AnimatedCTA>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _scaleCtrl;
-  late final Animation<double> _scale;
-
-  @override
-  void initState() {
-    super.initState();
-    _scaleCtrl = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 120),
-      lowerBound: 0,
-      upperBound: 1,
-    );
-    _scale = Tween<double>(begin: 1.0, end: 0.96).animate(
-      CurvedAnimation(parent: _scaleCtrl, curve: Curves.easeInOut),
-    );
-  }
-
-  @override
-  void dispose() {
-    _scaleCtrl.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTapDown: (_) => _scaleCtrl.forward(),
-      onTapUp: (_) {
-        _scaleCtrl.reverse();
-        widget.onPressed();
-      },
-      onTapCancel: () => _scaleCtrl.reverse(),
-      child: AnimatedBuilder(
-        animation: _scale,
-        builder: (context, child) => Transform.scale(
-          scale: _scale.value,
-          child: child,
-        ),
-        child: Container(
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: AppColors.primary,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.primary.withValues(alpha: 0.3),
-                blurRadius: 16,
-                offset: const Offset(0, 6),
-              ),
-            ],
-          ),
-          child: const Text(
-            'Get Started',
-            style: TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textOnDark,
-            ),
           ),
         ),
       ),

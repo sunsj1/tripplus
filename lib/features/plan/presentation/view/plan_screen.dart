@@ -18,7 +18,7 @@ class PlanScreen extends ConsumerStatefulWidget {
 }
 
 class _PlanScreenState extends ConsumerState<PlanScreen> {
-  final _fromController = TextEditingController(text: 'Current Location');
+  final _fromController = TextEditingController(text: '');
   final _toController = TextEditingController();
 
   @override

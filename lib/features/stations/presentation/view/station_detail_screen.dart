@@ -3,8 +3,7 @@ import 'package:tripplus/core/theme/app_colors.dart';
 import 'package:tripplus/core/theme/app_text_styles.dart';
 import 'package:tripplus/core/widgets/app_top_bar.dart';
 import 'package:tripplus/features/charging/domain/models/charging_station.dart';
-import 'package:tripplus/features/community/presentation/widget/community_reports_section.dart';
-import 'package:tripplus/features/stations/presentation/widget/amenity_grid.dart';
+import 'package:tripplus/features/community/presentation/widgets/community_reports_section.dart';
 
 class StationDetailScreen extends StatefulWidget {
   final ChargingStation station;
@@ -135,41 +134,7 @@ class _StationDetailScreenState extends State<StationDetailScreen>
                 const SizedBox(height: 16),
 
                 // Community Reports
-                CommunityReportsSection(
-                  stationId: station.uuid ?? station.id.toString(),
-                  stationName: station.name,
-                ),
-                const SizedBox(height: 16),
-
-                // Amenities
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 20),
-                  padding: const EdgeInsets.all(22),
-                  decoration: BoxDecoration(
-                    color: AppColors.surface,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.03),
-                        blurRadius: 12,
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'AVAILABLE AMENITIES',
-                        style: AppTextStyles.caption.copyWith(
-                          color: AppColors.textTertiary,
-                          letterSpacing: 1.5,
-                        ),
-                      ),
-                      const SizedBox(height: 18),
-                      const AmenityGrid(),
-                    ],
-                  ),
-                ),
+                CommunityReportsSection(station: station),
                 const SizedBox(height: 16),
 
                 // User quote

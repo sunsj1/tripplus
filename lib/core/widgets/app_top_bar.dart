@@ -4,8 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tripplus/core/theme/app_colors.dart';
 import 'package:tripplus/features/auth/presentation/providers/auth_providers.dart';
 import 'package:tripplus/features/auth/presentation/view/profile_form_screen.dart';
+import 'package:tripplus/features/profile/presentation/view/profile_edit_screen.dart';
 
-enum _ProfileAction { edit, logout }
+enum _ProfileAction { edit, tripPreferences, logout }
 
 class AppTopBar extends ConsumerWidget implements PreferredSizeWidget {
   final String title;
@@ -74,6 +75,12 @@ class AppTopBar extends ConsumerWidget implements PreferredSizeWidget {
                             ),
                           ),
                         );
+                      case _ProfileAction.tripPreferences:
+                        await Navigator.of(context).push<void>(
+                          MaterialPageRoute<void>(
+                            builder: (ctx) => const ProfileEditScreen(),
+                          ),
+                        );
                       case _ProfileAction.logout:
                         await ref.read(authRepositoryProvider).signOut();
                     }
@@ -86,6 +93,14 @@ class AppTopBar extends ConsumerWidget implements PreferredSizeWidget {
                       contentPadding: EdgeInsets.zero,
                       leading: Icon(Icons.edit_outlined, size: 22),
                       title: Text('Edit profile'),
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: _ProfileAction.tripPreferences,
+                    child: ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: Icon(Icons.tune, size: 22),
+                      title: Text('Trip preferences'),
                     ),
                   ),
                   PopupMenuItem(

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:tripplus/core/domain/user_preferences.dart';
+import 'package:tripplus/core/domain/vehicle.dart';
 import 'package:tripplus/core/services/places_autocomplete_service.dart';
 import 'package:tripplus/core/theme/app_colors.dart';
 import 'package:tripplus/core/theme/app_text_styles.dart';
 import 'package:tripplus/core/widgets/autocomplete_location_field.dart';
+import 'package:tripplus/features/plan/presentation/widget/trip_context_row.dart';
 
 class RouteInputCard extends StatelessWidget {
   final TextEditingController fromController;
@@ -10,6 +13,10 @@ class RouteInputCard extends StatelessWidget {
   final PlacesAutocompleteService placesService;
   final VoidCallback onAnalyze;
   final bool isLoading;
+  final Vehicle? vehicle;
+  final UserPreferences preferences;
+  final ValueChanged<Vehicle> onVehicleChanged;
+  final ValueChanged<UserPreferences> onPreferencesChanged;
 
   const RouteInputCard({
     super.key,
@@ -17,6 +24,10 @@ class RouteInputCard extends StatelessWidget {
     required this.toController,
     required this.placesService,
     required this.onAnalyze,
+    required this.vehicle,
+    required this.preferences,
+    required this.onVehicleChanged,
+    required this.onPreferencesChanged,
     this.isLoading = false,
   });
 
@@ -39,6 +50,15 @@ class RouteInputCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          TripContextRow(
+            vehicle: vehicle,
+            preferences: preferences,
+            onVehicleChanged: onVehicleChanged,
+            onPreferencesChanged: onPreferencesChanged,
+          ),
+          const SizedBox(height: 20),
+          const Divider(height: 1, color: AppColors.borderLight),
+          const SizedBox(height: 16),
           Text(
             'FROM',
             style: AppTextStyles.caption.copyWith(

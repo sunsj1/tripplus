@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tripplus/core/domain/user_preferences.dart';
+import 'package:tripplus/core/domain/vehicle.dart';
 import 'package:tripplus/core/theme/app_colors.dart';
 import 'package:tripplus/core/theme/app_text_styles.dart';
 import 'package:tripplus/core/widgets/app_top_bar.dart';
@@ -9,6 +11,7 @@ import 'package:tripplus/features/plan/presentation/view/calculating_screen.dart
 import 'package:tripplus/features/plan/presentation/view/empty_state_screen.dart';
 import 'package:tripplus/features/plan/presentation/view/plan_result_view.dart';
 import 'package:tripplus/features/plan/presentation/widget/route_input_card.dart';
+import 'package:tripplus/features/profile/presentation/controller/profile_providers.dart';
 
 class PlanScreen extends ConsumerStatefulWidget {
   const PlanScreen({super.key});
@@ -20,6 +23,11 @@ class PlanScreen extends ConsumerStatefulWidget {
 class _PlanScreenState extends ConsumerState<PlanScreen> {
   final _fromController = TextEditingController(text: '');
   final _toController = TextEditingController();
+
+  /// Per-trip overrides. Initialized from the saved profile on first build
+  /// and reset alongside [_onReset]. Not persisted.
+  Vehicle? _tripVehicle;
+  UserPreferences? _tripPreferences;
 
   @override
   void dispose() {
@@ -50,6 +58,10 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
 
   void _onReset() {
     _toController.clear();
+    setState(() {
+      _tripVehicle = null;
+      _tripPreferences = null;
+    });
     ref.read(planControllerProvider.notifier).reset();
   }
 
@@ -126,11 +138,23 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
           ),
           const SizedBox(height: 24),
 
-          RouteInputCard(
-            fromController: _fromController,
-            toController: _toController,
-            placesService: ref.read(placesAutocompleteProvider),
-            onAnalyze: _onAnalyze,
+          Consumer(
+            builder: (context, ref, _) {
+              final profile = ref.watch(profileControllerProvider).data;
+              final vehicle = _tripVehicle ?? profile.vehicle;
+              final preferences = _tripPreferences ?? profile.preferences;
+              return RouteInputCard(
+                fromController: _fromController,
+                toController: _toController,
+                placesService: ref.read(placesAutocompleteProvider),
+                onAnalyze: _onAnalyze,
+                vehicle: vehicle,
+                preferences: preferences,
+                onVehicleChanged: (v) => setState(() => _tripVehicle = v),
+                onPreferencesChanged: (p) =>
+                    setState(() => _tripPreferences = p),
+              );
+            },
           ),
           const SizedBox(height: 28),
 

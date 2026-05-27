@@ -29,14 +29,14 @@
 ### 1.2 Vehicle profile & preferences
 - [x] `P1-003` Create `vehicle.dart` — VehicleType enum + Vehicle entity
 - [x] `P1-031` `UserPreferences` model (pureVeg, family, women-safe, fastChargersOnly, etc.)
-- [ ] `P1-004` `lib/features/profile/` slice with Hive persistence
-- [ ] `P1-032` Profile setup screen (post-onboarding)
-- [ ] `P1-033` Profile edit screen (in AppShell)
-- [ ] `P1-005` Extend plan input UI with vehicle + preference chips
+- [x] `P1-004` `lib/features/profile/` slice with Hive persistence
+- [x] `P1-032` Profile setup screen (post-onboarding)
+- [x] `P1-033` Profile edit screen (in AppShell)
+- [x] `P1-005` Extend plan input UI with vehicle + preference chips
 
 ### 1.3 Generalized POI domain
 - [x] `P1-006` Create `poi.dart` — generic `Poi` + `PoiCategory` enum
-- [ ] `P1-007` Scaffold `lib/features/pois/` slice
+- [x] `P1-007` Scaffold `lib/features/pois/` slice
 - [ ] `P1-008` `GooglePlacesPoiSource` along-route POI search
 - [ ] `P1-009` Generalize `route_station_service.dart` → `route_poi_service.dart`
 - [ ] `P1-010` Community schema fields `targetType` + `targetKey` on POI
@@ -85,7 +85,7 @@
 
 ### 1.10 Cross-cutting hygiene
 - [ ] `P1-060` Telemetry hooks on new flows
-- [ ] `P1-061` Error taxonomy parity for `PoiRepository`
+- [x] `P1-061` Error taxonomy parity for `PoiRepository`
 - [ ] `P1-062` Skeleton loaders for POI lists
 - [x] `P1-063` Add `flutter_local_notifications` + `connectivity_plus` deps
 - [ ] `P1-064` Add Crashlytics dependency (init only)
@@ -233,7 +233,7 @@
 
 | Phase | Total Tasks | Done | % |
 |---|---|---|---|
-| Phase 1 — MVP | 50 | 8 | 16% |
+| Phase 1 — MVP | 50 | 14 | 28% |
 | Phase 2 — Intelligence | 36 | 0 | 0% |
 | Phase 3 — AI Copilot | 30 | 0 | 0% |
 | Phase 4 — Scale | 18 | 0 | 0% |

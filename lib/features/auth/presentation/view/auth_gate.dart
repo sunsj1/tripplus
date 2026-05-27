@@ -5,7 +5,7 @@ import 'package:tripplus/features/auth/presentation/auth_ui_state.dart';
 import 'package:tripplus/features/auth/presentation/providers/auth_providers.dart';
 import 'package:tripplus/features/auth/presentation/view/profile_form_screen.dart';
 import 'package:tripplus/features/onboarding/presentation/view/onboarding_screen.dart';
-import 'package:tripplus/features/shell/presentation/view/app_shell.dart';
+import 'package:tripplus/features/profile/presentation/view/vehicle_setup_gate.dart';
 
 class AuthGate extends ConsumerWidget {
   const AuthGate({super.key});
@@ -23,7 +23,7 @@ class AuthGate extends ConsumerWidget {
             existingProfile: existing,
             isEditMode: false,
           ),
-        AuthReady() => const AppShell(),
+        AuthReady() => const VehicleSetupGate(),
       },
       loading: () => const Scaffold(
         body: Center(

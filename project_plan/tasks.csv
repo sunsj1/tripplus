@@ -2,10 +2,10 @@ ID,Task,Phase,Section,Priority,Status,Estimate,Dependencies,Tags,Notes
 P1-001,Update pubspec.yaml description to AI Highway Companion,Phase 1 - MVP,Branding,P0,Done,15m,,branding,Internal rebrand only
 P1-002,Update MaterialApp title in lib/main.dart,Phase 1 - MVP,Branding,P0,Done,5m,P1-001,branding,
 P1-003,Create lib/core/domain/vehicle.dart - VehicleType enum + Vehicle entity,Phase 1 - MVP,Vehicle Profile,P0,Done,1h,,domain;vehicle,Petrol/Diesel/EV/Bike
-P1-004,Create lib/features/profile feature slice with Hive persistence,Phase 1 - MVP,Vehicle Profile,P0,Not started,4h,P1-003,feature;profile,
-P1-005,Extend plan input UI with vehicle selector and preference chips,Phase 1 - MVP,Vehicle Profile,P0,Not started,3h,P1-032,plan;ui,
+P1-004,Create lib/features/profile feature slice with Hive persistence,Phase 1 - MVP,Vehicle Profile,P0,Done,4h,P1-003,feature;profile,
+P1-005,Extend plan input UI with vehicle selector and preference chips,Phase 1 - MVP,Vehicle Profile,P0,Done,3h,P1-032,plan;ui,
 P1-006,Create lib/core/domain/poi.dart generic Poi entity + PoiCategory enum,Phase 1 - MVP,POI Domain,P0,Done,2h,,domain;poi,16 grid items from PDF
-P1-007,Scaffold lib/features/pois feature slice with provider seams,Phase 1 - MVP,POI Domain,P0,Not started,2h,P1-006,feature;poi,
+P1-007,Scaffold lib/features/pois feature slice with provider seams,Phase 1 - MVP,POI Domain,P0,Done,2h,P1-006,feature;poi,
 P1-008,Implement GooglePlacesPoiSource for along-route POI search,Phase 1 - MVP,POI Domain,P0,Not started,2d,P1-007,data;api;poi,Corridor-bounded
 P1-009,Generalize route_station_service.dart to route_poi_service.dart,Phase 1 - MVP,POI Domain,P0,Not started,1.5d,P1-008,refactor;core,Preserve EV adapter
 P1-010,Extend community report schema with targetType and targetKey,Phase 1 - MVP,POI Domain,P0,Not started,2h,P1-006;P1-023,community;schema,
@@ -30,8 +30,8 @@ P1-028,AlertNotifier - stream from AlertEngine to local notifications + banner,P
 P1-029,Replace default Flutter README with product README,Phase 1 - MVP,Branding,P1,Done,1h,P1-001,docs,
 P1-030,Launch icon and splash for new brand identity,Phase 1 - MVP,Branding,P2,Not started,2h,,assets,Placeholder OK
 P1-031,UserPreferences model with all preference flags,Phase 1 - MVP,Vehicle Profile,P0,Done,1h,P1-003,domain;preferences,
-P1-032,Profile setup screen post-onboarding,Phase 1 - MVP,Vehicle Profile,P0,Not started,4h,P1-031,profile;ui,
-P1-033,Profile edit screen in AppShell,Phase 1 - MVP,Vehicle Profile,P1,Not started,3h,P1-032,profile;ui,
+P1-032,Profile setup screen post-onboarding,Phase 1 - MVP,Vehicle Profile,P0,Done,4h,P1-031,profile;ui,
+P1-033,Profile edit screen in AppShell,Phase 1 - MVP,Vehicle Profile,P1,Done,3h,P1-032,profile;ui,
 P1-034,Alert history screen per trip,Phase 1 - MVP,Alerts Engine,P1,Not started,4h,P1-028,alerts;ui,
 P1-040,Create lib/features/trip with Trip model,Phase 1 - MVP,Active Trip,P0,Not started,3h,P1-018,trip;feature,
 P1-041,ActiveTripController - start/pause/end + Hive persist,Phase 1 - MVP,Active Trip,P0,Not started,6h,P1-040,trip;state,
@@ -45,7 +45,7 @@ P1-053,Mount CommunityReportsSection inside POI detail screens,Phase 1 - MVP,Com
 P1-054,Mount CommunityRatingPulse chip on every POI list tile,Phase 1 - MVP,Community Generalize,P0,Not started,2h,P1-052;P1-012,community;ui;reuse,
 P1-055,Add Firestore composite index targetKey + createdAt,Phase 1 - MVP,Community Generalize,P1,Not started,1h,P1-050,community;firestore;index,
 P1-060,Lightweight telemetry hooks on new flows,Phase 1 - MVP,Hygiene,P1,Not started,3h,,telemetry,
-P1-061,Error taxonomy parity for PoiRepository,Phase 1 - MVP,Hygiene,P0,Not started,2h,P1-007,errors,
+P1-061,Error taxonomy parity for PoiRepository,Phase 1 - MVP,Hygiene,P0,Done,2h,P1-007,errors,
 P1-062,Skeleton loaders for POI lists,Phase 1 - MVP,Hygiene,P1,Not started,3h,P1-012,ui,
 P1-063,Add flutter_local_notifications + connectivity_plus to pubspec,Phase 1 - MVP,Hygiene,P0,Done,30m,,deps,
 P1-064,Add Crashlytics dependency (init only),Phase 1 - MVP,Hygiene,P1,Not started,1h,,deps;observability,

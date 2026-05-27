@@ -7,6 +7,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:tripplus/core/constants/cache_constants.dart';
 import 'package:tripplus/core/theme/app_theme.dart';
 import 'package:tripplus/features/auth/presentation/view/auth_gate.dart';
+import 'package:tripplus/features/community/data/community_submit_queue.dart';
 import 'package:tripplus/firebase_options.dart';
 
 void main() async {
@@ -33,6 +34,7 @@ void main() async {
   await dotenv.load(fileName: '.env');
   await Hive.initFlutter();
   await Hive.openBox(CacheConstants.chargingBoxName);
+  await Hive.openBox<dynamic>(CommunitySubmitQueue.boxName);
 
   runApp(const ProviderScope(child: TripPlusApp()));
 }

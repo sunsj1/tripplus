@@ -1,0 +1,47 @@
+---
+description: Feature-slice architecture rules for lib/features/*
+globs: lib/features/**/*.dart
+alwaysApply: false
+---
+
+# Feature-slice rules
+
+## Folder layout per feature
+
+```
+lib/features/<feature>/
+  data/
+    dto/                  ← *_dto.dart — Firestore/HTTP boundary types, mappers
+    repository/           ← *_repository.dart — Either<Failure, T> writes, Stream<T> reads
+    local_db/             ← Hive box managers, offline queues
+  domain/
+    models/               ← Freezed entities + UI state sealed unions
+    <feature>_key.dart    ← Stable identity helpers (e.g. communityStationKey)
+  presentation/
+    controller/
+      <feature>_providers.dart      ← Riverpod providers (repository, controller family)
+      <feature>_controller.dart     ← StateNotifier<<Feature>UiState>
+    view/                 ← Full-screen widgets
+    widget/               ← Feature-private atoms
+```
+
+## Boundary rules
+- A feature **must not** import `lib/features/<other>/{data,domain}/` internals.
+- A feature **may** import:
+  - Its own `data/`, `domain/`, `presentation/` siblings.
+  - `lib/core/**`.
+  - Another feature's **public providers** (the file ending in `_providers.dart`) and **domain models** — sparingly.
+- If two features need the same type → move it to `lib/core/domain/`.
+- If two features need the same widget → move it to `lib/core/widgets/`.
+
+## Naming
+- Providers file ends `_providers.dart`.
+- Controller class ends `Controller`.
+- UI state class ends `UiState` and is a Freezed sealed union.
+- Repository class ends `Repository`.
+- DTO ends `Dto`.
+
+## Don't
+- ❌ Don't put business logic in widgets — it belongs in the controller.
+- ❌ Don't call `FirebaseFirestore.instance` from outside `data/`.
+- ❌ Don't expose `DocumentSnapshot` outside `data/` — map to domain in the DTO.

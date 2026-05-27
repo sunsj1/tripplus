@@ -23,6 +23,7 @@ class StationCommunityReport with _$StationCommunityReport {
     String? comment,
     String? costPerKwh,
     @Default(false) bool fastChargerAvailable,
+    bool? chargeSuccessful,
     required DateTime createdAt,
   }) = _StationCommunityReport;
 }

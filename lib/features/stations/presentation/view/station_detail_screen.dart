@@ -103,30 +103,27 @@ class _StationDetailScreenState extends State<StationDetailScreen>
                 // Data source indicator
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Row(
+                  child: Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
-                      Icon(
-                        station.dataSource == 'google'
+                      _MetaChip(
+                        icon: station.dataSource == 'google'
                             ? Icons.map_outlined
                             : Icons.public,
-                        size: 14,
-                        color: AppColors.textTertiary,
+                        label:
+                            'Source: ${station.dataSource == 'google' ? 'Google Maps' : 'Open Charge Map'}',
                       ),
-                      const SizedBox(width: 6),
-                      Text(
-                        'Source: ${station.dataSource == 'google' ? 'Google Maps' : 'Open Charge Map'}',
-                        style: AppTextStyles.bodySmall.copyWith(
-                          color: AppColors.textTertiary,
-                          fontSize: 11,
-                        ),
+                      _MetaChip(
+                        label: station.dataSource == 'google'
+                            ? 'Official'
+                            : 'Community-verified',
+                        highlighted: true,
                       ),
-                      const SizedBox(width: 12),
-                      Text(
-                        'Operator: ${_na(station.operatorName)}',
-                        style: AppTextStyles.bodySmall.copyWith(
-                          color: AppColors.textTertiary,
-                          fontSize: 11,
-                        ),
+                      _MetaChip(
+                        icon: Icons.business_outlined,
+                        label: 'Operator: ${_na(station.operatorName)}',
                       ),
                     ],
                   ),
@@ -378,6 +375,47 @@ class _HeroBadge extends StatelessWidget {
               fontWeight: FontWeight.w700,
               color: AppColors.textOnDark,
               letterSpacing: 0.8,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MetaChip extends StatelessWidget {
+  final IconData? icon;
+  final String label;
+  final bool highlighted;
+
+  const _MetaChip({
+    this.icon,
+    required this.label,
+    this.highlighted = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+      decoration: BoxDecoration(
+        color: highlighted ? AppColors.primarySurface : AppColors.surface,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: AppColors.borderLight),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (icon != null) ...[
+            Icon(icon, size: 13, color: AppColors.textTertiary),
+            const SizedBox(width: 4),
+          ],
+          Text(
+            label,
+            style: AppTextStyles.bodySmall.copyWith(
+              color: highlighted ? AppColors.textSecondary : AppColors.textTertiary,
+              fontSize: 10.5,
+              fontWeight: highlighted ? FontWeight.w700 : FontWeight.w500,
             ),
           ),
         ],

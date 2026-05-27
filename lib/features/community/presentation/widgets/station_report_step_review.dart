@@ -8,6 +8,7 @@ class StationReportStepReview extends StatelessWidget {
   final int amenityCount;
   final String washroomSummary;
   final bool hasPhoto;
+  final bool? chargeSuccessful;
   final TextEditingController commentController;
 
   const StationReportStepReview({
@@ -17,6 +18,7 @@ class StationReportStepReview extends StatelessWidget {
     required this.amenityCount,
     required this.washroomSummary,
     required this.hasPhoto,
+    required this.chargeSuccessful,
     required this.commentController,
   });
 
@@ -48,6 +50,14 @@ class StationReportStepReview extends StatelessWidget {
                 : '$amenityCount amenity picks',
           ),
           _SummaryLine(icon: Icons.wc_outlined, text: washroomSummary),
+          _SummaryLine(
+            icon: Icons.battery_charging_full_outlined,
+            text: chargeSuccessful == null
+                ? 'Charge outcome not specified'
+                : chargeSuccessful == true
+                    ? 'Charge session successful'
+                    : 'Could not complete charge',
+          ),
           _SummaryLine(
             icon: Icons.photo_outlined,
             text: hasPhoto ? 'Photo attached' : 'No photo',

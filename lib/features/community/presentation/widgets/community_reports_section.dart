@@ -38,7 +38,14 @@ class CommunityReportsSection extends ConsumerWidget {
           CommunityAverageRatingRow(
             average: state.averageRating,
             reportCount: state.reports.length,
+            freshnessLabel: state.freshnessLabel,
+            lowConfidence: state.lowConfidence,
           ),
+          if (state.reports.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: _ReliabilityHeader(state: state),
+            ),
           const SizedBox(height: 16),
           if (state.errorMessage != null)
             Padding(
@@ -108,6 +115,31 @@ class CommunityReportsSection extends ConsumerWidget {
                     behavior: SnackBarBehavior.floating,
                   ),
                 );
+              } else if (context.mounted && state.errorMessage != null) {
+                final retryable = state.errorMessage!
+                        .toLowerCase()
+                        .contains('retry') ||
+                    state.errorMessage!.toLowerCase().contains('offline');
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.errorMessage!),
+                    behavior: SnackBarBehavior.floating,
+                    action: retryable
+                        ? SnackBarAction(
+                            label: 'Retry queued',
+                            onPressed: () {
+                              ref
+                                  .read(
+                                    stationCommunityControllerProvider(
+                                      key,
+                                    ).notifier,
+                                  )
+                                  .retryPendingNow();
+                            },
+                          )
+                        : null,
+                  ),
+                );
               }
             },
           ),
@@ -169,6 +201,139 @@ class _CommunityAmenitiesSummary extends StatelessWidget {
               .toList(),
         ),
       ],
+    );
+  }
+}
+
+class _ReliabilityHeader extends StatelessWidget {
+  const _ReliabilityHeader({required this.state});
+
+  final StationCommunityUiState state;
+
+  @override
+  Widget build(BuildContext context) {
+    final successAt = state.latestSuccessfulChargeAt;
+    String? successText;
+    if (successAt != null) {
+      final diff = DateTime.now().difference(successAt);
+      successText = diff.inHours < 1
+          ? 'Last successful charge: just now'
+          : diff.inHours < 24
+              ? 'Last successful charge: ${diff.inHours}h ago'
+              : 'Last successful charge: ${diff.inDays}d ago';
+    }
+    DateTime? downAt;
+    DateTime? workingAt;
+    for (final r in state.reports.take(8)) {
+      if (downAt == null && r.condition == 'down') downAt = r.createdAt;
+      if (workingAt == null &&
+          (r.condition == 'working' || r.chargeSuccessful == true)) {
+        workingAt = r.createdAt;
+      }
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Wrap(
+          spacing: 8,
+          runSpacing: 6,
+          children: [
+            _MiniTag(
+              text: 'Reliability ${state.reliabilityScore}/100',
+              icon: Icons.verified_outlined,
+              color: state.reliabilityScore >= 75
+                  ? AppColors.success
+                  : state.reliabilityScore >= 45
+                      ? AppColors.warning
+                      : AppColors.error,
+            ),
+            if (state.hasConflictInRecent)
+              _MiniTag(
+                text: 'Mixed status in recent pulses',
+                icon: Icons.sync_problem_outlined,
+                color: AppColors.warning,
+              ),
+          ],
+        ),
+        if (state.hasConflictInRecent &&
+            (downAt != null || workingAt != null)) ...[
+          const SizedBox(height: 6),
+          Wrap(
+            spacing: 8,
+            runSpacing: 6,
+            children: [
+              if (downAt != null)
+                _MiniTag(
+                  text: 'Down ${_agoShort(downAt)}',
+                  icon: Icons.power_off_outlined,
+                  color: AppColors.error,
+                ),
+              if (workingAt != null)
+                _MiniTag(
+                  text: 'Working ${_agoShort(workingAt)}',
+                  icon: Icons.check_circle_outline,
+                  color: AppColors.success,
+                ),
+            ],
+          ),
+        ],
+        if (successText != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 6),
+            child: Text(
+              successText,
+              style: AppTextStyles.bodySmall.copyWith(
+                color: AppColors.textTertiary,
+                fontSize: 11,
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+String _agoShort(DateTime at) {
+  final d = DateTime.now().difference(at);
+  if (d.inMinutes < 1) return 'just now';
+  if (d.inMinutes < 60) return '${d.inMinutes}m ago';
+  if (d.inHours < 24) return '${d.inHours}h ago';
+  return '${d.inDays}d ago';
+}
+
+class _MiniTag extends StatelessWidget {
+  const _MiniTag({required this.text, required this.color, this.icon});
+
+  final String text;
+  final Color color;
+  final IconData? icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: color.withValues(alpha: 0.25)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (icon != null) ...[
+            Icon(icon, size: 12, color: color),
+            const SizedBox(width: 4),
+          ],
+          Text(
+            text,
+            style: AppTextStyles.bodySmall.copyWith(
+              color: color,
+              fontWeight: FontWeight.w700,
+              fontSize: 11,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

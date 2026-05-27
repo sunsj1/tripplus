@@ -1,0 +1,39 @@
+---
+description: TripPlus core project conventions — read on every session
+alwaysApply: true
+---
+
+# TripPlus — core conventions
+
+Always read **`AGENTS.md`** at the repo root first. It is the canonical context.
+
+## Identity
+- Product: **TripPlus — AI Highway Companion for Indian road trips**.
+- We are **not** a maps app.
+- Active plan & task IDs live in `project_plan/`. Use the IDs (e.g. `P1-007`) when discussing work.
+
+## Stack (do not introduce alternatives)
+- Flutter + Dart `^3.11.4`
+- Riverpod for state. **Not** Provider, Bloc, GetX, Redux.
+- Freezed + json_serializable for all domain models.
+- fpdart `Either<Failure, T>` for repository writes.
+- Hive for local cache & offline queues.
+- Firebase (Auth + Firestore). No Firebase Storage for community photos — base64 JPEG on doc.
+
+## Folder layout (feature-slice)
+`lib/features/<feature>/{data,domain,presentation}/...`
+- A feature must not import another feature's internals — only public providers / domain models.
+- Cross-feature reuse → `lib/core/`.
+
+## Non-negotiable rules
+1. Confidence visibility (sample size + freshness) on every rating.
+2. Actionable error states using the taxonomy: `network` / `permission` / `index` / `firestore` / `platform` / `quota`.
+3. Offline-first writes via Hive queue.
+4. Stable target identity — never raw Google/OCM ids; always normalized key (`u_<uuid>` / `<source>_<id>_<lat5>_<lng5>`).
+5. Predictive (look ahead), not reactive.
+6. Community reports are immutable — schema may only **add** fields.
+
+## When changing data models
+- Edit the freezed file.
+- Run `dart run build_runner build --delete-conflicting-outputs`.
+- Commit both source and generated files.

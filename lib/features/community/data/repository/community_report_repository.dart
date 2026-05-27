@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:tripplus/features/community/data/community_photo_compress.dart';
 import 'package:tripplus/features/community/data/dto/station_community_report_dto.dart';
@@ -63,7 +64,25 @@ class CommunityReportRepository {
           );
       return right(unit);
     } catch (e) {
-      return left('$e');
+      if (e is FirebaseException) {
+        final msg = e.message ?? e.code;
+        if (e.code == 'unavailable' ||
+            e.code == 'network-request-failed' ||
+            e.code == 'deadline-exceeded') {
+          return left('network:$msg');
+        }
+        if (e.code == 'permission-denied') {
+          return left('permission:$msg');
+        }
+        if (e.code == 'failed-precondition') {
+          return left('index:$msg');
+        }
+        return left('firestore:$msg');
+      }
+      if (e is PlatformException) {
+        return left('platform:${e.message ?? e.code}');
+      }
+      return left('unknown:$e');
     }
   }
 }

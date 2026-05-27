@@ -1,0 +1,84 @@
+---
+description: Flutter / Dart style conventions for TripPlus
+globs: **/*.dart
+alwaysApply: false
+---
+
+# Flutter / Dart style
+
+## Files
+- `snake_case.dart` filenames.
+- One public class per file (allow tightly-coupled private ones in same file).
+
+## Models (Freezed)
+```dart
+@freezed
+class Poi with _$Poi {
+  const factory Poi({
+    required String id,
+    required String name,
+    required PoiCategory category,
+    required LatLng location,
+    String? address,
+    @Default(0) double rating,
+    @Default(0) int reviewCount,
+  }) = _Poi;
+
+  factory Poi.fromJson(Map<String, dynamic> json) => _$PoiFromJson(json);
+}
+```
+
+## Repositories — write methods return `Either<Failure, T>`
+```dart
+Future<Either<Failure, void>> addReport(StationCommunitySubmitInput input) async {
+  try {
+    await _firestore.collection('stationCommunityReports').add(...);
+    return const Right(null);
+  } on FirebaseException catch (e) {
+    return Left(Failure.firestore(e.message ?? e.code));
+  } catch (e) {
+    return Left(Failure.platform(e.toString()));
+  }
+}
+```
+
+## Riverpod
+- `ref.watch(provider)` inside `build()`.
+- `ref.read(provider.notifier)` for actions inside callbacks.
+- Use `.family.autoDispose` for entity-scoped providers (key: stationKey / poiKey / tripId).
+- Use `AsyncValue.when(data:, loading:, error:)` — never `.value!`.
+
+## Widgets
+- Prefer `StatelessWidget`. Promote to `ConsumerWidget` / `ConsumerStatefulWidget` when reading providers.
+- No business logic in `build()`.
+- Use `AppColors`, `AppTextStyles`, `AppTheme`. No raw `Colors.*`, no inline `TextStyle(...)`.
+- Always `const` constructors where possible.
+
+## Errors
+- Never throw raw strings to UI. Always go through `Failure` taxonomy.
+- Map errors to actionable CTAs:
+  - `permission` → "Open settings"
+  - `network` → "Retry now"
+  - `firestore`/`index` → "Try again shortly"
+  - `quota` → "Limit reached — wait a bit"
+
+## Comments — DO NOT
+```dart
+// ❌ Increment the counter
+counter += 1;
+```
+
+## Comments — DO
+```dart
+// Dart's [Firebase.apps] can lag behind native; the OS may already have registered
+// [DEFAULT] from GoogleService-Info / google-services.json. Hot restart can also
+// leave the native app alive while Dart runs main() again.
+try {
+  await Firebase.initializeApp(...);
+} on FirebaseException catch (e) {
+  if (e.code != 'duplicate-app') rethrow;
+}
+```
+
+## After model changes
+Run: `dart run build_runner build --delete-conflicting-outputs`

@@ -20,5 +20,6 @@ class StationCommunitySubmitInput with _$StationCommunitySubmitInput {
     String? comment,
     String? costPerKwh,
     @Default(false) bool fastChargerAvailable,
+    bool? chargeSuccessful,
   }) = _StationCommunitySubmitInput;
 }

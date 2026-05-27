@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fpdart/fpdart.dart' hide State;
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/services.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:tripplus/core/theme/app_colors.dart';
 import 'package:tripplus/core/theme/app_text_styles.dart';
 import 'package:tripplus/features/charging/domain/models/charging_station.dart';
@@ -81,6 +82,7 @@ class _StationReportSheetBodyState extends State<_StationReportSheetBody> {
   int _rating = 4;
   String _condition = 'working';
   bool _fastCharger = false;
+  bool? _chargeSuccessful;
   final Set<String> _amenities = {};
   bool? _washroomAvailable;
   bool? _washroomClean;
@@ -218,15 +220,52 @@ class _StationReportSheetBodyState extends State<_StationReportSheetBody> {
           : _commentController.text.trim(),
       costPerKwh: costRaw.isEmpty ? null : costRaw,
       fastChargerAvailable: _fastCharger,
+      chargeSuccessful: _chargeSuccessful,
     );
     final result = await widget.onSubmit(input);
     if (!mounted) return;
     setState(() => _busy = false);
-    result.fold((msg) {
+    result.fold(
+      (msg) => _showSubmitError(msg),
+      (_) => Navigator.of(context).pop(true),
+    );
+  }
+
+  void _showSubmitError(String msg) {
+    final lower = msg.toLowerCase();
+    if (lower.startsWith('permission:')) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(msg), behavior: SnackBarBehavior.floating),
+        SnackBar(
+          content: const Text('Permission denied. Enable access in settings.'),
+          behavior: SnackBarBehavior.floating,
+          action: SnackBarAction(
+            label: 'Open settings',
+            onPressed: () {
+              openAppSettings();
+            },
+          ),
+        ),
       );
-    }, (_) => Navigator.of(context).pop(true));
+      return;
+    }
+    if (lower.startsWith('network:')) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text(
+            'No network. Pulse saved offline; retrying soon.',
+          ),
+          behavior: SnackBarBehavior.floating,
+          action: SnackBarAction(label: 'Retry now', onPressed: _submit),
+        ),
+      );
+      return;
+    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(msg.replaceFirst(RegExp(r'^[a-z]+:'), '')),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 
   @override
@@ -276,6 +315,9 @@ class _StationReportSheetBodyState extends State<_StationReportSheetBody> {
                   costController: _costController,
                   fastChargerAvailable: _fastCharger,
                   onFastCharger: (v) => setState(() => _fastCharger = v),
+                  chargeSuccessful: _chargeSuccessful,
+                  onChargeSuccessful: (v) =>
+                      setState(() => _chargeSuccessful = v),
                 ),
                 StationReportStepAmenities(
                   selectedLabels: _amenities,
@@ -309,6 +351,7 @@ class _StationReportSheetBodyState extends State<_StationReportSheetBody> {
                   amenityCount: _amenities.length,
                   washroomSummary: _washroomSummary(),
                   hasPhoto: _photoJpeg != null,
+                  chargeSuccessful: _chargeSuccessful,
                   commentController: _commentController,
                 ),
               ],

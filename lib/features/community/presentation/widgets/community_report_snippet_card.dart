@@ -154,6 +154,23 @@ class CommunityReportSnippetCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
+                if (report.chargeSuccessful != null) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    report.chargeSuccessful == true
+                        ? 'Charge completed successfully'
+                        : 'Could not complete charge',
+                    style: AppTextStyles.bodySmall.copyWith(
+                      color: report.chargeSuccessful == true
+                          ? AppColors.success
+                          : AppColors.error,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
                 if (report.comment != null && report.comment!.trim().isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.only(top: 4),

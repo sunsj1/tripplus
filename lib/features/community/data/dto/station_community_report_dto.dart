@@ -36,6 +36,7 @@ class StationCommunityReportDto {
       comment: d['comment'] as String?,
       costPerKwh: d['costPerKwh'] as String?,
       fastChargerAvailable: d['fastChargerAvailable'] as bool? ?? false,
+      chargeSuccessful: d['chargeSuccessful'] as bool?,
       createdAt: createdAt,
     );
   }
@@ -56,6 +57,7 @@ class StationCommunityReportDto {
       'comment': input.comment,
       'costPerKwh': input.costPerKwh,
       'fastChargerAvailable': input.fastChargerAvailable,
+      'chargeSuccessful': input.chargeSuccessful,
       'createdAt': FieldValue.serverTimestamp(),
     };
   }

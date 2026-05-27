@@ -31,6 +31,7 @@ mixin _$StationCommunitySubmitInput {
   String? get comment => throw _privateConstructorUsedError;
   String? get costPerKwh => throw _privateConstructorUsedError;
   bool get fastChargerAvailable => throw _privateConstructorUsedError;
+  bool? get chargeSuccessful => throw _privateConstructorUsedError;
 
   /// Create a copy of StationCommunitySubmitInput
   /// with the given fields replaced by the non-null parameter values.
@@ -65,6 +66,7 @@ abstract class $StationCommunitySubmitInputCopyWith<$Res> {
     String? comment,
     String? costPerKwh,
     bool fastChargerAvailable,
+    bool? chargeSuccessful,
   });
 }
 
@@ -100,6 +102,7 @@ class _$StationCommunitySubmitInputCopyWithImpl<
     Object? comment = freezed,
     Object? costPerKwh = freezed,
     Object? fastChargerAvailable = null,
+    Object? chargeSuccessful = freezed,
   }) {
     return _then(
       _value.copyWith(
@@ -159,6 +162,10 @@ class _$StationCommunitySubmitInputCopyWithImpl<
                 ? _value.fastChargerAvailable
                 : fastChargerAvailable // ignore: cast_nullable_to_non_nullable
                       as bool,
+            chargeSuccessful: freezed == chargeSuccessful
+                ? _value.chargeSuccessful
+                : chargeSuccessful // ignore: cast_nullable_to_non_nullable
+                      as bool?,
           )
           as $Val,
     );
@@ -189,6 +196,7 @@ abstract class _$$StationCommunitySubmitInputImplCopyWith<$Res>
     String? comment,
     String? costPerKwh,
     bool fastChargerAvailable,
+    bool? chargeSuccessful,
   });
 }
 
@@ -224,6 +232,7 @@ class __$$StationCommunitySubmitInputImplCopyWithImpl<$Res>
     Object? comment = freezed,
     Object? costPerKwh = freezed,
     Object? fastChargerAvailable = null,
+    Object? chargeSuccessful = freezed,
   }) {
     return _then(
       _$StationCommunitySubmitInputImpl(
@@ -283,6 +292,10 @@ class __$$StationCommunitySubmitInputImplCopyWithImpl<$Res>
             ? _value.fastChargerAvailable
             : fastChargerAvailable // ignore: cast_nullable_to_non_nullable
                   as bool,
+        chargeSuccessful: freezed == chargeSuccessful
+            ? _value.chargeSuccessful
+            : chargeSuccessful // ignore: cast_nullable_to_non_nullable
+                  as bool?,
       ),
     );
   }
@@ -307,6 +320,7 @@ class _$StationCommunitySubmitInputImpl
     this.comment,
     this.costPerKwh,
     this.fastChargerAvailable = false,
+    this.chargeSuccessful,
   }) : _availableAmenityLabels = availableAmenityLabels;
 
   @override
@@ -346,10 +360,12 @@ class _$StationCommunitySubmitInputImpl
   @override
   @JsonKey()
   final bool fastChargerAvailable;
+  @override
+  final bool? chargeSuccessful;
 
   @override
   String toString() {
-    return 'StationCommunitySubmitInput(stationKey: $stationKey, stationNameSnapshot: $stationNameSnapshot, reporterUserId: $reporterUserId, reporterDisplayName: $reporterDisplayName, rating: $rating, condition: $condition, availableAmenityLabels: $availableAmenityLabels, washroomAvailable: $washroomAvailable, washroomClean: $washroomClean, womenFriendlyWashroom: $womenFriendlyWashroom, photoBase64: $photoBase64, comment: $comment, costPerKwh: $costPerKwh, fastChargerAvailable: $fastChargerAvailable)';
+    return 'StationCommunitySubmitInput(stationKey: $stationKey, stationNameSnapshot: $stationNameSnapshot, reporterUserId: $reporterUserId, reporterDisplayName: $reporterDisplayName, rating: $rating, condition: $condition, availableAmenityLabels: $availableAmenityLabels, washroomAvailable: $washroomAvailable, washroomClean: $washroomClean, womenFriendlyWashroom: $womenFriendlyWashroom, photoBase64: $photoBase64, comment: $comment, costPerKwh: $costPerKwh, fastChargerAvailable: $fastChargerAvailable, chargeSuccessful: $chargeSuccessful)';
   }
 
   @override
@@ -384,7 +400,9 @@ class _$StationCommunitySubmitInputImpl
             (identical(other.costPerKwh, costPerKwh) ||
                 other.costPerKwh == costPerKwh) &&
             (identical(other.fastChargerAvailable, fastChargerAvailable) ||
-                other.fastChargerAvailable == fastChargerAvailable));
+                other.fastChargerAvailable == fastChargerAvailable) &&
+            (identical(other.chargeSuccessful, chargeSuccessful) ||
+                other.chargeSuccessful == chargeSuccessful));
   }
 
   @override
@@ -404,6 +422,7 @@ class _$StationCommunitySubmitInputImpl
     comment,
     costPerKwh,
     fastChargerAvailable,
+    chargeSuccessful,
   );
 
   /// Create a copy of StationCommunitySubmitInput
@@ -435,6 +454,7 @@ abstract class _StationCommunitySubmitInput
     final String? comment,
     final String? costPerKwh,
     final bool fastChargerAvailable,
+    final bool? chargeSuccessful,
   }) = _$StationCommunitySubmitInputImpl;
 
   @override
@@ -465,6 +485,8 @@ abstract class _StationCommunitySubmitInput
   String? get costPerKwh;
   @override
   bool get fastChargerAvailable;
+  @override
+  bool? get chargeSuccessful;
 
   /// Create a copy of StationCommunitySubmitInput
   /// with the given fields replaced by the non-null parameter values.

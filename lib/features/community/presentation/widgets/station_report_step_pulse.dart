@@ -8,6 +8,8 @@ class StationReportStepPulse extends StatelessWidget {
   final TextEditingController costController;
   final bool fastChargerAvailable;
   final ValueChanged<bool> onFastCharger;
+  final bool? chargeSuccessful;
+  final ValueChanged<bool?> onChargeSuccessful;
 
   const StationReportStepPulse({
     super.key,
@@ -16,6 +18,8 @@ class StationReportStepPulse extends StatelessWidget {
     required this.costController,
     required this.fastChargerAvailable,
     required this.onFastCharger,
+    required this.chargeSuccessful,
+    required this.onChargeSuccessful,
   });
 
   @override
@@ -97,8 +101,85 @@ class StationReportStepPulse extends StatelessWidget {
             activeThumbColor: AppColors.primary,
             onChanged: onFastCharger,
           ),
+          const SizedBox(height: 6),
+          Text(
+            'Could you complete a charge?',
+            style: AppTextStyles.bodySmall.copyWith(
+              fontWeight: FontWeight.w600,
+              color: AppColors.textSecondary,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Expanded(
+                child: _ChoicePill(
+                  label: 'Yes',
+                  selected: chargeSuccessful == true,
+                  onTap: () => onChargeSuccessful(true),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: _ChoicePill(
+                  label: 'No',
+                  selected: chargeSuccessful == false,
+                  onTap: () => onChargeSuccessful(false),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: _ChoicePill(
+                  label: 'Skip',
+                  selected: chargeSuccessful == null,
+                  onTap: () => onChargeSuccessful(null),
+                ),
+              ),
+            ],
+          ),
           const SizedBox(height: 24),
         ],
+      ),
+    );
+  }
+}
+
+class _ChoicePill extends StatelessWidget {
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _ChoicePill({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: selected ? AppColors.primary : AppColors.surfaceElevated,
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: selected ? AppColors.primary : AppColors.borderLight,
+            ),
+          ),
+          child: Text(
+            label,
+            style: AppTextStyles.bodySmall.copyWith(
+              fontWeight: FontWeight.w700,
+              color: selected ? Colors.white : AppColors.textSecondary,
+            ),
+          ),
+        ),
       ),
     );
   }

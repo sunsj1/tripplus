@@ -19,4 +19,75 @@ extension StationCommunityUiStateX on StationCommunityUiState {
     final sum = reports.fold<int>(0, (a, r) => a + r.rating);
     return sum / reports.length;
   }
+
+  DateTime? get lastUpdatedAt =>
+      reports.isEmpty ? null : reports.first.createdAt;
+
+  bool get lowConfidence {
+    if (reports.length < 3) return true;
+    final t = lastUpdatedAt;
+    if (t == null) return true;
+    return DateTime.now().difference(t).inHours > 24;
+  }
+
+  String get freshnessLabel {
+    final t = lastUpdatedAt;
+    if (t == null) return 'No recent activity';
+    final diff = DateTime.now().difference(t);
+    if (diff.inMinutes < 1) return 'updated just now';
+    if (diff.inMinutes < 60) return 'updated ${diff.inMinutes}m ago';
+    if (diff.inHours < 24) return 'updated ${diff.inHours}h ago';
+    return 'updated ${diff.inDays}d ago';
+  }
+
+  /// Weighted reliability score (0-100) using recency + condition quality.
+  int get reliabilityScore {
+    if (reports.isEmpty) return 0;
+    double weighted = 0;
+    double totalW = 0;
+    for (final r in reports.take(20)) {
+      final ageH = DateTime.now().difference(r.createdAt).inHours;
+      final recencyW = ageH <= 6
+          ? 1.0
+          : ageH <= 24
+              ? 0.85
+              : ageH <= 72
+                  ? 0.65
+                  : 0.45;
+      final conditionScore = switch (r.condition) {
+        'down' => 0.2,
+        'issues' => 0.55,
+        _ => 0.9,
+      };
+      final successBoost = r.chargeSuccessful == true
+          ? 0.08
+          : r.chargeSuccessful == false
+              ? -0.08
+              : 0.0;
+      final ratingNorm = (r.rating / 5).clamp(0.2, 1.0);
+      final sample = (conditionScore + successBoost) * 0.6 + ratingNorm * 0.4;
+      weighted += sample * recencyW;
+      totalW += recencyW;
+    }
+    if (totalW == 0) return 0;
+    final normalized = (weighted / totalW).clamp(0, 1.0);
+    return (normalized * 100).round();
+  }
+
+  bool get hasConflictInRecent {
+    final recent = reports.take(6).toList();
+    if (recent.isEmpty) return false;
+    final hasDown = recent.any((r) => r.condition == 'down');
+    final hasWorking = recent.any(
+      (r) => r.condition == 'working' || r.chargeSuccessful == true,
+    );
+    return hasDown && hasWorking;
+  }
+
+  DateTime? get latestSuccessfulChargeAt {
+    for (final r in reports) {
+      if (r.chargeSuccessful == true) return r.createdAt;
+    }
+    return null;
+  }
 }

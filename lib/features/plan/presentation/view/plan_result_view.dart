@@ -76,6 +76,12 @@ class PlanResultView extends StatelessWidget {
                 maxGapKm: maxGap,
                 coveragePercent: _coveragePercent(),
               ),
+              const SizedBox(height: 12),
+              _RouteRiskPanel(
+                maxGapKm: maxGap,
+                stationCount: stations.length,
+                totalDistanceKm: totalDistanceKm,
+              ),
               const SizedBox(height: 20),
 
               Padding(
@@ -131,6 +137,9 @@ class _NearestStationCard extends StatelessWidget {
     final dist = station.distanceKm ?? 0;
     final mins = (dist / 1.3).round();
     final hasFast = station.connections.any((c) => c.isFastCharge == true);
+    final sourceTag = station.dataSource == 'google'
+        ? 'Official'
+        : 'Community-verified';
 
     return GestureDetector(
       onTap: () => Navigator.of(context).push(
@@ -185,6 +194,26 @@ class _NearestStationCard extends StatelessWidget {
                   Text(
                     '${hasFast ? "Fast charge" : "${station.connections.length} connectors"} · ~$mins min',
                     style: AppTextStyles.bodySmall,
+                  ),
+                  const SizedBox(height: 4),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 3,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.surfaceElevated,
+                      borderRadius: BorderRadius.circular(999),
+                      border: Border.all(color: AppColors.borderLight),
+                    ),
+                    child: Text(
+                      sourceTag,
+                      style: AppTextStyles.bodySmall.copyWith(
+                        fontSize: 10,
+                        color: AppColors.textSecondary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -355,6 +384,13 @@ class _GapWarningBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final minCharge = gapKm > 120
+        ? 90
+        : gapKm > 80
+            ? 80
+            : gapKm > 60
+                ? 70
+                : 60;
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       padding: const EdgeInsets.all(16),
@@ -383,19 +419,34 @@ class _GapWarningBanner extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${gapKm.round()} km gap detected',
+                  '${gapKm.round()} km charging gap detected',
                   style: AppTextStyles.titleSmall.copyWith(
                     color: AppColors.error,
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  'After $afterStation — plan a charging stop.',
+                  'After $afterStation — add a fallback charging stop.',
                   style: AppTextStyles.bodySmall.copyWith(
                     color: AppColors.textSecondary,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 6,
+                  children: [
+                    _ActionChip(
+                      icon: Icons.add_road_outlined,
+                      text: 'Add backup stop now',
+                    ),
+                    _ActionChip(
+                      icon: Icons.battery_6_bar,
+                      text: 'Charge to at least $minCharge%',
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -480,6 +531,111 @@ class _MiniStat extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _RouteRiskPanel extends StatelessWidget {
+  const _RouteRiskPanel({
+    required this.maxGapKm,
+    required this.stationCount,
+    required this.totalDistanceKm,
+  });
+
+  final double maxGapKm;
+  final int stationCount;
+  final double totalDistanceKm;
+
+  @override
+  Widget build(BuildContext context) {
+    final riskLevel = maxGapKm > 90
+        ? 'High'
+        : maxGapKm > 50
+            ? 'Medium'
+            : 'Low';
+    final riskColor = maxGapKm > 90
+        ? AppColors.error
+        : maxGapKm > 50
+            ? AppColors.warning
+            : AppColors.success;
+
+    final backupHint = stationCount <= 2 || maxGapKm > 60
+        ? 'Strongly recommended'
+        : 'Good to have';
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.borderLight),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: riskColor.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(999),
+            ),
+            child: Text(
+              'Reliability risk: $riskLevel',
+              style: AppTextStyles.bodySmall.copyWith(
+                color: riskColor,
+                fontWeight: FontWeight.w700,
+                fontSize: 11,
+              ),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              'Backup plan: $backupHint · ${totalDistanceKm.round()} km trip',
+              style: AppTextStyles.bodySmall.copyWith(
+                color: AppColors.textTertiary,
+                fontSize: 11,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ActionChip extends StatelessWidget {
+  const _ActionChip({required this.icon, required this.text});
+
+  final IconData icon;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: AppColors.borderLight),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 12, color: AppColors.textSecondary),
+          const SizedBox(width: 5),
+          Text(
+            text,
+            style: AppTextStyles.bodySmall.copyWith(
+              fontSize: 10,
+              color: AppColors.textSecondary,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
       ),
     );
   }

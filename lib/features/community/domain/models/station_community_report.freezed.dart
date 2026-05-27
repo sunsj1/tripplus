@@ -36,6 +36,7 @@ mixin _$StationCommunityReport {
   String? get comment => throw _privateConstructorUsedError;
   String? get costPerKwh => throw _privateConstructorUsedError;
   bool get fastChargerAvailable => throw _privateConstructorUsedError;
+  bool? get chargeSuccessful => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
 
   /// Create a copy of StationCommunityReport
@@ -68,6 +69,7 @@ abstract class $StationCommunityReportCopyWith<$Res> {
     String? comment,
     String? costPerKwh,
     bool fastChargerAvailable,
+    bool? chargeSuccessful,
     DateTime createdAt,
   });
 }
@@ -105,6 +107,7 @@ class _$StationCommunityReportCopyWithImpl<
     Object? comment = freezed,
     Object? costPerKwh = freezed,
     Object? fastChargerAvailable = null,
+    Object? chargeSuccessful = freezed,
     Object? createdAt = null,
   }) {
     return _then(
@@ -169,6 +172,10 @@ class _$StationCommunityReportCopyWithImpl<
                 ? _value.fastChargerAvailable
                 : fastChargerAvailable // ignore: cast_nullable_to_non_nullable
                       as bool,
+            chargeSuccessful: freezed == chargeSuccessful
+                ? _value.chargeSuccessful
+                : chargeSuccessful // ignore: cast_nullable_to_non_nullable
+                      as bool?,
             createdAt: null == createdAt
                 ? _value.createdAt
                 : createdAt // ignore: cast_nullable_to_non_nullable
@@ -204,6 +211,7 @@ abstract class _$$StationCommunityReportImplCopyWith<$Res>
     String? comment,
     String? costPerKwh,
     bool fastChargerAvailable,
+    bool? chargeSuccessful,
     DateTime createdAt,
   });
 }
@@ -238,6 +246,7 @@ class __$$StationCommunityReportImplCopyWithImpl<$Res>
     Object? comment = freezed,
     Object? costPerKwh = freezed,
     Object? fastChargerAvailable = null,
+    Object? chargeSuccessful = freezed,
     Object? createdAt = null,
   }) {
     return _then(
@@ -302,6 +311,10 @@ class __$$StationCommunityReportImplCopyWithImpl<$Res>
             ? _value.fastChargerAvailable
             : fastChargerAvailable // ignore: cast_nullable_to_non_nullable
                   as bool,
+        chargeSuccessful: freezed == chargeSuccessful
+            ? _value.chargeSuccessful
+            : chargeSuccessful // ignore: cast_nullable_to_non_nullable
+                  as bool?,
         createdAt: null == createdAt
             ? _value.createdAt
             : createdAt // ignore: cast_nullable_to_non_nullable
@@ -330,6 +343,7 @@ class _$StationCommunityReportImpl implements _StationCommunityReport {
     this.comment,
     this.costPerKwh,
     this.fastChargerAvailable = false,
+    this.chargeSuccessful,
     required this.createdAt,
   }) : _availableAmenityLabels = availableAmenityLabels;
 
@@ -377,11 +391,13 @@ class _$StationCommunityReportImpl implements _StationCommunityReport {
   @JsonKey()
   final bool fastChargerAvailable;
   @override
+  final bool? chargeSuccessful;
+  @override
   final DateTime createdAt;
 
   @override
   String toString() {
-    return 'StationCommunityReport(id: $id, stationKey: $stationKey, stationNameSnapshot: $stationNameSnapshot, reporterUserId: $reporterUserId, reporterDisplayName: $reporterDisplayName, rating: $rating, condition: $condition, availableAmenityLabels: $availableAmenityLabels, washroomAvailable: $washroomAvailable, washroomClean: $washroomClean, womenFriendlyWashroom: $womenFriendlyWashroom, photoBase64: $photoBase64, comment: $comment, costPerKwh: $costPerKwh, fastChargerAvailable: $fastChargerAvailable, createdAt: $createdAt)';
+    return 'StationCommunityReport(id: $id, stationKey: $stationKey, stationNameSnapshot: $stationNameSnapshot, reporterUserId: $reporterUserId, reporterDisplayName: $reporterDisplayName, rating: $rating, condition: $condition, availableAmenityLabels: $availableAmenityLabels, washroomAvailable: $washroomAvailable, washroomClean: $washroomClean, womenFriendlyWashroom: $womenFriendlyWashroom, photoBase64: $photoBase64, comment: $comment, costPerKwh: $costPerKwh, fastChargerAvailable: $fastChargerAvailable, chargeSuccessful: $chargeSuccessful, createdAt: $createdAt)';
   }
 
   @override
@@ -418,6 +434,8 @@ class _$StationCommunityReportImpl implements _StationCommunityReport {
                 other.costPerKwh == costPerKwh) &&
             (identical(other.fastChargerAvailable, fastChargerAvailable) ||
                 other.fastChargerAvailable == fastChargerAvailable) &&
+            (identical(other.chargeSuccessful, chargeSuccessful) ||
+                other.chargeSuccessful == chargeSuccessful) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt));
   }
@@ -440,6 +458,7 @@ class _$StationCommunityReportImpl implements _StationCommunityReport {
     comment,
     costPerKwh,
     fastChargerAvailable,
+    chargeSuccessful,
     createdAt,
   );
 
@@ -473,6 +492,7 @@ abstract class _StationCommunityReport implements StationCommunityReport {
     final String? comment,
     final String? costPerKwh,
     final bool fastChargerAvailable,
+    final bool? chargeSuccessful,
     required final DateTime createdAt,
   }) = _$StationCommunityReportImpl;
 
@@ -510,6 +530,8 @@ abstract class _StationCommunityReport implements StationCommunityReport {
   String? get costPerKwh;
   @override
   bool get fastChargerAvailable;
+  @override
+  bool? get chargeSuccessful;
   @override
   DateTime get createdAt;
 

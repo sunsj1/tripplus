@@ -3,7 +3,7 @@
 > **Update this file** whenever a task materially changes the user-visible surface or the architecture.
 > AI agents read this first to avoid re-discovering what's already built.
 
-**Last updated:** 2026-05-27 (initial baseline at start of Phase 1 planning).
+**Last updated:** 2026-05-28 (Phase 1 foundation batch landed — see `Phase 1 progress` below).
 
 ---
 
@@ -60,19 +60,31 @@ Functional EV-charging assistant app with auth, navigation shell (Plan · Insigh
 
 ---
 
-## NOT implemented (Phase 1 targets)
+## Phase 1 progress
 
-These are explicitly the gap between "today" and "PDF MVP":
+### Foundation batch — done (2026-05-28, session 1)
 
-- ❌ Vehicle profile (Petrol / Diesel / EV / Bike).
-- ❌ User preferences (pure-veg, family, women-safe, fast-chargers-only, …).
-- ❌ Generic `Poi` domain (only `ChargingStation`).
-- ❌ Smart Intelligence Grid screen.
-- ❌ Route-aware POI discovery for non-station categories.
-- ❌ Distance-based alert engine + local notifications.
-- ❌ Active Trip state + offline corridor cache.
-- ❌ Trip Dashboard / Smart Trip Timeline widgets.
-- ❌ Community pulses on non-station POIs.
+- ✅ Internal rebrand: pubspec description + MaterialApp title (`P1-001`, `P1-002`).
+- ✅ Product README replaces default Flutter README (`P1-029`).
+- ✅ `flutter_local_notifications` + `connectivity_plus` added to pubspec (`P1-063`). Native platform setup still owed to `P1-027`.
+- ✅ `lib/core/domain/vehicle.dart` — `VehicleType` enum + `Vehicle` freezed entity (`P1-003`).
+- ✅ `lib/core/domain/user_preferences.dart` — `UserPreferences` + `BudgetTier` (`P1-031`).
+- ✅ `lib/core/domain/poi.dart` — `Poi` freezed entity, `PoiCategory` (16 items), `PoiSource` enum with badge labels (`P1-006`).
+- ✅ `lib/features/alerts/domain/alert.dart` — `Alert`, `AlertType` (Phase 1+2 values), `AlertSeverity` (`P1-022`).
+
+These models are **defined but not yet wired** into any feature. Wiring lands in the next batch (`P1-004`, `P1-007`, …).
+
+### NOT implemented (remaining Phase 1 targets)
+
+- ❌ `lib/features/profile/` feature slice + Hive persistence (`P1-004`, `P1-032`, `P1-033`).
+- ❌ `lib/features/pois/` feature slice + Google Places along-route source (`P1-007`, `P1-008`).
+- ❌ Generalize `route_station_service.dart` → `route_poi_service.dart` (`P1-009`).
+- ❌ Smart Intelligence Grid screen (`P1-011` → `P1-015`).
+- ❌ AppShell tab revision (`P1-016`, `P1-017`).
+- ❌ Trip dashboard + smart trip timeline (`P1-018` → `P1-021`).
+- ❌ Alert engine rules + notifier + local notification plumbing (`P1-023` → `P1-028`, `P1-034`).
+- ❌ Active Trip + foreground location + corridor cache (`P1-040` → `P1-044`).
+- ❌ Community schema generalization (`targetType`/`targetKey`) on POIs (`P1-050` → `P1-055`).
 
 See `project_plan/01_phase_1_mvp.md` for the full Phase 1 task list.
 

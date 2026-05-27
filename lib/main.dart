@@ -45,7 +45,7 @@ class TripPlusApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'TripPlus',
+      title: 'TripPlus — Highway Companion',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       home: const AuthGate(),

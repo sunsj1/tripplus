@@ -21,21 +21,21 @@
 ## Phase 1 — Smart Highway Companion MVP
 
 ### 1.1 Branding & identity
-- [ ] `P1-001` Update `pubspec.yaml` description to "AI Highway Companion for Indian road trips"
-- [ ] `P1-002` Update `MaterialApp.title` in `lib/main.dart`
-- [ ] `P1-029` Replace default Flutter README with product README
+- [x] `P1-001` Update `pubspec.yaml` description to "AI Highway Companion for Indian road trips"
+- [x] `P1-002` Update `MaterialApp.title` in `lib/main.dart`
+- [x] `P1-029` Replace default Flutter README with product README
 - [ ] `P1-030` Launch icon + splash for new brand
 
 ### 1.2 Vehicle profile & preferences
-- [ ] `P1-003` Create `vehicle.dart` — VehicleType enum + Vehicle entity
-- [ ] `P1-031` `UserPreferences` model (pureVeg, family, women-safe, fastChargersOnly, etc.)
+- [x] `P1-003` Create `vehicle.dart` — VehicleType enum + Vehicle entity
+- [x] `P1-031` `UserPreferences` model (pureVeg, family, women-safe, fastChargersOnly, etc.)
 - [ ] `P1-004` `lib/features/profile/` slice with Hive persistence
 - [ ] `P1-032` Profile setup screen (post-onboarding)
 - [ ] `P1-033` Profile edit screen (in AppShell)
 - [ ] `P1-005` Extend plan input UI with vehicle + preference chips
 
 ### 1.3 Generalized POI domain
-- [ ] `P1-006` Create `poi.dart` — generic `Poi` + `PoiCategory` enum
+- [x] `P1-006` Create `poi.dart` — generic `Poi` + `PoiCategory` enum
 - [ ] `P1-007` Scaffold `lib/features/pois/` slice
 - [ ] `P1-008` `GooglePlacesPoiSource` along-route POI search
 - [ ] `P1-009` Generalize `route_station_service.dart` → `route_poi_service.dart`
@@ -59,7 +59,7 @@
 - [ ] `P1-021` Timeline editor (pin/unpin POIs)
 
 ### 1.7 Distance-based Alerts Engine (MVP)
-- [ ] `P1-022` Create `alert.dart` — Alert entity + AlertType enum
+- [x] `P1-022` Create `alert.dart` — Alert entity + AlertType enum
 - [ ] `P1-023` `AlertEngine` rule evaluator
 - [ ] `P1-024` Rule: **Fuel Low**
 - [ ] `P1-025` Rule: **EV Gap**
@@ -87,7 +87,7 @@
 - [ ] `P1-060` Telemetry hooks on new flows
 - [ ] `P1-061` Error taxonomy parity for `PoiRepository`
 - [ ] `P1-062` Skeleton loaders for POI lists
-- [ ] `P1-063` Add `flutter_local_notifications` + `connectivity_plus` deps
+- [x] `P1-063` Add `flutter_local_notifications` + `connectivity_plus` deps
 - [ ] `P1-064` Add Crashlytics dependency (init only)
 - [ ] `P1-065` Rolling: update `docs/context/current_state.md`
 
@@ -233,7 +233,7 @@
 
 | Phase | Total Tasks | Done | % |
 |---|---|---|---|
-| Phase 1 — MVP | 50 | 0 | 0% |
+| Phase 1 — MVP | 50 | 8 | 16% |
 | Phase 2 — Intelligence | 36 | 0 | 0% |
 | Phase 3 — AI Copilot | 30 | 0 | 0% |
 | Phase 4 — Scale | 18 | 0 | 0% |

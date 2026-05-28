@@ -8,7 +8,7 @@
 - `firebase/firestore.indexes.json` — composite indexes (extend for `targetKey + createdAt` in `P1-055`).
 
 ## Core
-- `lib/core/services/` — `directions_service.dart`, `geocoding_service.dart`, `google_ev_station_service.dart`, `places_autocomplete_service.dart`, `route_station_service.dart`.
+- `lib/core/services/` — `directions_service.dart`, `geocoding_service.dart`, `google_ev_station_service.dart`, `places_autocomplete_service.dart`, `route_station_service.dart` (EV-typed, still in use by `PlanController`), **`route_poi_service.dart`** — generic POI-typed service dispatching EV → `RouteStationService` (adapter) and non-EV → `PoiRepository` (`P1-009`).
 - `lib/core/utils/` — `location_helper.dart`, `polyline_decoder.dart`, `result.dart` (Freezed Result type), `station_merger.dart`, **`failure.dart`** — canonical `Failure` sealed class with 6 variants (`P1-007`/`P1-061`).
 - `lib/core/theme/` — `app_theme.dart`, plus `AppColors` / `AppTextStyles`.
 - `lib/core/constants/cache_constants.dart` — Hive box names (existing). Note: profile box name lives on `ProfileBox.boxName` (feature-internal).
@@ -25,6 +25,13 @@
 - `plan/presentation/` — `RouteInputCard` (now takes vehicle + preferences, `P1-005`), `TripContextRow` widget, `PlanController`, `PlanState`, `PlanResultView`. `PlanScreen` holds per-trip override state for vehicle + preferences.
 - `stations/presentation/` — list + map screens, station detail.
 - `community/` `data domain presentation` — Firestore-backed pulses; offline queue; widgets `CommunityReportsSection`, `CommunityRatingPulse`. **Still uses `Either<String, T>` prefix strings** — not migrated to typed `Failure` yet.
+  - `domain/community_target_type.dart` — `CommunityTargetType { station, poi }` (`P1-010`).
+  - `domain/models/station_community_report.dart` — gained `targetType` + `targetKey` + derived `effectiveTargetKey` (`P1-010`, back-compat with old `stationKey` docs).
+  - `data/dto/station_community_report_dto.dart` — read/write the new fields; station writes mirror `stationKey` into `targetKey` so the `P1-051` query-by-targetKey path serves both target types.
+  - `data/repository/community_report_repository.dart` — `watchStationReports(stationKey)` (legacy) + **`watchByTargetKey(targetKey)`** (`P1-051`).
+  - `presentation/controller/station_community_controller.dart` — internal field renamed to `_targetKey`; new optional `queryByTargetKey` constructor flag toggles which stream to subscribe to.
+  - `presentation/controller/community_providers.dart` — `stationCommunityControllerProvider` (legacy) + **`poiCommunityControllerProvider`** family keyed by `targetKey` (`P1-052`).
+- `firebase/firestore.indexes.json` — composite indexes for `stationKey + createdAt desc` AND `targetKey + createdAt desc` (`P1-055`). Run `firebase deploy --only firestore:indexes` after editing.
 - `charging/`
 - `insights/`
 - `alerts/`
@@ -37,9 +44,11 @@
   - `presentation/controller/` — `profile_providers.dart`, `profile_controller.dart`, `profile_ui_state.dart` (`ProfileIdle/Saving/Errored`).
   - `presentation/view/` — `vehicle_setup_gate.dart`, `profile_setup_screen.dart`, `profile_edit_screen.dart`.
   - `presentation/widget/` — `vehicle_picker.dart`, `preferences_chips.dart`.
-- `pois/` — scaffolded in `P1-007`. No concrete impl yet.
-  - `data/repository/poi_repository.dart` — abstract `PoiRepository` (`searchAlongRoute`, `searchNearby`, `getById`).
-  - `presentation/controller/pois_providers.dart` — `poiRepositoryProvider` throws until `P1-008`.
+- `pois/`
+  - `data/repository/poi_repository.dart` — abstract `PoiRepository` interface (uses `LatLng` from `polyline_decoder.dart`).
+  - `data/repository/google_places_poi_source.dart` — concrete impl using Google Places Nearby Search + Place Details (`P1-008`). 15 categories supported; EV refused (delegated).
+  - `domain/community_poi_key.dart` — `communityPoiKey(Poi)` → `poi_<sanitized id>` (`P1-010`).
+  - `presentation/controller/pois_providers.dart` — `poiRepositoryProvider` bound to `GooglePlacesPoiSource`; `routePoiServiceProvider` exposes the generic route-aware service.
 
 ## Hive boxes already open in `main.dart`
 - `CacheConstants.chargingBoxName` — existing.

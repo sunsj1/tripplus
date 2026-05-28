@@ -10,10 +10,21 @@ import 'package:tripplus/features/community/domain/models/station_community_subm
 import 'package:tripplus/features/community/domain/models/station_community_ui_state.dart';
 
 class StationCommunityController extends StateNotifier<StationCommunityUiState> {
-  StationCommunityController(this._repo, this._queue, this._stationKey)
-      : super(const StationCommunityUiState()) {
+  /// `queryByTargetKey: false` (default) → `watchStationReports(targetKey)`,
+  /// preserving the legacy station feed query.
+  /// `queryByTargetKey: true` → `watchByTargetKey(targetKey)`, used by the
+  /// new POI-scoped provider in `community_providers.dart` (`P1-052`).
+  StationCommunityController(
+    this._repo,
+    this._queue,
+    this._targetKey, {
+    bool queryByTargetKey = false,
+  }) : super(const StationCommunityUiState()) {
     unawaited(_retryQueued());
-    _sub = _repo.watchStationReports(_stationKey).listen(
+    final stream = queryByTargetKey
+        ? _repo.watchByTargetKey(_targetKey)
+        : _repo.watchStationReports(_targetKey);
+    _sub = stream.listen(
       (either) {
         either.fold(
           (msg) => state = state.copyWith(loading: false, errorMessage: msg),
@@ -42,7 +53,7 @@ class StationCommunityController extends StateNotifier<StationCommunityUiState> 
 
   final CommunityReportRepository _repo;
   final CommunitySubmitQueue _queue;
-  final String _stationKey;
+  final String _targetKey;
   late final StreamSubscription<Either<String, List<StationCommunityReport>>>
       _sub;
 

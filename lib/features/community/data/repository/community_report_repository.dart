@@ -44,6 +44,41 @@ class CommunityReportRepository {
     });
   }
 
+  /// Live list for ANY target (`P1-051`). Works for both station and POI
+  /// pulses because `targetKey` is mirrored from `stationKey` on station
+  /// writes (see [StationCommunityReportDto.toCreateMap]).
+  ///
+  /// Old reports created before `P1-010` only have `stationKey`. For those,
+  /// callers should keep using [watchStationReports] — this query won't see
+  /// them. New writes (post-`P1-010`) appear here.
+  ///
+  /// Same in-memory-sort + `take(50)` pattern as [watchStationReports]; the
+  /// composite index `targetKey + createdAt` (`P1-055`,
+  /// `firebase/firestore.indexes.json`) provides headroom for switching to
+  /// server-side `orderBy` + `limit` if read volume warrants it.
+  Stream<Either<String, List<StationCommunityReport>>> watchByTargetKey(
+    String targetKey,
+  ) {
+    return _db
+        .collection(_collection)
+        .where('targetKey', isEqualTo: targetKey)
+        .snapshots()
+        .map((snapshot) {
+      try {
+        final list = snapshot.docs
+            .map(StationCommunityReportDto.fromDocument)
+            .toList();
+        list.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+        if (list.length > 50) {
+          list.removeRange(50, list.length);
+        }
+        return right<String, List<StationCommunityReport>>(list);
+      } catch (e) {
+        return left<String, List<StationCommunityReport>>('$e');
+      }
+    });
+  }
+
   Future<Either<String, Unit>> submitReport(
     StationCommunitySubmitInput input,
   ) async {

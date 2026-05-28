@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:tripplus/features/community/domain/community_target_type.dart';
 
 part 'station_community_submit_input.freezed.dart';
 
@@ -21,5 +22,7 @@ class StationCommunitySubmitInput with _$StationCommunitySubmitInput {
     String? costPerKwh,
     @Default(false) bool fastChargerAvailable,
     bool? chargeSuccessful,
+    @Default(CommunityTargetType.station) CommunityTargetType targetType,
+    String? targetKey,
   }) = _StationCommunitySubmitInput;
 }

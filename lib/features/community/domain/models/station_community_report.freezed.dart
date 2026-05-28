@@ -38,6 +38,8 @@ mixin _$StationCommunityReport {
   bool get fastChargerAvailable => throw _privateConstructorUsedError;
   bool? get chargeSuccessful => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
+  CommunityTargetType get targetType => throw _privateConstructorUsedError;
+  String? get targetKey => throw _privateConstructorUsedError;
 
   /// Create a copy of StationCommunityReport
   /// with the given fields replaced by the non-null parameter values.
@@ -71,6 +73,8 @@ abstract class $StationCommunityReportCopyWith<$Res> {
     bool fastChargerAvailable,
     bool? chargeSuccessful,
     DateTime createdAt,
+    CommunityTargetType targetType,
+    String? targetKey,
   });
 }
 
@@ -109,6 +113,8 @@ class _$StationCommunityReportCopyWithImpl<
     Object? fastChargerAvailable = null,
     Object? chargeSuccessful = freezed,
     Object? createdAt = null,
+    Object? targetType = null,
+    Object? targetKey = freezed,
   }) {
     return _then(
       _value.copyWith(
@@ -180,6 +186,14 @@ class _$StationCommunityReportCopyWithImpl<
                 ? _value.createdAt
                 : createdAt // ignore: cast_nullable_to_non_nullable
                       as DateTime,
+            targetType: null == targetType
+                ? _value.targetType
+                : targetType // ignore: cast_nullable_to_non_nullable
+                      as CommunityTargetType,
+            targetKey: freezed == targetKey
+                ? _value.targetKey
+                : targetKey // ignore: cast_nullable_to_non_nullable
+                      as String?,
           )
           as $Val,
     );
@@ -213,6 +227,8 @@ abstract class _$$StationCommunityReportImplCopyWith<$Res>
     bool fastChargerAvailable,
     bool? chargeSuccessful,
     DateTime createdAt,
+    CommunityTargetType targetType,
+    String? targetKey,
   });
 }
 
@@ -248,6 +264,8 @@ class __$$StationCommunityReportImplCopyWithImpl<$Res>
     Object? fastChargerAvailable = null,
     Object? chargeSuccessful = freezed,
     Object? createdAt = null,
+    Object? targetType = null,
+    Object? targetKey = freezed,
   }) {
     return _then(
       _$StationCommunityReportImpl(
@@ -319,6 +337,14 @@ class __$$StationCommunityReportImplCopyWithImpl<$Res>
             ? _value.createdAt
             : createdAt // ignore: cast_nullable_to_non_nullable
                   as DateTime,
+        targetType: null == targetType
+            ? _value.targetType
+            : targetType // ignore: cast_nullable_to_non_nullable
+                  as CommunityTargetType,
+        targetKey: freezed == targetKey
+            ? _value.targetKey
+            : targetKey // ignore: cast_nullable_to_non_nullable
+                  as String?,
       ),
     );
   }
@@ -326,7 +352,7 @@ class __$$StationCommunityReportImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$StationCommunityReportImpl implements _StationCommunityReport {
+class _$StationCommunityReportImpl extends _StationCommunityReport {
   const _$StationCommunityReportImpl({
     required this.id,
     required this.stationKey,
@@ -345,7 +371,10 @@ class _$StationCommunityReportImpl implements _StationCommunityReport {
     this.fastChargerAvailable = false,
     this.chargeSuccessful,
     required this.createdAt,
-  }) : _availableAmenityLabels = availableAmenityLabels;
+    this.targetType = CommunityTargetType.station,
+    this.targetKey,
+  }) : _availableAmenityLabels = availableAmenityLabels,
+       super._();
 
   @override
   final String id;
@@ -394,10 +423,15 @@ class _$StationCommunityReportImpl implements _StationCommunityReport {
   final bool? chargeSuccessful;
   @override
   final DateTime createdAt;
+  @override
+  @JsonKey()
+  final CommunityTargetType targetType;
+  @override
+  final String? targetKey;
 
   @override
   String toString() {
-    return 'StationCommunityReport(id: $id, stationKey: $stationKey, stationNameSnapshot: $stationNameSnapshot, reporterUserId: $reporterUserId, reporterDisplayName: $reporterDisplayName, rating: $rating, condition: $condition, availableAmenityLabels: $availableAmenityLabels, washroomAvailable: $washroomAvailable, washroomClean: $washroomClean, womenFriendlyWashroom: $womenFriendlyWashroom, photoBase64: $photoBase64, comment: $comment, costPerKwh: $costPerKwh, fastChargerAvailable: $fastChargerAvailable, chargeSuccessful: $chargeSuccessful, createdAt: $createdAt)';
+    return 'StationCommunityReport(id: $id, stationKey: $stationKey, stationNameSnapshot: $stationNameSnapshot, reporterUserId: $reporterUserId, reporterDisplayName: $reporterDisplayName, rating: $rating, condition: $condition, availableAmenityLabels: $availableAmenityLabels, washroomAvailable: $washroomAvailable, washroomClean: $washroomClean, womenFriendlyWashroom: $womenFriendlyWashroom, photoBase64: $photoBase64, comment: $comment, costPerKwh: $costPerKwh, fastChargerAvailable: $fastChargerAvailable, chargeSuccessful: $chargeSuccessful, createdAt: $createdAt, targetType: $targetType, targetKey: $targetKey)';
   }
 
   @override
@@ -437,11 +471,15 @@ class _$StationCommunityReportImpl implements _StationCommunityReport {
             (identical(other.chargeSuccessful, chargeSuccessful) ||
                 other.chargeSuccessful == chargeSuccessful) &&
             (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt));
+                other.createdAt == createdAt) &&
+            (identical(other.targetType, targetType) ||
+                other.targetType == targetType) &&
+            (identical(other.targetKey, targetKey) ||
+                other.targetKey == targetKey));
   }
 
   @override
-  int get hashCode => Object.hash(
+  int get hashCode => Object.hashAll([
     runtimeType,
     id,
     stationKey,
@@ -460,7 +498,9 @@ class _$StationCommunityReportImpl implements _StationCommunityReport {
     fastChargerAvailable,
     chargeSuccessful,
     createdAt,
-  );
+    targetType,
+    targetKey,
+  ]);
 
   /// Create a copy of StationCommunityReport
   /// with the given fields replaced by the non-null parameter values.
@@ -475,7 +515,7 @@ class _$StationCommunityReportImpl implements _StationCommunityReport {
       );
 }
 
-abstract class _StationCommunityReport implements StationCommunityReport {
+abstract class _StationCommunityReport extends StationCommunityReport {
   const factory _StationCommunityReport({
     required final String id,
     required final String stationKey,
@@ -494,7 +534,10 @@ abstract class _StationCommunityReport implements StationCommunityReport {
     final bool fastChargerAvailable,
     final bool? chargeSuccessful,
     required final DateTime createdAt,
+    final CommunityTargetType targetType,
+    final String? targetKey,
   }) = _$StationCommunityReportImpl;
+  const _StationCommunityReport._() : super._();
 
   @override
   String get id;
@@ -534,6 +577,10 @@ abstract class _StationCommunityReport implements StationCommunityReport {
   bool? get chargeSuccessful;
   @override
   DateTime get createdAt;
+  @override
+  CommunityTargetType get targetType;
+  @override
+  String? get targetKey;
 
   /// Create a copy of StationCommunityReport
   /// with the given fields replaced by the non-null parameter values.

@@ -1,14 +1,29 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tripplus/core/services/route_poi_service.dart';
+import 'package:tripplus/features/pois/data/repository/google_places_poi_source.dart';
 import 'package:tripplus/features/pois/data/repository/poi_repository.dart';
+import 'package:tripplus/features/plan/presentation/controller/plan_providers.dart'
+    show
+        directionsServiceProvider,
+        geocodingServiceProvider,
+        googleDioProvider,
+        routeStationServiceProvider;
 
-/// Public seam for the POI feature.
-///
-/// Concrete [PoiRepository] is bound in `P1-008` when [GooglePlacesPoiSource]
-/// lands. Until then any read here throws — that's intentional, so the scaffold
-/// stays uncoupled from a half-built implementation.
+/// Public seam for the POI feature. Bound to [GooglePlacesPoiSource] in
+/// `P1-008`. EV-only flows must go through [routePoiServiceProvider] (`P1-009`)
+/// which delegates EV to the existing `GoogleEvStationService` + OCM merge.
 final poiRepositoryProvider = Provider<PoiRepository>((ref) {
-  throw UnimplementedError(
-    'PoiRepository has no concrete binding yet. '
-    'Wired in P1-008 (GooglePlacesPoiSource).',
+  return GooglePlacesPoiSource(ref.watch(googleDioProvider));
+});
+
+/// Generalized route-aware POI service. New features should consume this
+/// instead of `RouteStationService` so any [PoiCategory] (incl. EV via the
+/// internal adapter) is supported.
+final routePoiServiceProvider = Provider<RoutePoiService>((ref) {
+  return RoutePoiService(
+    poiRepository: ref.watch(poiRepositoryProvider),
+    routeStationService: ref.watch(routeStationServiceProvider),
+    directions: ref.watch(directionsServiceProvider),
+    geocoding: ref.watch(geocodingServiceProvider),
   );
 });

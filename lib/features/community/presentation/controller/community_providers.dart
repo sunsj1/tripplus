@@ -24,3 +24,23 @@ final stationCommunityControllerProvider = StateNotifierProvider.autoDispose
     return StationCommunityController(repo, queue, stationKey);
   },
 );
+
+/// Community feed + actions for any POI keyed by its `targetKey` (see
+/// `communityPoiKey()` in `lib/features/pois/domain/community_poi_key.dart`).
+/// New in `P1-052` — the POI-side counterpart to
+/// [stationCommunityControllerProvider]. Reads via `watchByTargetKey` so old
+/// station-only reports (written before `P1-010`) are correctly excluded; new
+/// station writes (with mirrored `targetKey`) appear in both providers.
+final poiCommunityControllerProvider = StateNotifierProvider.autoDispose
+    .family<StationCommunityController, StationCommunityUiState, String>(
+  (ref, targetKey) {
+    final repo = ref.watch(communityReportRepositoryProvider);
+    final queue = ref.watch(communitySubmitQueueProvider);
+    return StationCommunityController(
+      repo,
+      queue,
+      targetKey,
+      queryByTargetKey: true,
+    );
+  },
+);

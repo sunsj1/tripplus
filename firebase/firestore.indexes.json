@@ -7,6 +7,14 @@
         { "fieldPath": "stationKey", "order": "ASCENDING" },
         { "fieldPath": "createdAt", "order": "DESCENDING" }
       ]
+    },
+    {
+      "collectionGroup": "stationCommunityReports",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "targetKey", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
     }
   ],
   "fieldOverrides": []

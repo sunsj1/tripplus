@@ -32,6 +32,8 @@ mixin _$StationCommunitySubmitInput {
   String? get costPerKwh => throw _privateConstructorUsedError;
   bool get fastChargerAvailable => throw _privateConstructorUsedError;
   bool? get chargeSuccessful => throw _privateConstructorUsedError;
+  CommunityTargetType get targetType => throw _privateConstructorUsedError;
+  String? get targetKey => throw _privateConstructorUsedError;
 
   /// Create a copy of StationCommunitySubmitInput
   /// with the given fields replaced by the non-null parameter values.
@@ -67,6 +69,8 @@ abstract class $StationCommunitySubmitInputCopyWith<$Res> {
     String? costPerKwh,
     bool fastChargerAvailable,
     bool? chargeSuccessful,
+    CommunityTargetType targetType,
+    String? targetKey,
   });
 }
 
@@ -103,6 +107,8 @@ class _$StationCommunitySubmitInputCopyWithImpl<
     Object? costPerKwh = freezed,
     Object? fastChargerAvailable = null,
     Object? chargeSuccessful = freezed,
+    Object? targetType = null,
+    Object? targetKey = freezed,
   }) {
     return _then(
       _value.copyWith(
@@ -166,6 +172,14 @@ class _$StationCommunitySubmitInputCopyWithImpl<
                 ? _value.chargeSuccessful
                 : chargeSuccessful // ignore: cast_nullable_to_non_nullable
                       as bool?,
+            targetType: null == targetType
+                ? _value.targetType
+                : targetType // ignore: cast_nullable_to_non_nullable
+                      as CommunityTargetType,
+            targetKey: freezed == targetKey
+                ? _value.targetKey
+                : targetKey // ignore: cast_nullable_to_non_nullable
+                      as String?,
           )
           as $Val,
     );
@@ -197,6 +211,8 @@ abstract class _$$StationCommunitySubmitInputImplCopyWith<$Res>
     String? costPerKwh,
     bool fastChargerAvailable,
     bool? chargeSuccessful,
+    CommunityTargetType targetType,
+    String? targetKey,
   });
 }
 
@@ -233,6 +249,8 @@ class __$$StationCommunitySubmitInputImplCopyWithImpl<$Res>
     Object? costPerKwh = freezed,
     Object? fastChargerAvailable = null,
     Object? chargeSuccessful = freezed,
+    Object? targetType = null,
+    Object? targetKey = freezed,
   }) {
     return _then(
       _$StationCommunitySubmitInputImpl(
@@ -296,6 +314,14 @@ class __$$StationCommunitySubmitInputImplCopyWithImpl<$Res>
             ? _value.chargeSuccessful
             : chargeSuccessful // ignore: cast_nullable_to_non_nullable
                   as bool?,
+        targetType: null == targetType
+            ? _value.targetType
+            : targetType // ignore: cast_nullable_to_non_nullable
+                  as CommunityTargetType,
+        targetKey: freezed == targetKey
+            ? _value.targetKey
+            : targetKey // ignore: cast_nullable_to_non_nullable
+                  as String?,
       ),
     );
   }
@@ -321,6 +347,8 @@ class _$StationCommunitySubmitInputImpl
     this.costPerKwh,
     this.fastChargerAvailable = false,
     this.chargeSuccessful,
+    this.targetType = CommunityTargetType.station,
+    this.targetKey,
   }) : _availableAmenityLabels = availableAmenityLabels;
 
   @override
@@ -362,10 +390,15 @@ class _$StationCommunitySubmitInputImpl
   final bool fastChargerAvailable;
   @override
   final bool? chargeSuccessful;
+  @override
+  @JsonKey()
+  final CommunityTargetType targetType;
+  @override
+  final String? targetKey;
 
   @override
   String toString() {
-    return 'StationCommunitySubmitInput(stationKey: $stationKey, stationNameSnapshot: $stationNameSnapshot, reporterUserId: $reporterUserId, reporterDisplayName: $reporterDisplayName, rating: $rating, condition: $condition, availableAmenityLabels: $availableAmenityLabels, washroomAvailable: $washroomAvailable, washroomClean: $washroomClean, womenFriendlyWashroom: $womenFriendlyWashroom, photoBase64: $photoBase64, comment: $comment, costPerKwh: $costPerKwh, fastChargerAvailable: $fastChargerAvailable, chargeSuccessful: $chargeSuccessful)';
+    return 'StationCommunitySubmitInput(stationKey: $stationKey, stationNameSnapshot: $stationNameSnapshot, reporterUserId: $reporterUserId, reporterDisplayName: $reporterDisplayName, rating: $rating, condition: $condition, availableAmenityLabels: $availableAmenityLabels, washroomAvailable: $washroomAvailable, washroomClean: $washroomClean, womenFriendlyWashroom: $womenFriendlyWashroom, photoBase64: $photoBase64, comment: $comment, costPerKwh: $costPerKwh, fastChargerAvailable: $fastChargerAvailable, chargeSuccessful: $chargeSuccessful, targetType: $targetType, targetKey: $targetKey)';
   }
 
   @override
@@ -402,7 +435,11 @@ class _$StationCommunitySubmitInputImpl
             (identical(other.fastChargerAvailable, fastChargerAvailable) ||
                 other.fastChargerAvailable == fastChargerAvailable) &&
             (identical(other.chargeSuccessful, chargeSuccessful) ||
-                other.chargeSuccessful == chargeSuccessful));
+                other.chargeSuccessful == chargeSuccessful) &&
+            (identical(other.targetType, targetType) ||
+                other.targetType == targetType) &&
+            (identical(other.targetKey, targetKey) ||
+                other.targetKey == targetKey));
   }
 
   @override
@@ -423,6 +460,8 @@ class _$StationCommunitySubmitInputImpl
     costPerKwh,
     fastChargerAvailable,
     chargeSuccessful,
+    targetType,
+    targetKey,
   );
 
   /// Create a copy of StationCommunitySubmitInput
@@ -455,6 +494,8 @@ abstract class _StationCommunitySubmitInput
     final String? costPerKwh,
     final bool fastChargerAvailable,
     final bool? chargeSuccessful,
+    final CommunityTargetType targetType,
+    final String? targetKey,
   }) = _$StationCommunitySubmitInputImpl;
 
   @override
@@ -487,6 +528,10 @@ abstract class _StationCommunitySubmitInput
   bool get fastChargerAvailable;
   @override
   bool? get chargeSuccessful;
+  @override
+  CommunityTargetType get targetType;
+  @override
+  String? get targetKey;
 
   /// Create a copy of StationCommunitySubmitInput
   /// with the given fields replaced by the non-null parameter values.

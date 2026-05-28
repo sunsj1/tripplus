@@ -6,6 +6,162 @@
 
 ---
 
+## Session 4 — Community read path
+
+- **Started:** 2026-05-28
+- **Finished:** 2026-05-28
+- **Tasks completed (4/4):** `P1-050`, `P1-051`, `P1-052`, `P1-055`
+- **Theme:** finish what session 3 started on the schema side — add the read path + provider + composite index so anyone (station or POI) reads pulses through one generic surface.
+
+### Per-task notes
+
+- `P1-050` — Closeout. Session 3 already shipped the actual Firestore-side change (DTO writes `targetType` + `targetKey` on every create; Firestore is schemaless so no migration). No new code in this session; marking done after verifying:
+  - `station_community_report_dto.dart` `toCreateMap` writes both fields ✅
+  - station writes mirror `stationKey → targetKey` so a single index serves both target types ✅
+  - reads via `fromDocument` fall back to `stationKey` when `targetKey` is absent ✅
+- `P1-051` — `CommunityReportRepository.watchByTargetKey(targetKey)`:
+  - New stream method alongside `watchStationReports(stationKey)`. Same in-memory-sort + `take(50)` pattern; same `Either<String, ...>` prefix-string error scheme as the rest of this repo.
+  - Old reports (pre-`P1-010`) only have `stationKey` and are deliberately invisible to this query. Callers that need them keep using `watchStationReports`. New writes (post-`P1-010`) are visible to both.
+  - Doc comment explicitly notes the in-memory cap and references `firebase/firestore.indexes.json` for the headroom case.
+- `P1-052` — POI controller provider family:
+  - `StationCommunityController` gains an optional `queryByTargetKey` constructor flag (default `false`, keeps legacy behavior) and an internally renamed field `_targetKey`. No external behavior change for the existing `stationCommunityControllerProvider`.
+  - New `poiCommunityControllerProvider` — same shape (`StateNotifierProvider.autoDispose.family<…, String>`) but constructs the controller with `queryByTargetKey: true`. POI screens (`P1-053`/`P1-054`) consume this.
+- `P1-055` — Composite Firestore index:
+  - `firebase/firestore.indexes.json` now declares `targetKey ASC + createdAt DESC` alongside the existing `stationKey + createdAt`.
+  - **Deploy step you owe:** `firebase deploy --only firestore:indexes`. Builds in production take a few minutes; queries that need it return `failed-precondition` until the build finishes (already surfaces as a `Failure.index` via the repository pattern in `community_report_repository.dart`, line `'failed-precondition' → 'index:$msg'`).
+  - Note: the new query in `P1-051` doesn't actually NEED this index today because it uses no server-side `orderBy`. The index is headroom for when read volume justifies switching to server-side `orderBy('createdAt', descending: true).limit(50)`.
+
+### Files changed
+
+```
+M  docs/ai_context/codebase_map.md
+M  docs/ai_context/progress_log.md
+M  docs/batches/phase_1_batches.md
+M  docs/context/current_state.md
+M  firebase/firestore.indexes.json
+M  lib/features/community/data/repository/community_report_repository.dart
+M  lib/features/community/presentation/controller/community_providers.dart
+M  lib/features/community/presentation/controller/station_community_controller.dart
+M  project_plan/notion_tracker.md
+M  project_plan/tasks.csv
+```
+
+### Validation
+
+- `flutter analyze` clean across the whole project.
+- Existing station feed flow unchanged — the constructor default keeps `watchStationReports(stationKey)` wired for `stationCommunityControllerProvider`.
+- Not driven by `flutter run` — left for you per the session-wise commit workflow.
+
+### Suggested commit message
+
+```
+feat(phase1): community pulses read path generalized (session 4)
+
+P1-050 Firestore community schema closeout — DTO writes targetType/targetKey
+P1-051 CommunityReportRepository.watchByTargetKey — generic feed query,
+       legacy watchStationReports preserved
+P1-052 poiCommunityControllerProvider family (autoDispose) — POI side of
+       the community feed, sharing StationCommunityController
+P1-055 firestore.indexes.json — composite index targetKey + createdAt desc
+
+NOTE: run `firebase deploy --only firestore:indexes` after merging.
+```
+
+### Open follow-ups carried to later sessions
+
+- POI side has no UI consumer yet — that lands in session 6 (`P1-053` / `P1-054`) once `PoiCategoryScreen` exists from session 5.
+- Existing `CommunityReportRepository` still uses `Either<String, …>` with prefix strings, not the typed `Failure`. Out of scope for this session; will only be migrated if a touch-the-file change requires it later.
+- `firestore.indexes.json` change requires a Firebase deploy on every environment (dev / staging / prod). Not automated.
+
+---
+
+## Session 3 — POI data path
+
+- **Started:** 2026-05-28
+- **Finished:** 2026-05-28
+- **Tasks completed (3/3):** `P1-008`, `P1-009`, `P1-010`
+- **Theme:** turn last session's `PoiRepository` scaffold into a working route-aware POI data path; extend community schema so pulses can attach to any POI.
+
+### Per-task notes
+
+- `P1-008` — `GooglePlacesPoiSource`:
+  - `lib/features/pois/data/repository/google_places_poi_source.dart` — implements `PoiRepository`. Uses Google Places **Nearby Search** for the 15 non-EV categories, mapping each `PoiCategory` to a `type` and/or `keyword` (e.g. `washroom → keyword:"public toilet"`, `pureVeg → type:restaurant + keyword:"pure veg"`).
+  - Samples up to 10 polyline points (capped to limit Places-API quota burn), parallel `Future.wait`, dedupes by `place_id`.
+  - Place Details for `getById`.
+  - Maps Google API status codes to `Failure` variants: `OVER_QUERY_LIMIT → quota`, `REQUEST_DENIED → permission`, `INVALID_REQUEST → platform`, `ZERO_RESULTS → ok with []`, `DioException timeout/connectionError → network`.
+  - **EV category explicitly refused** — returns `Failure.platform` directing callers to `RoutePoiService` (which has the EV adapter). Keeps the existing OCM + Google-EV-detection-gate pipeline untouched.
+  - Initial bug fix: changed the `PoiRepository` interface (session 2) from `google_maps_flutter.LatLng` to `core/utils/polyline_decoder.dart` `LatLng`, matching the rest of the service layer.
+  - `pois_providers.dart` now binds `poiRepositoryProvider` to `GooglePlacesPoiSource(googleDio)` instead of throwing.
+
+- `P1-009` — `RoutePoiService`:
+  - `lib/core/services/route_poi_service.dart` — generic route-aware POI lookup. Dispatches by `PoiCategory`:
+    - `ev` → delegates to existing `RouteStationService.analyzeRoute(from, to)` (which still runs OCM + Google EV merge + gap detection). Maps `ChargingStation` → `Poi(category: ev, source: ocm/google, attributes: { operator, usage_type, connections, … })`. The "adapter" the task requires.
+    - other categories → resolves origin/destination/polyline via existing `Geocoding` + `Directions`, then calls `PoiRepository.searchAlongRoute`.
+  - Returns `Either<Failure, RoutePoiResult { route, pois }>`. Translates `GeocodingException` / `LocationException` / `DirectionsException` into the typed `Failure` taxonomy.
+  - `findInCorridor(route, category)` variant skips re-resolution for callers that already have a `RouteInfo` (e.g. active-trip alerts in `P1-023`).
+  - `RouteStationService` is **untouched** — existing PlanController + station screens keep working without churn (the "Keep existing station screens working through an adapter" requirement).
+  - Wired as `routePoiServiceProvider` in `pois_providers.dart`.
+
+- `P1-010` — Community schema generalization:
+  - New enum `CommunityTargetType { station, poi }` at `lib/features/community/domain/community_target_type.dart` with `wireValue` ('station'/'poi') and `fromWire` parser.
+  - `StationCommunityReport` gets `targetType` (default `station`) + `targetKey` (nullable) + a derived `effectiveTargetKey` getter that falls back to `stationKey` for old records.
+  - `StationCommunitySubmitInput` gets the same two fields with same defaults.
+  - DTO `toCreateMap` mirrors `stationKey` into `targetKey` for station targets — so the upcoming `P1-051` query-by-targetKey path serves both target types from a single index.
+  - DTO `fromDocument` reads both fields with back-compat fallback (old docs → `targetType: station`, `targetKey: stationKey`).
+  - `lib/features/pois/domain/community_poi_key.dart` — `communityPoiKey(Poi)` returns `poi_<sanitized Poi.id>`, ensuring no key-space collisions with `stationKey` (which uses `u_…` / `ocm_…` / `sid_…`).
+  - **No existing Firestore docs need migration** — schema change is purely additive.
+
+### Files changed
+
+```
+M  docs/ai_context/codebase_map.md
+M  docs/ai_context/progress_log.md
+M  docs/context/current_state.md
+M  lib/features/community/data/dto/station_community_report_dto.dart
+M  lib/features/community/domain/models/station_community_report.dart
+M  lib/features/community/domain/models/station_community_submit_input.dart
+M  lib/features/pois/data/repository/poi_repository.dart
+M  lib/features/pois/presentation/controller/pois_providers.dart
+M  project_plan/notion_tracker.md
+M  project_plan/tasks.csv
+A  docs/ai_context/RESUME_PROMPT.md
+A  lib/core/services/route_poi_service.dart
+A  lib/features/community/domain/community_target_type.dart
+A  lib/features/pois/data/repository/google_places_poi_source.dart
+A  lib/features/pois/domain/community_poi_key.dart
+(plus regenerated .freezed.dart for the touched community models)
+```
+
+### Validation
+
+- `dart run build_runner build --delete-conflicting-outputs` clean.
+- `flutter analyze` clean across the whole project.
+- No regression in existing EV flow — `RouteStationService` and `GoogleEvStationService` untouched.
+- Not driven by `flutter run` — left for you per the session-wise commit workflow.
+
+### Suggested commit message
+
+```
+feat(phase1): POI data path + community schema generalize (session 3)
+
+P1-008 GooglePlacesPoiSource — concrete PoiRepository for 15 categories
+       (EV deliberately refused — served via RoutePoiService adapter)
+P1-009 RoutePoiService — dispatches by PoiCategory, EV via RouteStationService
+       ChargingStation→Poi adapter; non-EV via PoiRepository
+P1-010 community report schema adds targetType + targetKey (back-compat with
+       stationKey); communityPoiKey helper for POI pulses
+```
+
+### Open follow-ups carried to later sessions
+
+- `RouteStationService` is now a private dependency of `RoutePoiService`; new callers should consume `routePoiServiceProvider` not `routeStationServiceProvider`. Old PlanController still uses the station-typed one — fine, will be migrated in `P1-018`.
+- Google Places **Nearby Search** is on the legacy endpoint. Migration to "Places API (New)" is a Phase 4 hardening task — out of scope now.
+- No on-device cache for POI fetches yet; that's `P1-043` (corridor cache).
+- `community_report_repository.dart` still only queries by `stationKey`. `P1-051` extends it to query by `targetKey` so POI pulses can read.
+- `firestore.indexes.json` still has no `targetKey + createdAt` composite index — added in `P1-055`.
+
+---
+
 ## Session 2 — Profile experience + POI scaffold
 
 - **Started:** 2026-05-28

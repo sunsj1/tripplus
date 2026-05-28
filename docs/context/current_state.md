@@ -3,7 +3,7 @@
 > **Update this file** whenever a task materially changes the user-visible surface or the architecture.
 > AI agents read this first to avoid re-discovering what's already built.
 
-**Last updated:** 2026-05-28 (Phase 1 sessions 1 + 2 landed — foundation models + profile experience + POI scaffold).
+**Last updated:** 2026-05-28 (Phase 1 sessions 1–4 landed — foundation models, profile experience, POI scaffold + data path, community schema generalization, **community read path**).
 
 ---
 
@@ -60,7 +60,7 @@ Functional EV-charging assistant app with auth, navigation shell (Plan · Insigh
 
 ---
 
-## Phase 1 progress (14/50 = 28%)
+## Phase 1 progress (21/50 = 42%)
 
 ### Session 1 — foundation models (2026-05-28)
 
@@ -81,16 +81,29 @@ Functional EV-charging assistant app with auth, navigation shell (Plan · Insigh
 - ✅ `ProfileEditScreen` — reachable from app top bar's "Trip preferences" menu entry (`P1-033`).
 - ✅ Plan input renders vehicle row + 6 preference toggle chips above FROM/TO; per-trip overrides default from saved profile (`P1-005`). `PlanController` consumption pending `P1-018`.
 
+### Session 3 — POI data path + community generalization (2026-05-28)
+
+- ✅ `GooglePlacesPoiSource` — concrete `PoiRepository` impl using Google Places Nearby Search + Place Details; 15 categories supported (`P1-008`). EV deliberately refused — served via the adapter below.
+- ✅ `lib/core/services/route_poi_service.dart` — generic route-aware POI service. Dispatches `ev → RouteStationService` adapter (ChargingStation → Poi mapping); other categories → `PoiRepository.searchAlongRoute` (`P1-009`).
+- ✅ Community report schema extension: `CommunityTargetType { station, poi }` enum + `targetType` + `targetKey` fields on `StationCommunityReport` / `StationCommunitySubmitInput`; DTO mirrors `stationKey` into `targetKey` so the upcoming `P1-051` query path serves both targets from one index. Back-compat preserved (`P1-010`).
+- ✅ `lib/features/pois/domain/community_poi_key.dart` — `communityPoiKey(Poi) → poi_<sanitized id>`.
+- ✅ `poiRepositoryProvider` and new `routePoiServiceProvider` exposed.
+
+### Session 4 — Community read path (2026-05-28)
+
+- ✅ `P1-050` closed out (session 3 DTO change is the Firestore-side schema change; Firestore is schemaless).
+- ✅ `CommunityReportRepository.watchByTargetKey(targetKey)` — new stream alongside `watchStationReports(stationKey)` (`P1-051`).
+- ✅ `poiCommunityControllerProvider.family.autoDispose` keyed by `targetKey`; shares `StationCommunityController` via a new `queryByTargetKey` flag (`P1-052`).
+- ✅ `firebase/firestore.indexes.json` adds composite `targetKey + createdAt desc` (`P1-055`). **Deploy step owed: `firebase deploy --only firestore:indexes`.**
+
 ### NOT implemented (remaining Phase 1 targets)
 
-- ❌ `GooglePlacesPoiSource` (`P1-008`) — concrete `PoiRepository` impl.
-- ❌ Generalize `route_station_service.dart` → `route_poi_service.dart` (`P1-009`).
 - ❌ Smart Intelligence Grid screen (`P1-011` → `P1-015`).
 - ❌ AppShell tab revision (`P1-016`, `P1-017`).
+- ❌ POI community widget mount (`P1-053`, `P1-054`).
 - ❌ Trip dashboard + smart trip timeline (`P1-018` → `P1-021`).
 - ❌ Alert engine rules + notifier + local notification plumbing (`P1-023` → `P1-028`, `P1-034`).
 - ❌ Active Trip + foreground location + corridor cache (`P1-040` → `P1-044`).
-- ❌ Community schema generalization (`targetType`/`targetKey`) on POIs (`P1-050` → `P1-055`).
 - ❌ Hygiene: telemetry hooks (`P1-060`), skeleton loaders (`P1-062`), Crashlytics init (`P1-064`), launch icon/splash (`P1-030`).
 
 See `project_plan/01_phase_1_mvp.md` for the full Phase 1 task list.

@@ -37,9 +37,9 @@
 ### 1.3 Generalized POI domain
 - [x] `P1-006` Create `poi.dart` — generic `Poi` + `PoiCategory` enum
 - [x] `P1-007` Scaffold `lib/features/pois/` slice
-- [ ] `P1-008` `GooglePlacesPoiSource` along-route POI search
-- [ ] `P1-009` Generalize `route_station_service.dart` → `route_poi_service.dart`
-- [ ] `P1-010` Community schema fields `targetType` + `targetKey` on POI
+- [x] `P1-008` `GooglePlacesPoiSource` along-route POI search
+- [x] `P1-009` Generalize `route_station_service.dart` → `route_poi_service.dart`
+- [x] `P1-010` Community schema fields `targetType` + `targetKey` on POI
 
 ### 1.4 Smart Intelligence Grid
 - [ ] `P1-011` `DiscoveryScreen` 3-column grid of all PoiCategory items
@@ -76,12 +76,12 @@
 - [ ] `P1-044` Offline detection + degraded mode banner
 
 ### 1.9 Community pulses → POIs
-- [ ] `P1-050` Schema: `targetType` + `targetKey` (back-compat with `stationKey`)
-- [ ] `P1-051` Update `community_report_repository.dart` for generic key
-- [ ] `P1-052` Add `poiCommunityControllerProvider.family`
+- [x] `P1-050` Schema: `targetType` + `targetKey` (back-compat with `stationKey`)
+- [x] `P1-051` Update `community_report_repository.dart` for generic key
+- [x] `P1-052` Add `poiCommunityControllerProvider.family`
 - [ ] `P1-053` Mount `CommunityReportsSection` on POI detail screens
 - [ ] `P1-054` Mount `CommunityRatingPulse` on POI list tiles
-- [ ] `P1-055` Firestore composite index `targetKey + createdAt`
+- [x] `P1-055` Firestore composite index `targetKey + createdAt`
 
 ### 1.10 Cross-cutting hygiene
 - [ ] `P1-060` Telemetry hooks on new flows
@@ -233,7 +233,7 @@
 
 | Phase | Total Tasks | Done | % |
 |---|---|---|---|
-| Phase 1 — MVP | 50 | 14 | 28% |
+| Phase 1 — MVP | 50 | 21 | 42% |
 | Phase 2 — Intelligence | 36 | 0 | 0% |
 | Phase 3 — AI Copilot | 30 | 0 | 0% |
 | Phase 4 — Scale | 18 | 0 | 0% |

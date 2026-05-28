@@ -9,12 +9,12 @@ P1-007,Scaffold lib/features/pois feature slice with provider seams,Phase 1 - MV
 P1-008,Implement GooglePlacesPoiSource for along-route POI search,Phase 1 - MVP,POI Domain,P0,Done,2d,P1-007,data;api;poi,Corridor-bounded
 P1-009,Generalize route_station_service.dart to route_poi_service.dart,Phase 1 - MVP,POI Domain,P0,Done,1.5d,P1-008,refactor;core,Preserve EV adapter
 P1-010,Extend community report schema with targetType and targetKey,Phase 1 - MVP,POI Domain,P0,Done,2h,P1-006;P1-023,community;schema,
-P1-011,DiscoveryScreen - 3-column grid of all PoiCategory items,Phase 1 - MVP,Intelligence Grid,P0,Not started,4h,P1-006,feature;discovery;ui,The iconic PDF screen
-P1-012,PoiCategoryScreen - parameterized route-aware POI list,Phase 1 - MVP,Intelligence Grid,P0,Not started,1d,P1-008;P1-011,feature;discovery;ui,
-P1-013,Wire grid items to PoiCategoryScreen route,Phase 1 - MVP,Intelligence Grid,P0,Not started,1h,P1-012,nav,
-P1-014,Empty/loading/error states for PoiCategoryScreen,Phase 1 - MVP,Intelligence Grid,P0,Not started,3h,P1-012,ui;errors,
-P1-015,Map view toggle on PoiCategoryScreen,Phase 1 - MVP,Intelligence Grid,P1,Not started,4h,P1-012,ui;maps,
-P1-016,Update AppShell tabs: Plan / Trip / Discover / Profile,Phase 1 - MVP,Navigation,P0,Not started,2h,P1-011;P1-033,shell;ui,
+P1-011,DiscoveryScreen - 3-column grid of all PoiCategory items,Phase 1 - MVP,Intelligence Grid,P0,Done,4h,P1-006,feature;discovery;ui,The iconic PDF screen
+P1-012,PoiCategoryScreen - parameterized route-aware POI list,Phase 1 - MVP,Intelligence Grid,P0,Done,1d,P1-008;P1-011,feature;discovery;ui,
+P1-013,Wire grid items to PoiCategoryScreen route,Phase 1 - MVP,Intelligence Grid,P0,Done,1h,P1-012,nav,
+P1-014,Empty/loading/error states for PoiCategoryScreen,Phase 1 - MVP,Intelligence Grid,P0,Done,3h,P1-012,ui;errors,
+P1-015,Map view toggle on PoiCategoryScreen,Phase 1 - MVP,Intelligence Grid,P1,Done,4h,P1-012,ui;maps,
+P1-016,Update AppShell tabs: Plan / Trip / Discover / Profile,Phase 1 - MVP,Navigation,P0,Done,2h,P1-011;P1-033,shell;ui,
 P1-017,Trip tab - active trip dashboard or plan CTA,Phase 1 - MVP,Navigation,P0,Not started,4h,P1-040,shell;ui,
 P1-018,Extend PlanResult model with ETA / tolls / fuel / charging / weather placeholders,Phase 1 - MVP,Trip Dashboard,P0,Not started,3h,P1-003,plan;model,
 P1-019,Trip Dashboard widget in plan_result_view,Phase 1 - MVP,Trip Dashboard,P0,Not started,4h,P1-018,plan;ui,Stat cards row
@@ -41,14 +41,14 @@ P1-044,Offline detection + degraded mode banner,Phase 1 - MVP,Active Trip,P1,Not
 P1-050,Extend Firestore community report schema with targetType + targetKey,Phase 1 - MVP,Community Generalize,P0,Done,4h,P1-006,community;schema,Back-compat with stationKey
 P1-051,Update community_report_repository.dart for generic targetKey,Phase 1 - MVP,Community Generalize,P0,Done,4h,P1-050,community;repo,
 P1-052,Add poiCommunityControllerProvider family by targetKey,Phase 1 - MVP,Community Generalize,P0,Done,2h,P1-051,community;providers,
-P1-053,Mount CommunityReportsSection inside POI detail screens,Phase 1 - MVP,Community Generalize,P0,Not started,3h,P1-052;P1-012,community;ui;reuse,
-P1-054,Mount CommunityRatingPulse chip on every POI list tile,Phase 1 - MVP,Community Generalize,P0,Not started,2h,P1-052;P1-012,community;ui;reuse,
+P1-053,Mount CommunityReportsSection inside POI detail screens,Phase 1 - MVP,Community Generalize,P0,Done,3h,P1-052;P1-012,community;ui;reuse,
+P1-054,Mount CommunityRatingPulse chip on every POI list tile,Phase 1 - MVP,Community Generalize,P0,Done,2h,P1-052;P1-012,community;ui;reuse,
 P1-055,Add Firestore composite index targetKey + createdAt,Phase 1 - MVP,Community Generalize,P1,Done,1h,P1-050,community;firestore;index,
 P1-060,Lightweight telemetry hooks on new flows,Phase 1 - MVP,Hygiene,P1,Not started,3h,,telemetry,
 P1-061,Error taxonomy parity for PoiRepository,Phase 1 - MVP,Hygiene,P0,Done,2h,P1-007,errors,
 P1-062,Skeleton loaders for POI lists,Phase 1 - MVP,Hygiene,P1,Not started,3h,P1-012,ui,
 P1-063,Add flutter_local_notifications + connectivity_plus to pubspec,Phase 1 - MVP,Hygiene,P0,Done,30m,,deps,
-P1-064,Add Crashlytics dependency (init only),Phase 1 - MVP,Hygiene,P1,Not started,1h,,deps;observability,
+P1-064,Add Crashlytics dependency (init only),Phase 1 - MVP,Hygiene,P1,Done,1h,,deps;observability,
 P1-065,Update docs/context/current_state.md after each subsection,Phase 1 - MVP,Hygiene,P0,Not started,rolling,,docs,
 P2-001,Upgrade AlertEngine to upcoming-window rules,Phase 2 - Intelligence,Predictive Alerts,P0,Not started,1d,P1-023,alerts;engine,
 P2-002,Ghat / Risk Alert - mountain section detection,Phase 2 - Intelligence,Predictive Alerts,P0,Not started,2d,P2-001,alerts;rule,

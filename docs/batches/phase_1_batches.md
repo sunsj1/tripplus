@@ -115,7 +115,7 @@ Done 2026-05-28.
 
 ---
 
-## 🔵 Session 5 — Smart Intelligence Grid + Category screen
+## ✅ Session 5 — Smart Intelligence Grid + Category screen
 
 **Theme.** The iconic PDF screen. Render the 16-category grid; tap → route-aware
 POI list using the session-3 data path; full error states.
@@ -130,11 +130,13 @@ POI list using the session-3 data path; full error states.
 | `P1-014` | Empty / loading / error states using `Failure.actionLabel` | 3 h | `P1-012` |
 | `P1-015` | Map view toggle on `PoiCategoryScreen` (reuse `station_map_screen.dart` pattern) | 4 h | `P1-012` |
 
+Done 2026-05-28.
+
 **Unblocks:** `P1-016` (Discover tab), `P1-053` / `P1-054` (POI community mount).
 
 ---
 
-## ⬜ Session 6 — POI community mount + AppShell tabs
+## ✅ Session 6 — POI community mount + AppShell tabs
 
 **Theme.** Surface community pulses on every POI tile + detail; revise the
 bottom nav from "Plan · Insights · Stations" to "Plan · Trip · Discover · Profile".
@@ -148,11 +150,13 @@ bottom nav from "Plan · Insights · Stations" to "Plan · Trip · Discover · P
 | `P1-016` | `AppShell` tabs → Plan · Trip · Discover · Profile (Trip can be a placeholder until `P1-017`) | 2 h | `P1-011`, `P1-033` ✅ |
 | `P1-064` | Add Crashlytics dep (init only — deeper integration is Phase 2 `P2-071`) | 1 h | — |
 
+Done 2026-05-28.
+
 **Unblocks:** `P1-017` (Trip tab once Trip model exists).
 
 ---
 
-## ⬜ Session 7 — Trip Dashboard + Trip foundation
+## 🔵 Session 7 — Trip Dashboard + Trip foundation
 
 **Theme.** Trip control center: extend `PlanResult` with cost/time picture,
 introduce `Trip` model and `ActiveTripController`, wire the Trip tab.
@@ -257,14 +261,14 @@ end of each session. It does NOT get its own session.
 | 2 | 6 | ✅ |
 | 3 | 3 | ✅ |
 | 4 | 4 | ✅ |
-| 5 | 5 | 🔵 next |
-| 6 | 4 | ⬜ |
-| 7 | 5 | ⬜ |
+| 5 | 5 | ✅ |
+| 6 | 4 | ✅ |
+| 7 | 5 | 🔵 next |
 | 8 | 5 | ⬜ |
 | 9 | 5 | ⬜ |
 | 10 | 5 | ⬜ |
 | 11 | verify | ⬜ |
-| **Total** | **50** | **21 / 50 = 42 %** |
+| **Total** | **50** | **30 / 50 = 60 %** |
 
 When a session lands, update the row above (✅), the "Phase 1 progress tracker"
 metric in `project_plan/notion_tracker.md`, and the status block in

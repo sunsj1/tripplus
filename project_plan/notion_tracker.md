@@ -42,14 +42,14 @@
 - [x] `P1-010` Community schema fields `targetType` + `targetKey` on POI
 
 ### 1.4 Smart Intelligence Grid
-- [ ] `P1-011` `DiscoveryScreen` 3-column grid of all PoiCategory items
-- [ ] `P1-012` `PoiCategoryScreen` reusable route-aware POI list
-- [ ] `P1-013` Wire grid items → `PoiCategoryScreen`
-- [ ] `P1-014` Empty / loading / error states
-- [ ] `P1-015` Map view toggle
+- [x] `P1-011` `DiscoveryScreen` 3-column grid of all PoiCategory items
+- [x] `P1-012` `PoiCategoryScreen` reusable route-aware POI list
+- [x] `P1-013` Wire grid items → `PoiCategoryScreen`
+- [x] `P1-014` Empty / loading / error states
+- [x] `P1-015` Map view toggle
 
 ### 1.5 AppShell navigation
-- [ ] `P1-016` Revise tabs: **Plan · Trip · Discover · Profile**
+- [x] `P1-016` Revise tabs: **Plan · Trip · Discover · Profile**
 - [ ] `P1-017` Trip tab — active dashboard or plan CTA
 
 ### 1.6 Smart Route Dashboard
@@ -79,8 +79,8 @@
 - [x] `P1-050` Schema: `targetType` + `targetKey` (back-compat with `stationKey`)
 - [x] `P1-051` Update `community_report_repository.dart` for generic key
 - [x] `P1-052` Add `poiCommunityControllerProvider.family`
-- [ ] `P1-053` Mount `CommunityReportsSection` on POI detail screens
-- [ ] `P1-054` Mount `CommunityRatingPulse` on POI list tiles
+- [x] `P1-053` Mount `CommunityReportsSection` on POI detail screens
+- [x] `P1-054` Mount `CommunityRatingPulse` on POI list tiles
 - [x] `P1-055` Firestore composite index `targetKey + createdAt`
 
 ### 1.10 Cross-cutting hygiene
@@ -88,7 +88,7 @@
 - [x] `P1-061` Error taxonomy parity for `PoiRepository`
 - [ ] `P1-062` Skeleton loaders for POI lists
 - [x] `P1-063` Add `flutter_local_notifications` + `connectivity_plus` deps
-- [ ] `P1-064` Add Crashlytics dependency (init only)
+- [x] `P1-064` Add Crashlytics dependency (init only)
 - [ ] `P1-065` Rolling: update `docs/context/current_state.md`
 
 ---
@@ -233,7 +233,7 @@
 
 | Phase | Total Tasks | Done | % |
 |---|---|---|---|
-| Phase 1 — MVP | 50 | 21 | 42% |
+| Phase 1 — MVP | 50 | 30 | 60% |
 | Phase 2 — Intelligence | 36 | 0 | 0% |
 | Phase 3 — AI Copilot | 30 | 0 | 0% |
 | Phase 4 — Scale | 18 | 0 | 0% |

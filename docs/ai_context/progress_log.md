@@ -6,6 +6,173 @@
 
 ---
 
+## Session 6 — POI community mount + AppShell tabs
+
+- **Started:** 2026-05-28
+- **Finished:** 2026-05-28
+- **Tasks completed (4/4):** `P1-053`, `P1-054`, `P1-016`, `P1-064`
+- **Theme:** trust signals everywhere. Community pulse chips on every POI tile, full reports section inside a new POI detail sheet, fresh four-tab bottom nav making the Discovery grid finally reachable.
+
+### Per-task notes
+
+- `P1-054` — `PoiCommunityRatingPulse`:
+  - `lib/features/community/presentation/widgets/poi_community_rating_pulse.dart` — near-clone of `CommunityRatingPulse` but takes a `Poi`, derives key via `communityPoiKey(poi)`, watches `poiCommunityControllerProvider`. Same visual language (star + count + reliability tag + low-confidence pill).
+  - `PoiListTile` already exposed a `pulseSlot` from session 5 — now wired to `PoiCommunityRatingPulse(poi)` in `PoiCategoryScreen`.
+
+- `P1-053` — `PoiCommunityReportsSection` + `PoiDetailSheet`:
+  - `lib/features/community/presentation/widgets/poi_community_reports_section.dart` — full POI feed: title row, average rating, freshness, reliability chips, recent-reports carousel, and a "POI pulse submissions roll out next" hint banner. Reuses the target-agnostic public widgets (`CommunitySectionShell`, `CommunityAverageRatingRow`, `CommunityRecentReportsCarousel`, `CommunityEmptyState`).
+  - **Submit path deliberately omitted.** The existing `station_report_sheet.dart` wizard is tightly coupled to `ChargingStation`; generalizing it needs its own task and is intentionally out of scope here.
+  - `lib/features/pois/presentation/widget/poi_detail_sheet.dart` — modal bottom sheet with drag handle + draggable scrollable sheet. Header shows POI name/category/source badge; fact-pill row shows distance, rating, open-now; embeds `PoiCommunityReportsSection`.
+  - `PoiCategoryScreen` tile-tap snackbar swapped for `showPoiDetailSheet(...)`.
+
+- `P1-016` — AppShell four-tab refresh:
+  - `app_bottom_nav.dart` rebuilt around a `_NavSpec` list so adding/removing tabs is a one-line change. Tabs: **PLAN · TRIP · DISCOVER · PROFILE** (icons: route, luggage, grid_view, person).
+  - `app_shell.dart` rewritten — `_screens` now `[PlanScreen, _TripTabPlaceholder, DiscoveryScreen, ProfileTabScreen]`. Old `InsightsScreen` and `StationsScreen` are out of the shell (still in the codebase, unreachable from the bottom nav).
+  - `_TripTabPlaceholder` is a private inline widget — calming "No active trip" empty state with a "Plan a trip" button that switches to the Plan tab via callback. Replaced by the real dashboard in `P1-017` (session 7).
+  - `lib/features/profile/presentation/view/profile_tab_screen.dart` — new tab content. Mirrors `ProfileEditScreen` (uses same `VehiclePicker` + `PreferencesChips`) but doesn't pop on save (stays on tab) and adds a small header card with the user's name / email / avatar.
+
+- `P1-064` — Crashlytics init only:
+  - `pubspec.yaml` adds `firebase_crashlytics: ^5.0.0`; `flutter pub get` resolved cleanly.
+  - `main.dart` adds the three standard hooks:
+    - `setCrashlyticsCollectionEnabled(!kDebugMode)` — silent in debug builds.
+    - `FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError`.
+    - `PlatformDispatcher.instance.onError` records + returns `true`.
+  - Native Android requires the Crashlytics gradle plugin for actual upload — that's wired in Phase 2's `P2-071`. Dart-side init only here.
+
+### Architecture notes
+
+- **Existing community widgets stay untouched.** `CommunityReportsSection` and `CommunityRatingPulse` still take a `ChargingStation`. POIs get their own POI-flavored variants in the same `community/presentation/widgets/` folder so all trust signals live together.
+- **POI submit path is the next chunk of community work but isn't in Phase 1.** The "Coming soon" banner in `PoiCommunityReportsSection` is deliberate honesty. Reads work today, writes don't.
+- **`InsightsScreen` and `StationsScreen` are orphan code now.** They're unreachable via the nav but still compile (community widgets and station detail are reachable through their own routes). Phase 2 cleanup can remove them or repurpose `InsightsScreen` for a "predictive insights" surface.
+
+### Files changed
+
+```
+M  docs/ai_context/codebase_map.md
+M  docs/ai_context/progress_log.md
+M  docs/batches/phase_1_batches.md
+M  docs/context/current_state.md
+M  lib/core/widgets/app_bottom_nav.dart
+M  lib/features/pois/presentation/view/poi_category_screen.dart
+M  lib/features/shell/presentation/view/app_shell.dart
+M  lib/main.dart
+M  project_plan/notion_tracker.md
+M  project_plan/tasks.csv
+M  pubspec.lock
+M  pubspec.yaml
+A  lib/features/community/presentation/widgets/poi_community_rating_pulse.dart
+A  lib/features/community/presentation/widgets/poi_community_reports_section.dart
+A  lib/features/pois/presentation/widget/poi_detail_sheet.dart
+A  lib/features/profile/presentation/view/profile_tab_screen.dart
+```
+
+### Validation
+
+- `flutter pub get` clean (adds `firebase_crashlytics` + transitive deps).
+- `flutter analyze` clean.
+- DiscoveryScreen is now reachable via the bottom nav — first time you can actually tap your way to the Smart Intelligence Grid since session 5.
+
+### Suggested commit message
+
+```
+feat(phase1): POI community pulses + four-tab shell (session 6)
+
+P1-053 PoiCommunityReportsSection + PoiDetailSheet — read-only feed
+       mounted via showPoiDetailSheet on POI tile tap
+P1-054 PoiCommunityRatingPulse on every POI tile (drops into pulseSlot)
+P1-016 AppShell tabs → Plan · Trip · Discover · Profile;
+       AppBottomNav refactored around _NavSpec list;
+       ProfileTabScreen + _TripTabPlaceholder added
+P1-064 firebase_crashlytics dep + Dart-side init (Android gradle plugin
+       still owed to P2-071)
+```
+
+### Open follow-ups carried to later sessions
+
+- POI pulse submissions — `station_report_sheet.dart` wizard is `ChargingStation`-typed; generalizing it for any `targetKey + targetType` isn't on the Phase 1 plan but should be flagged for Phase 2.
+- `_TripTabPlaceholder` → real `TripDashboard` in `P1-017` (session 7).
+- Android Crashlytics native upload setup is owed to `P2-071`.
+- `InsightsScreen` and `StationsScreen` are now orphaned code. Decide in Phase 2 whether to repurpose or delete.
+
+---
+
+## Session 5 — Smart Intelligence Grid + Category screen
+
+- **Started:** 2026-05-28
+- **Finished:** 2026-05-28
+- **Tasks completed (5/5):** `P1-011`, `P1-013`, `P1-012`, `P1-014`, `P1-015`
+- **Theme:** the iconic Smart Intelligence Grid lands. Tap any of the 16 categories → reusable `PoiCategoryScreen` that uses session 3's `RoutePoiService` for route-aware results, falls back to nearby search when no plan, and renders calming loading / empty / error states. List ⇄ map toggle.
+
+### Per-task notes
+
+- `P1-011` — `lib/features/discovery/presentation/view/discovery_screen.dart`:
+  - 3-column `SliverGrid` of all 16 `PoiCategory` items. Each tile gets a category-specific icon + accent color via `_styleFor`.
+  - Header copy emphasizes the product principle ("ranked by community trust") so the screen feels like the PDF's iconic surface, not a generic icon dump.
+- `P1-012` — `lib/features/pois/presentation/view/poi_category_screen.dart`:
+  - `ConsumerStatefulWidget` parameterized by `PoiCategory`. Watches `poiCategoryControllerProvider(category)`.
+  - **Strategy decided in the controller**: if `PlanController.state is PlanResult` → `routePoiService.findAlongRoute(from, to, category)`; else `poiRepository.searchNearby(currentLocation)`. EV without a plan returns an explicit "plan a trip first" empty state because the EV pipeline needs route context (gap detection + OCM merge).
+  - List view shows a small "Along your route" / "Near you" pill so users understand the query source.
+  - List-tile tap currently shows a snackbar (no POI detail screen in Phase 1 plan). The community pulse mount on tiles is wired in `P1-054`; the tile already exposes a `pulseSlot` so the future widget drops in without reflow.
+- `P1-013` — Grid tile `onTap` pushes `MaterialPageRoute(PoiCategoryScreen(category: ...))` directly. Inline in `discovery_screen.dart`.
+- `P1-014` — Four UI states via the Freezed sealed `PoiCategoryUiState { loading, data, empty, errored }`:
+  - Loading: 6 skeleton tiles.
+  - Empty: calming illustration + retry button, copy depends on whether the user has a plan (e.g. "No fuel stations on this corridor" vs "Plan a trip to see chargers along it").
+  - Errored: maps `Failure` variants to actionable headlines + icons (`NetworkFailure → wifi_off + "You're offline"`, `PermissionFailure → lock + "Permission needed"`, `IndexFailure → hourglass + "Almost ready"`, `QuotaFailure → speed + "Daily limit reached"`). Button label comes from `Failure.actionLabel` so each variant gets the right CTA.
+- `P1-015` — `widget/poi_category_map_view.dart`. Mirrors `station_map_screen.dart` exactly — same `_MapButton` controls, same popup pattern, same `_MapPlaceholder` for when the API key is missing. Toggle button appears in the app bar only when state is `PoiCategoryData`.
+
+### Architecture notes
+
+- **`poiCategoryControllerProvider.family.autoDispose`** uses `ref.read(planControllerProvider)` (NOT `watch`) to snapshot the plan state at construction. The controller does not rebuild when the user re-plans — pulling fresh data is an explicit `refresh()` call (also wired to the retry buttons).
+- The screen is **not yet reachable from the AppShell** because the bottom-nav update is `P1-016` (session 6). Until that lands, the DiscoveryScreen / PoiCategoryScreen are routable in code but invisible to the user.
+- `PoiListTile` exposes a `pulseSlot` parameter so `P1-054` can drop a `CommunityRatingPulse` chip in without touching the tile.
+
+### Files changed
+
+```
+M  docs/ai_context/codebase_map.md
+M  docs/ai_context/progress_log.md
+M  docs/batches/phase_1_batches.md
+M  docs/context/current_state.md
+M  lib/features/pois/presentation/controller/pois_providers.dart
+M  project_plan/notion_tracker.md
+M  project_plan/tasks.csv
+A  lib/features/discovery/presentation/view/discovery_screen.dart
+A  lib/features/pois/presentation/controller/poi_category_controller.dart
+A  lib/features/pois/presentation/controller/poi_category_ui_state.dart
+A  lib/features/pois/presentation/controller/poi_category_ui_state.freezed.dart
+A  lib/features/pois/presentation/view/poi_category_screen.dart
+A  lib/features/pois/presentation/widget/poi_category_map_view.dart
+A  lib/features/pois/presentation/widget/poi_list_tile.dart
+```
+
+### Validation
+
+- `dart run build_runner build --delete-conflicting-outputs` clean.
+- `flutter analyze` clean.
+- Not driven by `flutter run` — left for you. Caveat: DiscoveryScreen has no entry point until `P1-016` (session 6) wires the Discover tab. To test now, push it manually from somewhere (e.g. temporarily replace `AppShell._screens[0]` or push via a debug button).
+
+### Suggested commit message
+
+```
+feat(phase1): Smart Intelligence Grid + Category screen (session 5)
+
+P1-011 DiscoveryScreen — 3-column grid of all 16 PoiCategory items
+P1-012 PoiCategoryScreen — reusable, route-aware via RoutePoiService;
+       nearby fallback when no plan; EV gated on route presence
+P1-013 grid tile tap → PoiCategoryScreen
+P1-014 Loading/Empty/Errored states; Failure variants → actionable copy + CTA
+P1-015 List ⇄ map toggle (Google Maps; placeholder when key missing)
+```
+
+### Open follow-ups carried to later sessions
+
+- **Discovery tab is not yet in the AppShell** — `P1-016` (session 6) revises the bottom nav from "Plan · Insights · Stations" to "Plan · Trip · Discover · Profile" and surfaces this screen.
+- `CommunityRatingPulse` chip on POI tiles → `P1-054` (session 6); the `pulseSlot` is ready.
+- POI detail screen is not in Phase 1 scope; tile tap currently shows a snackbar. `P1-053` mounts `CommunityReportsSection` on whatever detail surface lands.
+- Google Places Nearby is called fresh per screen open. `P1-043` (session 8) adds the corridor cache so repeat opens are instant offline.
+
+---
+
 ## Session 4 — Community read path
 
 - **Started:** 2026-05-28

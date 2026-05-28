@@ -3,7 +3,7 @@
 > **Update this file** whenever a task materially changes the user-visible surface or the architecture.
 > AI agents read this first to avoid re-discovering what's already built.
 
-**Last updated:** 2026-05-28 (Phase 1 sessions 1–4 landed — foundation models, profile experience, POI scaffold + data path, community schema generalization, **community read path**).
+**Last updated:** 2026-05-28 (Phase 1 sessions 1–6 landed — foundation, profile, POI data path, community schema + read path, Smart Intelligence Grid, **POI community pulses + four-tab AppShell + Crashlytics init**).
 
 ---
 
@@ -60,7 +60,7 @@ Functional EV-charging assistant app with auth, navigation shell (Plan · Insigh
 
 ---
 
-## Phase 1 progress (21/50 = 42%)
+## Phase 1 progress (30/50 = 60%)
 
 ### Session 1 — foundation models (2026-05-28)
 
@@ -96,15 +96,30 @@ Functional EV-charging assistant app with auth, navigation shell (Plan · Insigh
 - ✅ `poiCommunityControllerProvider.family.autoDispose` keyed by `targetKey`; shares `StationCommunityController` via a new `queryByTargetKey` flag (`P1-052`).
 - ✅ `firebase/firestore.indexes.json` adds composite `targetKey + createdAt desc` (`P1-055`). **Deploy step owed: `firebase deploy --only firestore:indexes`.**
 
+### Session 5 — Smart Intelligence Grid + Category screen (2026-05-28)
+
+- ✅ `lib/features/discovery/presentation/view/discovery_screen.dart` — 3-column grid of all 16 `PoiCategory` items, the iconic PDF surface (`P1-011`).
+- ✅ `lib/features/pois/presentation/view/poi_category_screen.dart` — reusable screen parameterized by `PoiCategory`. Uses `RoutePoiService.findAlongRoute` when a `PlanResult` exists, else `PoiRepository.searchNearby` from current location. EV without a plan → "Plan a trip first" empty state (`P1-012`).
+- ✅ Grid tile `onTap` pushes `PoiCategoryScreen(category)` (`P1-013`).
+- ✅ Loading / Empty / Errored states with calming copy; `Failure` variants map to actionable headlines + `Failure.actionLabel` CTA (`P1-014`).
+- ✅ List ⇄ map toggle in app bar; map view mirrors `station_map_screen.dart` with POI markers + popup (`P1-015`).
+
+### Session 6 — POI community pulses + four-tab shell + Crashlytics (2026-05-28)
+
+- ✅ `PoiCommunityRatingPulse` chip on every POI tile via `pulseSlot` (`P1-054`).
+- ✅ `PoiCommunityReportsSection` (read-only) embedded in a new `showPoiDetailSheet` modal that opens on POI tile tap (`P1-053`). POI submit path deliberately deferred — wizard is `ChargingStation`-typed and needs its own task.
+- ✅ AppShell tabs revised → **Plan · Trip · Discover · Profile**; `app_bottom_nav.dart` refactored around a `_NavSpec` list; Trip is a placeholder until `P1-017`; Profile is a new `ProfileTabScreen` mirroring `ProfileEditScreen` without the pop (`P1-016`).
+- ✅ Discovery is now reachable from the bottom nav for the first time.
+- ✅ `firebase_crashlytics: ^5.0.0` + Dart-side init (`setCrashlyticsCollectionEnabled(!kDebugMode)`, `FlutterError.onError`, `PlatformDispatcher.onError`). Android gradle plugin still owed to Phase 2's `P2-071` (`P1-064`).
+- ⚠️ `InsightsScreen` and `StationsScreen` are now orphan code (not in the nav). Phase 2 decides to repurpose or delete.
+
 ### NOT implemented (remaining Phase 1 targets)
 
-- ❌ Smart Intelligence Grid screen (`P1-011` → `P1-015`).
-- ❌ AppShell tab revision (`P1-016`, `P1-017`).
-- ❌ POI community widget mount (`P1-053`, `P1-054`).
 - ❌ Trip dashboard + smart trip timeline (`P1-018` → `P1-021`).
 - ❌ Alert engine rules + notifier + local notification plumbing (`P1-023` → `P1-028`, `P1-034`).
 - ❌ Active Trip + foreground location + corridor cache (`P1-040` → `P1-044`).
-- ❌ Hygiene: telemetry hooks (`P1-060`), skeleton loaders (`P1-062`), Crashlytics init (`P1-064`), launch icon/splash (`P1-030`).
+- ❌ Trip tab dashboard (`P1-017` — depends on `P1-040`).
+- ❌ Hygiene: telemetry hooks (`P1-060`), skeleton loaders (`P1-062`), launch icon/splash (`P1-030`).
 
 See `project_plan/01_phase_1_mvp.md` for the full Phase 1 task list.
 

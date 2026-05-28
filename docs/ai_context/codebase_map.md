@@ -21,7 +21,7 @@
 ## Features (today)
 - `auth/` `data domain presentation` — `AuthGate` routes signed-in users through `VehicleSetupGate` before AppShell (`P1-032`).
 - `onboarding/`
-- `shell/presentation/view/app_shell.dart` — tabs still Plan · Insights · Stations; will be revised in `P1-016`.
+- `shell/presentation/view/app_shell.dart` — four tabs: **Plan · Trip · Discover · Profile** (`P1-016`). Trip is a `_TripTabPlaceholder` until `P1-017`. Old `InsightsScreen` + `StationsScreen` are now orphan code (still compile, not in nav).
 - `plan/presentation/` — `RouteInputCard` (now takes vehicle + preferences, `P1-005`), `TripContextRow` widget, `PlanController`, `PlanState`, `PlanResultView`. `PlanScreen` holds per-trip override state for vehicle + preferences.
 - `stations/presentation/` — list + map screens, station detail.
 - `community/` `data domain presentation` — Firestore-backed pulses; offline queue; widgets `CommunityReportsSection`, `CommunityRatingPulse`. **Still uses `Either<String, T>` prefix strings** — not migrated to typed `Failure` yet.
@@ -31,6 +31,8 @@
   - `data/repository/community_report_repository.dart` — `watchStationReports(stationKey)` (legacy) + **`watchByTargetKey(targetKey)`** (`P1-051`).
   - `presentation/controller/station_community_controller.dart` — internal field renamed to `_targetKey`; new optional `queryByTargetKey` constructor flag toggles which stream to subscribe to.
   - `presentation/controller/community_providers.dart` — `stationCommunityControllerProvider` (legacy) + **`poiCommunityControllerProvider`** family keyed by `targetKey` (`P1-052`).
+  - `presentation/widgets/poi_community_rating_pulse.dart` — POI counterpart of `CommunityRatingPulse` (`P1-054`).
+  - `presentation/widgets/poi_community_reports_section.dart` — POI counterpart of `CommunityReportsSection`; read-only (POI submit deferred) (`P1-053`).
 - `firebase/firestore.indexes.json` — composite indexes for `stationKey + createdAt desc` AND `targetKey + createdAt desc` (`P1-055`). Run `firebase deploy --only firestore:indexes` after editing.
 - `charging/`
 - `insights/`
@@ -42,13 +44,21 @@
   - `data/local_db/profile_box.dart` — Hive box (`user_profile`); opened in `main.dart`.
   - `data/repository/profile_repository.dart` — `readLocal`, `hydrateFromFirestore`, `save` returning `Either<Failure, _>`.
   - `presentation/controller/` — `profile_providers.dart`, `profile_controller.dart`, `profile_ui_state.dart` (`ProfileIdle/Saving/Errored`).
-  - `presentation/view/` — `vehicle_setup_gate.dart`, `profile_setup_screen.dart`, `profile_edit_screen.dart`.
+  - `presentation/view/` — `vehicle_setup_gate.dart`, `profile_setup_screen.dart`, `profile_edit_screen.dart`, `profile_tab_screen.dart` (`P1-016` tab).
   - `presentation/widget/` — `vehicle_picker.dart`, `preferences_chips.dart`.
 - `pois/`
   - `data/repository/poi_repository.dart` — abstract `PoiRepository` interface (uses `LatLng` from `polyline_decoder.dart`).
   - `data/repository/google_places_poi_source.dart` — concrete impl using Google Places Nearby Search + Place Details (`P1-008`). 15 categories supported; EV refused (delegated).
   - `domain/community_poi_key.dart` — `communityPoiKey(Poi)` → `poi_<sanitized id>` (`P1-010`).
-  - `presentation/controller/pois_providers.dart` — `poiRepositoryProvider` bound to `GooglePlacesPoiSource`; `routePoiServiceProvider` exposes the generic route-aware service.
+  - `presentation/controller/pois_providers.dart` — `poiRepositoryProvider` bound to `GooglePlacesPoiSource`; `routePoiServiceProvider`; `poiCategoryControllerProvider.family.autoDispose<PoiCategory>` (`P1-012`).
+  - `presentation/controller/poi_category_ui_state.dart` — Freezed sealed `PoiCategoryUiState { loading, data, empty, errored }`, with `PoiQuerySource { alongRoute, nearby }`.
+  - `presentation/controller/poi_category_controller.dart` — decides between route-aware and nearby strategies based on `PlanController` snapshot at construction; EV without a plan → explicit empty state.
+  - `presentation/view/poi_category_screen.dart` — reusable category screen with list/map toggle in app bar (`P1-012` + `P1-015`).
+  - `presentation/widget/poi_list_tile.dart` — list tile; `pulseSlot` now filled by `PoiCommunityRatingPulse` (`P1-054`).
+  - `presentation/widget/poi_category_map_view.dart` — Google Maps view with POI markers; same pattern as `station_map_screen.dart`.
+  - `presentation/widget/poi_detail_sheet.dart` — `showPoiDetailSheet(context, poi)` modal that embeds `PoiCommunityReportsSection` (`P1-053`).
+- `discovery/`
+  - `presentation/view/discovery_screen.dart` — Smart Intelligence Grid (3 × ~6 of 16 categories). Tile tap pushes `PoiCategoryScreen` (`P1-011` + `P1-013`). Reachable via the Discover tab in `AppShell` (`P1-016`).
 
 ## Hive boxes already open in `main.dart`
 - `CacheConstants.chargingBoxName` — existing.

@@ -6,6 +6,51 @@
 
 ---
 
+## Session 11 — Phase 1 verification + Phase 2 plan
+
+- **Started:** 2026-05-30
+- **Finished:** 2026-05-30
+- **Tasks completed:** `P1-065` (final doc pass); Session 11 verification activities
+- **Theme:** close Phase 1 on the codebase; defer Phase 2 implementation until Phase 1 device rollout.
+
+### Per-task notes
+
+- **Automated verification**
+  - `flutter analyze` — no issues
+  - `flutter test` — 5 passed (alert engine ×4, widget smoke ×1)
+
+- **Documentation**
+  - `docs/PHASE_1_E2E_VERIFICATION.md` — printable manual checklist for device QA (auth, plan, discover, community, trip/alerts, EV regression).
+  - `docs/batches/phase_2_batches.md` — **planning only**, 12 sessions + verify for 36 `P2-*` tasks (no Dart changes for Phase 2).
+  - `docs/context/current_state.md` — Phase 1 code-complete; Phase 2 not started.
+  - `project_plan/tasks.csv` + `notion_tracker.md` — `P1-065` → Done; Phase 1 → 50/50.
+
+### Files changed (new)
+- `docs/PHASE_1_E2E_VERIFICATION.md`
+- `docs/batches/phase_2_batches.md`
+
+### Files changed (modified)
+- `docs/batches/phase_1_batches.md` (Session 11 ✅)
+- `docs/context/current_state.md`
+- `project_plan/tasks.csv`, `project_plan/notion_tracker.md`
+
+### Validation
+- `flutter analyze` + `flutter test` — pass
+
+### Suggested commit message
+```
+docs(phase1): complete session 11 verification + phase 2 batch plan
+
+- Add PHASE_1_E2E_VERIFICATION checklist for device rollout sign-off
+- Mark Phase 1 tasks 50/50; add phase_2_batches.md (planning only, no P2 code)
+```
+
+### Open follow-ups
+- **You:** walk through `docs/PHASE_1_E2E_VERIFICATION.md` on a device; tag `phase-1-mvp-complete` when satisfied.
+- **Later:** say `go session 1` on `phase_2_batches.md` when ready to implement Phase 2.
+
+---
+
 ## Session 10 — Alert delivery + hygiene
 
 - **Started:** 2026-05-30

@@ -1,13 +1,9 @@
-// Replace this file by running:
-//   dart pub global activate flutterfire_cli
-//   flutterfire configure
-// Or paste values from Firebase Console → Project settings → Your apps.
-//
-// Values below are placeholders so the project compiles; auth will not work
-// until you use real keys from your Firebase project.
+// File generated from Firebase app configs (google-services.json + GoogleService-Info.plist).
+// Re-run `flutterfire configure` after installing the xcodeproj gem if you add platforms.
 
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
-import 'package:flutter/foundation.dart' show defaultTargetPlatform, kIsWeb, TargetPlatform;
+import 'package:flutter/foundation.dart'
+    show defaultTargetPlatform, kIsWeb, TargetPlatform;
 
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
@@ -27,21 +23,21 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'REPLACE_WITH_ANDROID_API_KEY_FROM_CONSOLE',
-    appId: '1:000000000000:android:0000000000000000000000',
-    messagingSenderId: '000000000000',
-    projectId: 'YOUR_FIREBASE_PROJECT_ID',
-    storageBucket: 'YOUR_FIREBASE_PROJECT_ID.appspot.com',
+    apiKey: 'AIzaSyDG7cZmPekYfjPdbOHiV9-NVcu9DxEH9GU',
+    appId: '1:840443034452:android:04abcc0ecfcdb88f1ba6c1',
+    messagingSenderId: '840443034452',
+    projectId: 'tripplus-8aff2',
+    storageBucket: 'tripplus-8aff2.firebasestorage.app',
   );
 
-  /// [iosClientId] is the "iOS client" OAuth ID from GoogleService-Info.plist (CLIENT_ID).
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'REPLACE_IOS_API_KEY',
-    appId: '1:000000000000:ios:0000000000000000000000',
-    messagingSenderId: '000000000000',
-    projectId: 'YOUR_FIREBASE_PROJECT_ID',
-    storageBucket: 'YOUR_FIREBASE_PROJECT_ID.appspot.com',
-    iosClientId: 'REPLACE_IOS_CLIENT_ID.apps.googleusercontent.com',
+    apiKey: 'AIzaSyCmF7OlZJtZRYzhWzA50J4vMDMhUrYXKQY',
+    appId: '1:840443034452:ios:1a118242ac69da9a1ba6c1',
+    messagingSenderId: '840443034452',
+    projectId: 'tripplus-8aff2',
+    storageBucket: 'tripplus-8aff2.firebasestorage.app',
+    iosClientId:
+        '840443034452-onmuspsi946895fufcf1i3velu3jj8qg.apps.googleusercontent.com',
     iosBundleId: 'com.tripplus.tripplus',
   );
 }

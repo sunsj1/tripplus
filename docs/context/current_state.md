@@ -3,15 +3,17 @@
 > **Update this file** whenever a task materially changes the user-visible surface or the architecture.
 > AI agents read this first to avoid re-discovering what's already built.
 
-**Last updated:** 2026-05-30 (Phase 1 sessions 1–10 landed — **alert delivery + hygiene**: `AlertNotifier`, history screen, telemetry, POI skeletons, brand splash).
+**Last updated:** 2026-05-30 (Phase 1 **code-complete** — Session 11 verification docs + `phase_2_batches.md` planning added).
 
 ---
 
 ## TL;DR
 
-Functional EV-charging assistant app with auth, navigation shell (Plan · Insights · Stations), planning, route-aware EV station discovery, community pulses with offline-first submission, and reliability UX (Phases 1–2 of `RELIABILITY_PHASES.md` done).
+**Phase 1 MVP is code-complete** (50/50 tasks). Smart Highway Companion: Plan · Trip · Discover · Profile, route-aware POI grid, community pulses, trip lifecycle, predictive alerts (engine + delivery), offline banner.
 
-**Now pivoting to:** Smart Highway Companion (Phase 1 of `project_plan/`).
+**Before Phase 2 implementation:** finish manual E2E on device — [`docs/PHASE_1_E2E_VERIFICATION.md`](../PHASE_1_E2E_VERIFICATION.md).
+
+**Next (planning only):** Phase 2 sessions in [`docs/batches/phase_2_batches.md`](../batches/phase_2_batches.md) — **not started**.
 
 ---
 
@@ -60,7 +62,7 @@ Functional EV-charging assistant app with auth, navigation shell (Plan · Insigh
 
 ---
 
-## Phase 1 progress (49/50 = 98%)
+## Phase 1 progress (50/50 = 100% — code-complete)
 
 ### Session 1 — foundation models (2026-05-28)
 
@@ -151,9 +153,17 @@ Functional EV-charging assistant app with auth, navigation shell (Plan · Insigh
 - ✅ Brand splash — Android `#1B5E20`, iOS display name `TripPlus` (`P1-030`).
 - ✅ `PlanResult.encodedRoutePolyline` threaded into corridor cache for alert geometry.
 
-### NOT implemented (remaining Phase 1 targets)
+### Session 11 — Phase 1 verification (2026-05-30)
 
-- ❌ Session 11: end-to-end verification checklist only (`P1-065` rolling doc refresh).
+- ✅ Automated: `flutter analyze` clean; `flutter test` — 5 passed.
+- ✅ `docs/PHASE_1_E2E_VERIFICATION.md` — manual device checklist for rollout sign-off.
+- ✅ `P1-065` — this file + trackers updated; Phase 2 batch plan created (no P2 code).
+- ⏳ User: run E2E checklist on device, then tag `phase-1-mvp-complete`.
+
+### Phase 2 (not started)
+
+- 📋 [`docs/batches/phase_2_batches.md`](../batches/phase_2_batches.md) — 12 implementation sessions + verify (36 tasks).
+- Spec: `project_plan/02_phase_2_intelligence.md`.
 
 See `project_plan/01_phase_1_mvp.md` for the full Phase 1 task list.
 

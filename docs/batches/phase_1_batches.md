@@ -237,22 +237,19 @@ Done 2026-05-30.
 
 ---
 
-## 🔵 Session 11 — Phase 1 completion verification
+## ✅ Session 11 — Phase 1 completion verification
 
 **Theme.** No new code — verify every line item in the Phase 1 completion
 checklist from `project_plan/01_phase_1_mvp.md` actually holds end-to-end.
 
 **Activities.**
 
-- Run the app end-to-end: plan Pune → Nashik with each `VehicleType`.
-- Open Smart Intelligence Grid; tap at least 6 categories (fuel, restaurant,
-  washroom, ATM, hotel, mechanic); verify each shows route-aware results
-  with a community pulse on every tile.
-- Trigger each of the 3 alert rules and confirm a local notification fires.
-- Submit a pulse on a non-station POI; verify it reads back via `targetKey`.
-- Open existing EV station detail; verify no regression in the legacy flow.
-- `P1-065` final pass: `docs/context/current_state.md` reflects shipped MVP.
-- Tag git: `phase-1-mvp-complete`.
+- Automated: `flutter analyze` + `flutter test` (5 tests) — **pass** (2026-05-30).
+- Manual E2E checklist: [`docs/PHASE_1_E2E_VERIFICATION.md`](../PHASE_1_E2E_VERIFICATION.md) — **user sign-off pending on device**.
+- `P1-065` final pass: `docs/context/current_state.md` updated; Phase 2 plan added at [`docs/batches/phase_2_batches.md`](phase_2_batches.md) (planning only).
+- Tag git: `phase-1-mvp-complete` — **after** E2E checklist is signed.
+
+Done 2026-05-30 (automated + docs). **Implementation of Phase 2 deferred** until Phase 1 rollout is verified.
 
 ---
 
@@ -277,8 +274,8 @@ end of each session. It does NOT get its own session.
 | 8 | 5 | ✅ |
 | 9 | 5 | ✅ |
 | 10 | 5 | ✅ |
-| 11 | verify | 🔵 next |
-| **Total** | **50** | **49 / 50 = 98 %** |
+| 11 | verify | ✅ |
+| **Total** | **50** | **50 / 50 = 100 %** (code-complete; E2E sign-off on device pending) |
 
 When a session lands, update the row above (✅), the "Phase 1 progress tracker"
 metric in `project_plan/notion_tracker.md`, and the status block in
@@ -288,6 +285,6 @@ metric in `project_plan/notion_tracker.md`, and the status block in
 
 ## What comes after Phase 1
 
-The same per-session planning pattern applies to Phase 2 / 3 / 4. When
-Phase 1 finishes, create `docs/batches/phase_2_batches.md` from
-`project_plan/02_phase_2_intelligence.md` using the same template.
+- **Device sign-off:** [`docs/PHASE_1_E2E_VERIFICATION.md`](../PHASE_1_E2E_VERIFICATION.md)
+- **Phase 2 plan (no code yet):** [`docs/batches/phase_2_batches.md`](phase_2_batches.md)
+- **Spec:** `project_plan/02_phase_2_intelligence.md`

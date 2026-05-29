@@ -89,7 +89,7 @@
 - [x] `P1-062` Skeleton loaders for POI lists
 - [x] `P1-063` Add `flutter_local_notifications` + `connectivity_plus` deps
 - [x] `P1-064` Add Crashlytics dependency (init only)
-- [ ] `P1-065` Rolling: update `docs/context/current_state.md`
+- [x] `P1-065` Rolling: update `docs/context/current_state.md`
 
 ---
 
@@ -233,7 +233,7 @@
 
 | Phase | Total Tasks | Done | % |
 |---|---|---|---|
-| Phase 1 — MVP | 50 | 49 | 98% |
+| Phase 1 — MVP | 50 | 50 | 100% |
 | Phase 2 — Intelligence | 36 | 0 | 0% |
 | Phase 3 — AI Copilot | 30 | 0 | 0% |
 | Phase 4 — Scale | 18 | 0 | 0% |

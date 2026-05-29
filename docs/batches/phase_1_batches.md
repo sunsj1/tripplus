@@ -194,25 +194,29 @@ Done 2026-05-30.
 
 ---
 
-## ⬜ Session 9 — Alert engine MVP — rules + platform setup
+## ✅ Session 9 — Alert engine MVP — rules + platform setup
 
 **Theme.** The "predictive, not reactive" principle becomes real. Three
 distance-based rules + the engine that fires them. `flutter_local_notifications`
 native plumbing.
 
-**Tasks (5).**
+**Tasks (5/5 done).**
 
 | ID | Task | Est | Depends on |
 |---|---|---|---|
-| `P1-023` | `AlertEngine` rule evaluator (pure Dart) — `(activeRoute, currentLocation, vehicle, preferences, upcomingPois) → List<Alert>` | 1.5 d | `P1-022` ✅, `P1-008` ✅ |
-| `P1-024` | Rule: **Fuel Low** — "Last trusted pump for next X km" | 4 h | `P1-023` |
-| `P1-025` | Rule: **EV Gap** — "Next fast charger is X km away" | 3 h | `P1-023` |
-| `P1-026` | Rule: **Food window** — "Next highly rated veg restaurant after X km" (honors `pureVeg`) | 4 h | `P1-023` |
-| `P1-027` | `flutter_local_notifications` iOS + Android platform setup | 3 h | — (`P1-063` ✅ added dep) |
+| `P1-023` ✅ | `AlertEngine` rule evaluator (pure Dart) — `(activeRoute, currentLocation, vehicle, preferences, upcomingPois) → List<Alert>` | 1.5 d | `P1-022` ✅, `P1-008` ✅ |
+| `P1-024` ✅ | Rule: **Fuel Low** — "Last trusted pump for next X km" | 4 h | `P1-023` |
+| `P1-025` ✅ | Rule: **EV Gap** — "Next fast charger is X km away" | 3 h | `P1-023` |
+| `P1-026` ✅ | Rule: **Food window** — "Next highly rated veg restaurant after X km" (honors `pureVeg`) | 4 h | `P1-023` |
+| `P1-027` ✅ | `flutter_local_notifications` iOS + Android platform setup | 3 h | — (`P1-063` ✅ added dep) |
+
+Done 2026-05-30.
+
+**Unblocks:** `P1-028` (AlertNotifier delivery), `P2-001` (upgraded rules).
 
 ---
 
-## ⬜ Session 10 — Alert delivery + hygiene
+## 🔵 Session 10 — Alert delivery + hygiene
 
 **Theme.** Deliver alerts via banner + local notification; alert history per
 trip; cross-cutting hygiene (telemetry, skeletons, launch icon).
@@ -266,11 +270,11 @@ end of each session. It does NOT get its own session.
 | 5 | 5 | ✅ |
 | 6 | 4 | ✅ |
 | 7 | 5 | ✅ |
-| 8 | 5 | 🔵 next |
-| 9 | 5 | ⬜ |
-| 10 | 5 | ⬜ |
+| 8 | 5 | ✅ |
+| 9 | 5 | ✅ |
+| 10 | 5 | 🔵 next |
 | 11 | verify | ⬜ |
-| **Total** | **50** | **35 / 50 = 70 %** |
+| **Total** | **50** | **47 / 50 = 94 %** |
 
 When a session lands, update the row above (✅), the "Phase 1 progress tracker"
 metric in `project_plan/notion_tracker.md`, and the status block in

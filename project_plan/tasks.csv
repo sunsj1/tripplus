@@ -21,11 +21,11 @@ P1-019,Trip Dashboard widget in plan_result_view,Phase 1 - MVP,Trip Dashboard,P0
 P1-020,Smart Trip Timeline widget,Phase 1 - MVP,Trip Dashboard,P0,Done,1d,P1-008;P1-019,plan;ui,Vertical timeline of stops
 P1-021,Timeline editor - pin/unpin POI suggestions,Phase 1 - MVP,Trip Dashboard,P1,Done,6h,P1-020,plan;ui,
 P1-022,Create lib/features/alerts/domain/alert.dart Alert entity + AlertType,Phase 1 - MVP,Alerts Engine,P0,Done,2h,,alerts;domain,
-P1-023,AlertEngine rule evaluator (pure Dart),Phase 1 - MVP,Alerts Engine,P0,Not started,1.5d,P1-022;P1-008,alerts;core,
-P1-024,Rule Fuel Low - last trusted pump for next X km,Phase 1 - MVP,Alerts Engine,P0,Not started,4h,P1-023,alerts;rule,
-P1-025,Rule EV Gap - next fast charger X km away,Phase 1 - MVP,Alerts Engine,P0,Not started,3h,P1-023,alerts;rule;ev,
-P1-026,Rule Food Window - next highly rated restaurant after X km,Phase 1 - MVP,Alerts Engine,P0,Not started,4h,P1-023,alerts;rule,Honors pureVeg
-P1-027,Add flutter_local_notifications + platform setup,Phase 1 - MVP,Alerts Engine,P0,Not started,3h,,alerts;deps,
+P1-023,AlertEngine rule evaluator (pure Dart),Phase 1 - MVP,Alerts Engine,P0,Done,1.5d,P1-022;P1-008,alerts;core,
+P1-024,Rule Fuel Low - last trusted pump for next X km,Phase 1 - MVP,Alerts Engine,P0,Done,4h,P1-023,alerts;rule,
+P1-025,Rule EV Gap - next fast charger X km away,Phase 1 - MVP,Alerts Engine,P0,Done,3h,P1-023,alerts;rule;ev,
+P1-026,Rule Food Window - next highly rated restaurant after X km,Phase 1 - MVP,Alerts Engine,P0,Done,4h,P1-023,alerts;rule,Honors pureVeg
+P1-027,Add flutter_local_notifications + platform setup,Phase 1 - MVP,Alerts Engine,P0,Done,3h,,alerts;deps,
 P1-028,AlertNotifier - stream from AlertEngine to local notifications + banner,Phase 1 - MVP,Alerts Engine,P0,Not started,6h,P1-027;P1-023,alerts;providers,
 P1-029,Replace default Flutter README with product README,Phase 1 - MVP,Branding,P1,Done,1h,P1-001,docs,
 P1-030,Launch icon and splash for new brand identity,Phase 1 - MVP,Branding,P2,Not started,2h,,assets,Placeholder OK

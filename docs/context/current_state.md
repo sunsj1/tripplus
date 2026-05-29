@@ -3,7 +3,7 @@
 > **Update this file** whenever a task materially changes the user-visible surface or the architecture.
 > AI agents read this first to avoid re-discovering what's already built.
 
-**Last updated:** 2026-05-30 (Phase 1 sessions 1–8 landed — foundation, profile, POI data path, community schema + read path, Smart Intelligence Grid, POI community pulses + four-tab AppShell, Crashlytics init, Trip Dashboard + Trip lifecycle engine, **Smart Trip Timeline + offline resilience**).
+**Last updated:** 2026-05-30 (Phase 1 sessions 1–9 landed — through **Alert engine MVP**: pure-Dart `AlertEngine` + fuel/EV/food rules + `flutter_local_notifications` platform setup).
 
 ---
 
@@ -60,13 +60,13 @@ Functional EV-charging assistant app with auth, navigation shell (Plan · Insigh
 
 ---
 
-## Phase 1 progress (42/50 = 84%)
+## Phase 1 progress (47/50 = 94%)
 
 ### Session 1 — foundation models (2026-05-28)
 
 - ✅ Internal rebrand: pubspec description + MaterialApp title (`P1-001`, `P1-002`).
 - ✅ Product README (`P1-029`).
-- ✅ `flutter_local_notifications` + `connectivity_plus` deps (`P1-063`). Native setup still owed to `P1-027`.
+- ✅ `flutter_local_notifications` + `connectivity_plus` deps (`P1-063`). Native Android/iOS wiring (`P1-027`).
 - ✅ `lib/core/domain/vehicle.dart` (`P1-003`).
 - ✅ `lib/core/domain/user_preferences.dart` (`P1-031`).
 - ✅ `lib/core/domain/poi.dart` — `Poi`, `PoiCategory` × 16, `PoiSource` (`P1-006`).
@@ -132,9 +132,18 @@ Functional EV-charging assistant app with auth, navigation shell (Plan · Insigh
 - ✅ `CorridorCache` + `CorridorCacheBox` (`corridor_cache` Hive box); populated on `prepareTrip()`, cleared on `endTrip()` (`P1-043`).
 - ✅ `connectivityStreamProvider` + `isOnlineProvider` + `OfflineBanner` animated widget; wired into `AppShell` body (`P1-044`).
 
+### Session 9 — Alert engine MVP (2026-05-30)
+
+- ✅ `AlertEngine` pure-Dart evaluator + `AlertEngineInput` + `AlertRouteUtils` (`P1-023`). Dedupes by `AlertType`, severity-ranked.
+- ✅ `FuelLowRule` — trusted fuel gap >40 km for petrol/diesel/bike (`P1-024`).
+- ✅ `EvGapRule` — charger gap / next stop >40 km; honours `fastChargeOnly` (`P1-025`).
+- ✅ `FoodWindowRule` — highly rated meal lookahead; honours `pureVeg` via `PoiCategory.pureVeg` (`P1-026`).
+- ✅ `LocalNotificationService` — Android channel + receivers + `POST_NOTIFICATIONS`; init in `main.dart`; `alertEngineProvider` (`P1-027`).
+- ✅ Unit tests: `test/features/alerts/alert_engine_test.dart` (4 cases).
+
 ### NOT implemented (remaining Phase 1 targets)
 
-- ❌ Alert engine rules + notifier + local notification plumbing (`P1-023` → `P1-028`, `P1-034`).
+- ❌ Alert delivery: `AlertNotifier` stream → banner + notification (`P1-028`), history screen (`P1-034`).
 - ❌ Hygiene: telemetry hooks (`P1-060`), skeleton loaders (`P1-062`), launch icon/splash (`P1-030`).
 
 See `project_plan/01_phase_1_mvp.md` for the full Phase 1 task list.

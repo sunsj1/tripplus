@@ -8,7 +8,7 @@
 - `firebase/firestore.indexes.json` — composite indexes (extend for `targetKey + createdAt` in `P1-055`).
 
 ## Core
-- `lib/core/services/` — `directions_service.dart`, `geocoding_service.dart`, `google_ev_station_service.dart`, `places_autocomplete_service.dart`, `route_station_service.dart` (EV-typed), **`route_poi_service.dart`** (`P1-009`), **`location_service.dart`** — `LocationService` + `locationServiceProvider`; `requestPermission()`, `currentPosition()`, `listenToPosition(cb)` returning `StreamSubscription` (`P1-042`), **`connectivity_service.dart`** — `connectivityStreamProvider` (`Stream<List<ConnectivityResult>>`), `isOnlineProvider` (`bool`, optimistic default true) (`P1-044`).
+- `lib/core/services/` — `directions_service.dart`, `geocoding_service.dart`, `google_ev_station_service.dart`, `places_autocomplete_service.dart`, `route_station_service.dart` (EV-typed), **`route_poi_service.dart`** (`P1-009`), **`location_service.dart`** — `LocationService` + `locationServiceProvider`; `requestPermission()`, `currentPosition()`, `listenToPosition(cb)` returning `StreamSubscription` (`P1-042`), **`connectivity_service.dart`** — `connectivityStreamProvider` (`Stream<List<ConnectivityResult>>`), `isOnlineProvider` (`bool`, optimistic default true) (`P1-044`), **`local_notification_service.dart`** — trip alert channel + `showTripAlert()` (`P1-027`).
 - `lib/core/utils/` — `location_helper.dart`, `polyline_decoder.dart`, `result.dart` (Freezed Result type), `station_merger.dart`, **`failure.dart`** — canonical `Failure` sealed class with 6 variants (`P1-007`/`P1-061`).
 - `lib/core/theme/` — `app_theme.dart`, plus `AppColors` / `AppTextStyles`.
 - `lib/core/constants/cache_constants.dart` — Hive box names (existing). Note: profile box name lives on `ProfileBox.boxName` (feature-internal).
@@ -37,8 +37,14 @@
 - `charging/`
 - `insights/`
 - `alerts/`
-  - `domain/alert.dart` — `Alert`, `AlertType` (Phase 1+2 values), `AlertSeverity` (created `P1-022`).
-  - `presentation/` — view + widget folders exist; not yet populated by Phase 1 work.
+  - `domain/alert.dart` — `Alert`, `AlertType` (Phase 1+2 values), `AlertSeverity` (`P1-022`).
+  - `domain/alert_engine.dart` — pure-Dart evaluator; dedupes by type (`P1-023`).
+  - `domain/alert_engine_input.dart` — `(route, location, vehicle, prefs, upcomingPois)` (`P1-023`).
+  - `domain/alert_route_utils.dart` — polyline projection + gap helpers (`P1-023`).
+  - `domain/rules/` — `fuel_low_rule.dart` (`P1-024`), `ev_gap_rule.dart` (`P1-025`), `food_window_rule.dart` (`P1-026`).
+  - `presentation/controller/alerts_providers.dart` — `alertEngineProvider`, `localNotificationServiceProvider` (`P1-023`/`P1-027`).
+  - `presentation/view/gap_alert_screen.dart` — legacy EV gap UI (orphan until wired to engine).
+- `lib/core/services/local_notification_service.dart` — `FlutterLocalNotificationsPlugin` wrapper; init in `main.dart` (`P1-027`).
 - `profile/` — created in `P1-004`.
   - `domain/profile_data.dart` — `ProfileData { vehicle?, preferences }`.
   - `data/local_db/profile_box.dart` — Hive box (`user_profile`); opened in `main.dart`.

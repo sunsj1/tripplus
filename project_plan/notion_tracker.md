@@ -60,11 +60,11 @@
 
 ### 1.7 Distance-based Alerts Engine (MVP)
 - [x] `P1-022` Create `alert.dart` — Alert entity + AlertType enum
-- [ ] `P1-023` `AlertEngine` rule evaluator
-- [ ] `P1-024` Rule: **Fuel Low**
-- [ ] `P1-025` Rule: **EV Gap**
-- [ ] `P1-026` Rule: **Food Window**
-- [ ] `P1-027` Add `flutter_local_notifications` + platform setup
+- [x] `P1-023` `AlertEngine` rule evaluator
+- [x] `P1-024` Rule: **Fuel Low**
+- [x] `P1-025` Rule: **EV Gap**
+- [x] `P1-026` Rule: **Food Window**
+- [x] `P1-027` Add `flutter_local_notifications` + platform setup
 - [ ] `P1-028` `AlertNotifier` stream + banner + notifications
 - [ ] `P1-034` Alert history screen per trip
 
@@ -233,7 +233,7 @@
 
 | Phase | Total Tasks | Done | % |
 |---|---|---|---|
-| Phase 1 — MVP | 50 | 42 | 84% |
+| Phase 1 — MVP | 50 | 47 | 94% |
 | Phase 2 — Intelligence | 36 | 0 | 0% |
 | Phase 3 — AI Copilot | 30 | 0 | 0% |
 | Phase 4 — Scale | 18 | 0 | 0% |

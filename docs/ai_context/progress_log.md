@@ -6,6 +6,77 @@
 
 ---
 
+## Session 9 — Alert engine MVP
+
+- **Started:** 2026-05-30
+- **Finished:** 2026-05-30
+- **Tasks completed (5/5):** `P1-023`, `P1-024`, `P1-025`, `P1-026`, `P1-027`
+- **Theme:** predictive corridor alerts are now evaluable in pure Dart. Three Phase 1 rules (fuel / EV / food) share geometry helpers; local notifications are initialized on app start for Session 10 delivery.
+
+### Per-task notes
+
+- `P1-023` — `AlertEngine` + `AlertEngineInput` + `AlertRouteUtils`:
+  - `lib/features/alerts/domain/alert_engine.dart` — orchestrates `[FuelLowRule, EvGapRule, FoodWindowRule]`; one alert per `AlertType` (highest severity wins).
+  - `lib/features/alerts/domain/alert_engine_input.dart` — `(activeRoute, currentLocation, vehicle, preferences, upcomingPois map)`.
+  - `lib/features/alerts/domain/alert_route_utils.dart` — polyline projection (matches `RouteStationService` algorithm), `poisAhead`, `largestGapAhead`, 40 km threshold.
+  - `lib/features/alerts/presentation/controller/alerts_providers.dart` — `alertEngineProvider`.
+
+- `P1-024` — `FuelLowRule`:
+  - Fires for `vehicle.burnsFuel` when next trusted pump (rating ≥3.5 + reviews, or `reliabilityScore` ≥75 in attributes) is >40 km ahead.
+  - Critical when no mapped fuel ahead for remaining corridor.
+
+- `P1-025` — `EvGapRule`:
+  - Fires for EV when next charger (fast-only when `vehicle.fastChargeOnly`) or inter-charger gap >40 km.
+  - Reads `connections` attribute for fast-charge detection (OCM adapter shape).
+
+- `P1-026` — `FoodWindowRule`:
+  - 50 km food lookahead; prefers `PoiCategory.pureVeg` when `preferences.pureVeg`.
+  - Highly rated = rating ≥4.0, reviews ≥3.
+
+- `P1-027` — `LocalNotificationService`:
+  - `lib/core/services/local_notification_service.dart` — `initialize()`, `requestPermissions()`, `showTripAlert()`.
+  - `main.dart` calls `initialize()` at startup.
+  - Android: `POST_NOTIFICATIONS`, boot receivers, high-importance channel `tripplus_alerts`.
+  - iOS: runtime permission via `DarwinInitializationSettings` / `requestPermissions`.
+
+### Files changed (new)
+- `lib/features/alerts/domain/alert_engine.dart`
+- `lib/features/alerts/domain/alert_engine_input.dart`
+- `lib/features/alerts/domain/alert_route_utils.dart`
+- `lib/features/alerts/domain/rules/alert_rule.dart`
+- `lib/features/alerts/domain/rules/fuel_low_rule.dart`
+- `lib/features/alerts/domain/rules/ev_gap_rule.dart`
+- `lib/features/alerts/domain/rules/food_window_rule.dart`
+- `lib/features/alerts/presentation/controller/alerts_providers.dart`
+- `lib/core/services/local_notification_service.dart`
+- `test/features/alerts/alert_engine_test.dart`
+
+### Files changed (modified)
+- `lib/main.dart` (notification init)
+- `android/app/src/main/AndroidManifest.xml` (permissions + receivers)
+- `project_plan/tasks.csv`, `project_plan/notion_tracker.md`
+- `docs/batches/phase_1_batches.md`, `docs/ai_context/codebase_map.md`, `docs/context/current_state.md`
+
+### Validation
+- `flutter test test/features/alerts/alert_engine_test.dart` — 4 passed
+- `flutter analyze` — no issues
+
+### Suggested commit message
+```
+feat(phase1): alert engine MVP + local notifications setup (session 9)
+
+- Add pure-Dart AlertEngine with fuel / EV / food rules (40 km thresholds)
+- Wire LocalNotificationService + Android/iOS platform plumbing (P1-027)
+- Unit tests for rule evaluation paths
+```
+
+### Open follow-ups
+- `P1-028` — `AlertNotifier`: poll engine on location ticks, show banner + call `showTripAlert()`.
+- Request notification permission at trip start (UX), not only cold start.
+- Wire `GapAlertScreen` to real `Alert` payloads or retire in favour of in-app banner.
+
+---
+
 ## Session 8 — Smart Trip Timeline + Offline resilience
 
 - **Started:** 2026-05-30

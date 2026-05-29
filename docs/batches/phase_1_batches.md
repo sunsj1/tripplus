@@ -156,7 +156,7 @@ Done 2026-05-28.
 
 ---
 
-## 🔵 Session 7 — Trip Dashboard + Trip foundation
+## ✅ Session 7 — Trip Dashboard + Trip foundation
 
 **Theme.** Trip control center: extend `PlanResult` with cost/time picture,
 introduce `Trip` model and `ActiveTripController`, wire the Trip tab.
@@ -171,12 +171,14 @@ introduce `Trip` model and `ActiveTripController`, wire the Trip tab.
 | `P1-041` | `ActiveTripController` start/pause/end + Hive persist | 6 h | `P1-040` |
 | `P1-017` | Trip tab — active dashboard if any, else "Plan a trip" CTA | 4 h | `P1-040` |
 
+Done 2026-05-30.
+
 **Unblocks:** `P1-020` / `P1-021` (timeline), `P1-042` (foreground tracking),
 `P1-043` (corridor cache), `P1-023` (alert engine needs trip context).
 
 ---
 
-## ⬜ Session 8 — Smart Trip Timeline + Active trip features
+## 🔵 Session 8 — Smart Trip Timeline + Active trip features
 
 **Theme.** Visual trip plan; offline corridor cache; foreground location.
 
@@ -263,12 +265,12 @@ end of each session. It does NOT get its own session.
 | 4 | 4 | ✅ |
 | 5 | 5 | ✅ |
 | 6 | 4 | ✅ |
-| 7 | 5 | 🔵 next |
-| 8 | 5 | ⬜ |
+| 7 | 5 | ✅ |
+| 8 | 5 | 🔵 next |
 | 9 | 5 | ⬜ |
 | 10 | 5 | ⬜ |
 | 11 | verify | ⬜ |
-| **Total** | **50** | **30 / 50 = 60 %** |
+| **Total** | **50** | **35 / 50 = 70 %** |
 
 When a session lands, update the row above (✅), the "Phase 1 progress tracker"
 metric in `project_plan/notion_tracker.md`, and the status block in

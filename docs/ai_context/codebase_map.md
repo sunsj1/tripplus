@@ -60,11 +60,21 @@
 - `discovery/`
   - `presentation/view/discovery_screen.dart` — Smart Intelligence Grid (3 × ~6 of 16 categories). Tile tap pushes `PoiCategoryScreen` (`P1-011` + `P1-013`). Reachable via the Discover tab in `AppShell` (`P1-016`).
 
+- `trip/`
+  - `data/local_db/trip_box.dart` — Hive `active_trip` box; JSON-encoded single `Trip` under key `current`. API: `read()`, `save(trip)`, `clear()` (`P1-040`).
+  - `domain/models/trip.dart` — `Trip` Freezed + json_serializable. Fields: id, from, to, vehicle, status, totalDistanceKm, drivingMinutes, etaMinutes?, tollsEstimate?, tripCostEstimate?, isCostCharging, stationCount, createdAt, startedAt?, pausedAt?, completedAt?, elapsedPausedMs. Derived: `isTracking`, `elapsed` (`P1-040`).
+  - `domain/models/trip_status.dart` — `TripStatus { notStarted, active, paused, completed }` (`P1-040`).
+  - `presentation/controller/active_trip_state.dart` — Freezed sealed `ActiveTripState { idle, ready(trip), running(trip), paused(trip), completed(trip) }`. Extension `ActiveTripStateX.trip` extracts trip from any sub-state (`P1-041`).
+  - `presentation/controller/active_trip_controller.dart` — `StateNotifier<ActiveTripState>`. Entry point: `prepareTrip(plan, vehicle)`. Transitions: `startTrip` / `pauseTrip` / `resumeTrip` / `endTrip` / `dismissCompleted`. All Hive-persisted (`P1-041`).
+  - `presentation/controller/trip_providers.dart` — `activeTripControllerProvider` (NOT autoDispose) (`P1-041`).
+  - `presentation/view/trip_tab_screen.dart` — `TripTabScreen(onPlanTrip)`. Switches on state: idle→CTA, ready→confirm+Start, running/paused→live dashboard with elapsed ticker, completed→summary. Pause/Resume/End trip buttons. End trip shows confirmation dialog (`P1-017`).
+
 ## Hive boxes already open in `main.dart`
 - `CacheConstants.chargingBoxName` — existing.
 - `CommunitySubmitQueue.boxName` (`community_submit_queue`) — existing.
 - `ProfileBox.boxName` (`user_profile`) — opened in `P1-004`.
-- New boxes still to open: `active_trip` (`P1-041`), `corridor_cache` (`P1-043`).
+- `TripBox.boxName` (`active_trip`) — opened in `P1-040`.
+- New boxes still to open: `corridor_cache` (`P1-043`).
 
 ## Build-runner
 After ANY change to a `*.freezed.dart` source class, run:

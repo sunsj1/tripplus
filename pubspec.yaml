@@ -53,6 +53,9 @@ dependencies:
   flutter_local_notifications: ^17.2.4
   connectivity_plus: ^6.1.0
 
+  # Unique ID generation (Trip IDs)
+  uuid: ^4.5.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

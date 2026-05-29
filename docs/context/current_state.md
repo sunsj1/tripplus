@@ -3,7 +3,7 @@
 > **Update this file** whenever a task materially changes the user-visible surface or the architecture.
 > AI agents read this first to avoid re-discovering what's already built.
 
-**Last updated:** 2026-05-28 (Phase 1 sessions 1–6 landed — foundation, profile, POI data path, community schema + read path, Smart Intelligence Grid, **POI community pulses + four-tab AppShell + Crashlytics init**).
+**Last updated:** 2026-05-30 (Phase 1 sessions 1–7 landed — foundation, profile, POI data path, community schema + read path, Smart Intelligence Grid, POI community pulses + four-tab AppShell, Crashlytics init, **Trip Dashboard + Trip lifecycle engine**).
 
 ---
 
@@ -60,7 +60,7 @@ Functional EV-charging assistant app with auth, navigation shell (Plan · Insigh
 
 ---
 
-## Phase 1 progress (30/50 = 60%)
+## Phase 1 progress (35/50 = 70%)
 
 ### Session 1 — foundation models (2026-05-28)
 
@@ -113,12 +113,20 @@ Functional EV-charging assistant app with auth, navigation shell (Plan · Insigh
 - ✅ `firebase_crashlytics: ^5.0.0` + Dart-side init (`setCrashlyticsCollectionEnabled(!kDebugMode)`, `FlutterError.onError`, `PlatformDispatcher.onError`). Android gradle plugin still owed to Phase 2's `P2-071` (`P1-064`).
 - ⚠️ `InsightsScreen` and `StationsScreen` are now orphan code (not in the nav). Phase 2 decides to repurpose or delete.
 
+### Session 7 — Trip Dashboard + Trip foundation (2026-05-30)
+
+- ✅ `PlanResult` extended with `etaMinutes`, `tollsEstimate`, `fuelEstimateCost`, `chargingEstimate`, `weatherTag`, `trafficLevel` (`P1-018`). `PlanController.analyzeRoute` now accepts `Vehicle?`; computes fuel/charging cost from efficiency + price constants and traffic level from duration vs. theoretical 80 km/h (`P1-018`).
+- ✅ Trip Dashboard stat-card row in `PlanResultView` showing ETA, Tolls, Fuel/Charging, Traffic. "TRIP OVERVIEW" section header. Uses existing `StatCard` widget (`P1-019`).
+- ✅ "Start this trip" `FilledButton` on `PlanResultView` — calls `activeTripControllerProvider.notifier.prepareTrip(plan, vehicle)`, then shows snackbar "Trip ready — go to the Trip tab" (`P1-017`).
+- ✅ `lib/features/trip/` slice — `Trip` Freezed model with full lifecycle fields, `TripStatus` enum, `TripBox` (Hive `active_trip` box). `uuid` package added to pubspec. `active_trip` box opened in `main.dart` (`P1-040`).
+- ✅ `ActiveTripController` + `ActiveTripState` sealed Freezed union. Full lifecycle: `prepareTrip → startTrip → pause/resume → endTrip → dismissCompleted`. All state transitions Hive-persisted. `activeTripControllerProvider` (non-autoDispose) (`P1-041`).
+- ✅ `TripTabScreen` replaces `_TripTabPlaceholder` in `AppShell`. Five views: idle CTA, ready-to-start confirm, live dashboard with 1-second elapsed ticker, paused dashboard, completed summary with actual duration. Pause/Resume/End buttons with End-trip confirmation dialog (`P1-017`).
+
 ### NOT implemented (remaining Phase 1 targets)
 
-- ❌ Trip dashboard + smart trip timeline (`P1-018` → `P1-021`).
+- ❌ Smart trip timeline widget + editor (`P1-020`, `P1-021`).
 - ❌ Alert engine rules + notifier + local notification plumbing (`P1-023` → `P1-028`, `P1-034`).
-- ❌ Active Trip + foreground location + corridor cache (`P1-040` → `P1-044`).
-- ❌ Trip tab dashboard (`P1-017` — depends on `P1-040`).
+- ❌ Foreground location tracking + corridor cache + offline banner (`P1-042` → `P1-044`).
 - ❌ Hygiene: telemetry hooks (`P1-060`), skeleton loaders (`P1-062`), launch icon/splash (`P1-030`).
 
 See `project_plan/01_phase_1_mvp.md` for the full Phase 1 task list.

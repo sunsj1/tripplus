@@ -1,14 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tripplus/core/domain/vehicle.dart';
 import 'package:tripplus/core/services/route_station_service.dart';
 import 'package:tripplus/core/theme/app_colors.dart';
 import 'package:tripplus/core/theme/app_text_styles.dart';
 import 'package:tripplus/core/widgets/animated_list_item.dart';
 import 'package:tripplus/core/widgets/app_top_bar.dart';
 import 'package:tripplus/features/charging/domain/models/charging_station.dart';
+import 'package:tripplus/features/plan/presentation/controller/plan_state.dart';
+import 'package:tripplus/features/plan/presentation/widget/stat_card.dart';
+import 'package:tripplus/features/profile/presentation/controller/profile_providers.dart';
 import 'package:tripplus/features/stations/presentation/view/station_detail_screen.dart';
 import 'package:tripplus/features/stations/presentation/widget/station_list_tile.dart';
+import 'package:tripplus/features/trip/presentation/controller/trip_providers.dart';
 
-class PlanResultView extends StatelessWidget {
+/// Converts the current widget's fields into a [PlanResult] for the trip
+/// controller. Helper kept outside the class to keep build() clean.
+PlanResult _toPlanResult(PlanResultView v) => PlanResult(
+      from: v.from,
+      to: v.to,
+      stations: v.stations,
+      totalDistanceKm: v.totalDistanceKm,
+      durationMinutes: v.durationMinutes,
+      gaps: v.gaps,
+      etaMinutes: v.etaMinutes,
+      tollsEstimate: v.tollsEstimate,
+      fuelEstimateCost: v.fuelEstimateCost,
+      chargingEstimate: v.chargingEstimate,
+      weatherTag: v.weatherTag,
+      trafficLevel: v.trafficLevel,
+    );
+
+class PlanResultView extends ConsumerWidget {
   final String from;
   final String to;
   final List<ChargingStation> stations;
@@ -16,6 +39,14 @@ class PlanResultView extends StatelessWidget {
   final int durationMinutes;
   final List<ChargingGap> gaps;
   final VoidCallback onBack;
+
+  // P1-018 / P1-019 — cost/time estimates
+  final int? etaMinutes;
+  final double? tollsEstimate;
+  final double? fuelEstimateCost;
+  final double? chargingEstimate;
+  final String? weatherTag;
+  final String? trafficLevel;
 
   const PlanResultView({
     super.key,
@@ -26,6 +57,12 @@ class PlanResultView extends StatelessWidget {
     this.durationMinutes = 0,
     this.gaps = const [],
     required this.onBack,
+    this.etaMinutes,
+    this.tollsEstimate,
+    this.fuelEstimateCost,
+    this.chargingEstimate,
+    this.weatherTag,
+    this.trafficLevel,
   });
 
   ChargingStation? get _nearestStation {
@@ -37,7 +74,7 @@ class PlanResultView extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final maxGap = gaps.isNotEmpty ? gaps.first.gapKm : 0.0;
     final nearest = _nearestStation;
 
@@ -58,6 +95,41 @@ class PlanResultView extends StatelessWidget {
                 stationCount: stations.length,
                 totalDistanceKm: totalDistanceKm,
                 durationMinutes: durationMinutes,
+              ),
+              const SizedBox(height: 16),
+
+              // P1-019 — Trip Dashboard stat-card row
+              _TripDashboardStatRow(
+                etaMinutes: etaMinutes,
+                tollsEstimate: tollsEstimate,
+                costEstimate: fuelEstimateCost ?? chargingEstimate,
+                isCharging: chargingEstimate != null,
+                trafficLevel: trafficLevel,
+              ),
+              const SizedBox(height: 16),
+
+              // P1-017 — "Start trip" action
+              _StartTripButton(
+                onStartTrip: () {
+                  final profile = ref.read(profileControllerProvider).data;
+                  final vehicle = profile.vehicle ??
+                      const Vehicle(type: VehicleType.petrol);
+                  ref
+                      .read(activeTripControllerProvider.notifier)
+                      .prepareTrip(plan: _toPlanResult(this), vehicle: vehicle);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: const Text(
+                        'Trip ready — go to the Trip tab to start!',
+                      ),
+                      behavior: SnackBarBehavior.floating,
+                      margin: const EdgeInsets.fromLTRB(20, 0, 20, 80),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  );
+                },
               ),
               const SizedBox(height: 16),
 
@@ -600,6 +672,136 @@ class _RouteRiskPanel extends StatelessWidget {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// P1-017 — Start trip button
+// ---------------------------------------------------------------------------
+
+class _StartTripButton extends StatelessWidget {
+  const _StartTripButton({required this.onStartTrip});
+  final VoidCallback onStartTrip;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: SizedBox(
+        width: double.infinity,
+        height: 52,
+        child: FilledButton.icon(
+          onPressed: onStartTrip,
+          style: FilledButton.styleFrom(
+            backgroundColor: AppColors.primary,
+          ),
+          icon: const Icon(Icons.luggage_outlined),
+          label: const Text('Start this trip'),
+        ),
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// P1-019 — Trip Dashboard stat-card row
+// ---------------------------------------------------------------------------
+
+/// Formats minutes as e.g. "2h 35m".
+String _fmtDuration(int minutes) {
+  final h = minutes ~/ 60;
+  final m = minutes % 60;
+  if (h == 0) return '${m}m';
+  return m == 0 ? '${h}h' : '${h}h ${m}m';
+}
+
+/// Formats a rupee amount as e.g. "₹1,240".
+String _fmtRupees(double amount) {
+  final rounded = amount.round();
+  if (rounded >= 1000) {
+    final formatted = (rounded / 1000).toStringAsFixed(1);
+    return '₹${formatted}k';
+  }
+  return '₹$rounded';
+}
+
+class _TripDashboardStatRow extends StatelessWidget {
+  final int? etaMinutes;
+  final double? tollsEstimate;
+  final double? costEstimate;
+  final bool isCharging;
+  final String? trafficLevel;
+
+  const _TripDashboardStatRow({
+    this.etaMinutes,
+    this.tollsEstimate,
+    this.costEstimate,
+    required this.isCharging,
+    this.trafficLevel,
+  });
+
+  Color _trafficColor(String? level) => switch (level) {
+        'High' => AppColors.error,
+        'Moderate' => AppColors.warning,
+        _ => AppColors.success,
+      };
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'TRIP OVERVIEW',
+            style: AppTextStyles.caption.copyWith(
+              color: AppColors.textTertiary,
+              letterSpacing: 1.5,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              if (etaMinutes != null)
+                StatCard(
+                  icon: Icons.schedule_outlined,
+                  iconColor: AppColors.primary,
+                  label: 'ETA',
+                  value: _fmtDuration(etaMinutes!),
+                ),
+              if (etaMinutes != null) const SizedBox(width: 10),
+              if (tollsEstimate != null)
+                StatCard(
+                  icon: Icons.toll_outlined,
+                  iconColor: AppColors.warning,
+                  label: 'Tolls',
+                  value: _fmtRupees(tollsEstimate!),
+                ),
+              if (tollsEstimate != null) const SizedBox(width: 10),
+              if (costEstimate != null)
+                StatCard(
+                  icon: isCharging
+                      ? Icons.electric_bolt_outlined
+                      : Icons.local_gas_station_outlined,
+                  iconColor: isCharging ? AppColors.success : AppColors.primary,
+                  label: isCharging ? 'Charging' : 'Fuel',
+                  value: _fmtRupees(costEstimate!),
+                ),
+              if (costEstimate != null) const SizedBox(width: 10),
+              if (trafficLevel != null)
+                StatCard(
+                  icon: Icons.traffic_outlined,
+                  iconColor: _trafficColor(trafficLevel),
+                  label: 'Traffic',
+                  value: trafficLevel!,
+                ),
+            ],
           ),
         ],
       ),

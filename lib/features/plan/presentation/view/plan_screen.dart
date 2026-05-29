@@ -53,7 +53,14 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
       );
       return;
     }
-    ref.read(planControllerProvider.notifier).analyzeRoute(from: from, to: to);
+    // Resolve the effective vehicle (per-trip override > saved profile)
+    final profile = ref.read(profileControllerProvider).data;
+    final vehicle = _tripVehicle ?? profile.vehicle;
+    ref.read(planControllerProvider.notifier).analyzeRoute(
+          from: from,
+          to: to,
+          vehicle: vehicle,
+        );
   }
 
   void _onReset() {
@@ -91,6 +98,12 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
             :final totalDistanceKm,
             :final durationMinutes,
             :final gaps,
+            :final etaMinutes,
+            :final tollsEstimate,
+            :final fuelEstimateCost,
+            :final chargingEstimate,
+            :final weatherTag,
+            :final trafficLevel,
           ) =>
             PlanResultView(
               from: from,
@@ -100,6 +113,12 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
               durationMinutes: durationMinutes,
               gaps: gaps,
               onBack: _onReset,
+              etaMinutes: etaMinutes,
+              tollsEstimate: tollsEstimate,
+              fuelEstimateCost: fuelEstimateCost,
+              chargingEstimate: chargingEstimate,
+              weatherTag: weatherTag,
+              trafficLevel: trafficLevel,
             ),
           PlanEmpty() => EmptyStateScreen(onSearchAgain: _onReset),
           PlanError(:final message) => _buildErrorView(message),

@@ -6,6 +6,69 @@
 
 ---
 
+## Session 7 — Trip Dashboard + Trip foundation
+
+- **Started:** 2026-05-30
+- **Finished:** 2026-05-30
+- **Tasks completed (5/5):** `P1-018`, `P1-019`, `P1-040`, `P1-041`, `P1-017`
+- **Theme:** the Trip control center is live. Users can now plan a route, see cost + time estimates in a stat-card row, convert it to a trip, and manage the full lifecycle (ready → active → paused → completed) from the Trip tab.
+
+### Per-task notes
+
+- `P1-018` — `PlanResult` extended:
+  - 6 new nullable fields on the `PlanResult` Freezed variant: `etaMinutes` (drive + stop time), `tollsEstimate` (₹1.5/km, nil for bikes), `fuelEstimateCost` (dist/efficiency × fuel price), `chargingEstimate` (₹250/stop), `weatherTag` (nil until weather API), `trafficLevel` ("Low"/"Moderate"/"High" from duration vs. 80 km/h theoretical).
+  - `PlanController.analyzeRoute` now accepts `Vehicle? vehicle`; all estimates computed inside the controller. `PlanScreen._onAnalyze()` resolves the effective vehicle (override → profile) and passes it through.
+
+- `P1-019` — `_TripDashboardStatRow`:
+  - Inserted between `_RouteSummaryCard` and nearest-station card in `PlanResultView`.
+  - Shows up to 4 `StatCard`s: ETA, Tolls, Fuel/Charging (icon switches by `isCharging`), Traffic (colour-coded red/amber/green).
+  - Helper formatters `_fmtDuration` and `_fmtRupees` added locally.
+  - `PlanResultView` promoted to `ConsumerWidget` to access `activeTripControllerProvider`.
+
+- `P1-040` — Trip feature slice:
+  - `lib/features/trip/domain/models/trip.dart` — 18-field Freezed+json_serializable. Derived helpers `isTracking` and `elapsed` (wall-clock minus paused time).
+  - `lib/features/trip/domain/models/trip_status.dart` — 4-value enum.
+  - `lib/features/trip/data/local_db/trip_box.dart` — static Hive wrapper; stores single JSON trip under key `current`.
+  - `lib/main.dart` — `TripBox.boxName` (`active_trip`) opened.
+  - `uuid: ^4.5.1` added to `pubspec.yaml`.
+
+- `P1-041` — `ActiveTripController`:
+  - `active_trip_state.dart` — sealed Freezed `ActiveTripState { idle | ready | running | paused | completed }` with `ActiveTripStateX.trip` extension.
+  - `active_trip_controller.dart` — `StateNotifier`. Restores from Hive on construction. `prepareTrip(plan, vehicle)` is the entry point. All 5 transitions Hive-persisted.
+  - `trip_providers.dart` — `activeTripControllerProvider` (NOT autoDispose; trip must outlive tab switches).
+
+- `P1-017` — `TripTabScreen`:
+  - Replaces `_TripTabPlaceholder` in `app_shell.dart`.
+  - 5-state switch on `activeTripControllerProvider`: idle, ready, running, paused, completed.
+  - Running/paused dashboard has 1-second `Timer.periodic` for live elapsed display.
+  - End-trip shows `AlertDialog` confirmation before calling `endTrip()`.
+  - `PlanResultView` gains `_StartTripButton` (calls `prepareTrip`, shows snackbar pointing to Trip tab).
+
+### Files changed (new)
+- `lib/features/trip/domain/models/trip.dart` (+ `.freezed.dart`, `.g.dart`)
+- `lib/features/trip/domain/models/trip_status.dart`
+- `lib/features/trip/data/local_db/trip_box.dart`
+- `lib/features/trip/presentation/controller/active_trip_state.dart` (+ `.freezed.dart`)
+- `lib/features/trip/presentation/controller/active_trip_controller.dart`
+- `lib/features/trip/presentation/controller/trip_providers.dart`
+- `lib/features/trip/presentation/view/trip_tab_screen.dart`
+
+### Files changed (modified)
+- `lib/features/plan/presentation/controller/plan_state.dart`
+- `lib/features/plan/presentation/controller/plan_controller.dart`
+- `lib/features/plan/presentation/view/plan_screen.dart`
+- `lib/features/plan/presentation/view/plan_result_view.dart`
+- `lib/features/shell/presentation/view/app_shell.dart`
+- `lib/main.dart`
+- `pubspec.yaml` (added `uuid: ^4.5.1`)
+
+### Notes / follow-ups
+- `weatherTag` is always null — wired once a weather API provider (Open-Meteo) lands in Session 8+.
+- Trip → foreground location tracking is `P1-042` (Session 8). The `Trip.isTracking` helper is ready for it.
+- The `_TripTabPlaceholder` is fully removed; `InsightsScreen` and `StationsScreen` remain unreachable orphan code.
+
+---
+
 ## Session 6 — POI community mount + AppShell tabs
 
 - **Started:** 2026-05-28

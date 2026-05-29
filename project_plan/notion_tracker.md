@@ -50,11 +50,11 @@
 
 ### 1.5 AppShell navigation
 - [x] `P1-016` Revise tabs: **Plan · Trip · Discover · Profile**
-- [ ] `P1-017` Trip tab — active dashboard or plan CTA
+- [x] `P1-017` Trip tab — active dashboard or plan CTA
 
 ### 1.6 Smart Route Dashboard
-- [ ] `P1-018` Extend `PlanResult` model (ETA, tolls, fuel, charging, weather/traffic placeholders)
-- [ ] `P1-019` Trip Dashboard stat-card row
+- [x] `P1-018` Extend `PlanResult` model (ETA, tolls, fuel, charging, weather/traffic placeholders)
+- [x] `P1-019` Trip Dashboard stat-card row
 - [ ] `P1-020` Smart Trip Timeline widget
 - [ ] `P1-021` Timeline editor (pin/unpin POIs)
 
@@ -69,8 +69,8 @@
 - [ ] `P1-034` Alert history screen per trip
 
 ### 1.8 Active Trip & offline corridor cache
-- [ ] `P1-040` `lib/features/trip/` + `Trip` model
-- [ ] `P1-041` `ActiveTripController` + Hive persist
+- [x] `P1-040` `lib/features/trip/` + `Trip` model
+- [x] `P1-041` `ActiveTripController` + Hive persist
 - [ ] `P1-042` Foreground location tracking (opt-in)
 - [ ] `P1-043` Offline corridor cache (polyline + first 50 POIs/category)
 - [ ] `P1-044` Offline detection + degraded mode banner
@@ -233,7 +233,7 @@
 
 | Phase | Total Tasks | Done | % |
 |---|---|---|---|
-| Phase 1 — MVP | 50 | 30 | 60% |
+| Phase 1 — MVP | 50 | 35 | 70% |
 | Phase 2 — Intelligence | 36 | 0 | 0% |
 | Phase 3 — AI Copilot | 30 | 0 | 0% |
 | Phase 4 — Scale | 18 | 0 | 0% |

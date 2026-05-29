@@ -15,9 +15,9 @@ P1-013,Wire grid items to PoiCategoryScreen route,Phase 1 - MVP,Intelligence Gri
 P1-014,Empty/loading/error states for PoiCategoryScreen,Phase 1 - MVP,Intelligence Grid,P0,Done,3h,P1-012,ui;errors,
 P1-015,Map view toggle on PoiCategoryScreen,Phase 1 - MVP,Intelligence Grid,P1,Done,4h,P1-012,ui;maps,
 P1-016,Update AppShell tabs: Plan / Trip / Discover / Profile,Phase 1 - MVP,Navigation,P0,Done,2h,P1-011;P1-033,shell;ui,
-P1-017,Trip tab - active trip dashboard or plan CTA,Phase 1 - MVP,Navigation,P0,Not started,4h,P1-040,shell;ui,
-P1-018,Extend PlanResult model with ETA / tolls / fuel / charging / weather placeholders,Phase 1 - MVP,Trip Dashboard,P0,Not started,3h,P1-003,plan;model,
-P1-019,Trip Dashboard widget in plan_result_view,Phase 1 - MVP,Trip Dashboard,P0,Not started,4h,P1-018,plan;ui,Stat cards row
+P1-017,Trip tab - active trip dashboard or plan CTA,Phase 1 - MVP,Navigation,P0,Done,4h,P1-040,shell;ui,
+P1-018,Extend PlanResult model with ETA / tolls / fuel / charging / weather placeholders,Phase 1 - MVP,Trip Dashboard,P0,Done,3h,P1-003,plan;model,
+P1-019,Trip Dashboard widget in plan_result_view,Phase 1 - MVP,Trip Dashboard,P0,Done,4h,P1-018,plan;ui,Stat cards row
 P1-020,Smart Trip Timeline widget,Phase 1 - MVP,Trip Dashboard,P0,Not started,1d,P1-008;P1-019,plan;ui,Vertical timeline of stops
 P1-021,Timeline editor - pin/unpin POI suggestions,Phase 1 - MVP,Trip Dashboard,P1,Not started,6h,P1-020,plan;ui,
 P1-022,Create lib/features/alerts/domain/alert.dart Alert entity + AlertType,Phase 1 - MVP,Alerts Engine,P0,Done,2h,,alerts;domain,
@@ -33,8 +33,8 @@ P1-031,UserPreferences model with all preference flags,Phase 1 - MVP,Vehicle Pro
 P1-032,Profile setup screen post-onboarding,Phase 1 - MVP,Vehicle Profile,P0,Done,4h,P1-031,profile;ui,
 P1-033,Profile edit screen in AppShell,Phase 1 - MVP,Vehicle Profile,P1,Done,3h,P1-032,profile;ui,
 P1-034,Alert history screen per trip,Phase 1 - MVP,Alerts Engine,P1,Not started,4h,P1-028,alerts;ui,
-P1-040,Create lib/features/trip with Trip model,Phase 1 - MVP,Active Trip,P0,Not started,3h,P1-018,trip;feature,
-P1-041,ActiveTripController - start/pause/end + Hive persist,Phase 1 - MVP,Active Trip,P0,Not started,6h,P1-040,trip;state,
+P1-040,Create lib/features/trip with Trip model,Phase 1 - MVP,Active Trip,P0,Done,3h,P1-018,trip;feature,
+P1-041,ActiveTripController - start/pause/end + Hive persist,Phase 1 - MVP,Active Trip,P0,Done,6h,P1-040,trip;state,
 P1-042,Foreground location tracking on active trip (opt-in),Phase 1 - MVP,Active Trip,P0,Not started,1d,P1-041,trip;location;android,
 P1-043,Offline corridor cache - polyline + first 50 POIs per category,Phase 1 - MVP,Active Trip,P0,Not started,6h,P1-040;P1-008,trip;offline;cache,
 P1-044,Offline detection + degraded mode banner,Phase 1 - MVP,Active Trip,P1,Not started,3h,P1-043,trip;offline;ui,

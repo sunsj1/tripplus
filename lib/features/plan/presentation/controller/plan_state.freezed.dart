@@ -28,6 +28,12 @@ mixin _$PlanState {
       double totalDistanceKm,
       int durationMinutes,
       List<ChargingGap> gaps,
+      int? etaMinutes,
+      double? tollsEstimate,
+      double? fuelEstimateCost,
+      double? chargingEstimate,
+      String? weatherTag,
+      String? trafficLevel,
     )
     result,
     required TResult Function(String from, String to) empty,
@@ -44,6 +50,12 @@ mixin _$PlanState {
       double totalDistanceKm,
       int durationMinutes,
       List<ChargingGap> gaps,
+      int? etaMinutes,
+      double? tollsEstimate,
+      double? fuelEstimateCost,
+      double? chargingEstimate,
+      String? weatherTag,
+      String? trafficLevel,
     )?
     result,
     TResult? Function(String from, String to)? empty,
@@ -60,6 +72,12 @@ mixin _$PlanState {
       double totalDistanceKm,
       int durationMinutes,
       List<ChargingGap> gaps,
+      int? etaMinutes,
+      double? tollsEstimate,
+      double? fuelEstimateCost,
+      double? chargingEstimate,
+      String? weatherTag,
+      String? trafficLevel,
     )?
     result,
     TResult Function(String from, String to)? empty,
@@ -165,6 +183,12 @@ class _$PlanIdleImpl implements PlanIdle {
       double totalDistanceKm,
       int durationMinutes,
       List<ChargingGap> gaps,
+      int? etaMinutes,
+      double? tollsEstimate,
+      double? fuelEstimateCost,
+      double? chargingEstimate,
+      String? weatherTag,
+      String? trafficLevel,
     )
     result,
     required TResult Function(String from, String to) empty,
@@ -185,6 +209,12 @@ class _$PlanIdleImpl implements PlanIdle {
       double totalDistanceKm,
       int durationMinutes,
       List<ChargingGap> gaps,
+      int? etaMinutes,
+      double? tollsEstimate,
+      double? fuelEstimateCost,
+      double? chargingEstimate,
+      String? weatherTag,
+      String? trafficLevel,
     )?
     result,
     TResult? Function(String from, String to)? empty,
@@ -205,6 +235,12 @@ class _$PlanIdleImpl implements PlanIdle {
       double totalDistanceKm,
       int durationMinutes,
       List<ChargingGap> gaps,
+      int? etaMinutes,
+      double? tollsEstimate,
+      double? fuelEstimateCost,
+      double? chargingEstimate,
+      String? weatherTag,
+      String? trafficLevel,
     )?
     result,
     TResult Function(String from, String to)? empty,
@@ -351,6 +387,12 @@ class _$PlanCalculatingImpl implements PlanCalculating {
       double totalDistanceKm,
       int durationMinutes,
       List<ChargingGap> gaps,
+      int? etaMinutes,
+      double? tollsEstimate,
+      double? fuelEstimateCost,
+      double? chargingEstimate,
+      String? weatherTag,
+      String? trafficLevel,
     )
     result,
     required TResult Function(String from, String to) empty,
@@ -371,6 +413,12 @@ class _$PlanCalculatingImpl implements PlanCalculating {
       double totalDistanceKm,
       int durationMinutes,
       List<ChargingGap> gaps,
+      int? etaMinutes,
+      double? tollsEstimate,
+      double? fuelEstimateCost,
+      double? chargingEstimate,
+      String? weatherTag,
+      String? trafficLevel,
     )?
     result,
     TResult? Function(String from, String to)? empty,
@@ -391,6 +439,12 @@ class _$PlanCalculatingImpl implements PlanCalculating {
       double totalDistanceKm,
       int durationMinutes,
       List<ChargingGap> gaps,
+      int? etaMinutes,
+      double? tollsEstimate,
+      double? fuelEstimateCost,
+      double? chargingEstimate,
+      String? weatherTag,
+      String? trafficLevel,
     )?
     result,
     TResult Function(String from, String to)? empty,
@@ -474,6 +528,12 @@ abstract class _$$PlanResultImplCopyWith<$Res> {
     double totalDistanceKm,
     int durationMinutes,
     List<ChargingGap> gaps,
+    int? etaMinutes,
+    double? tollsEstimate,
+    double? fuelEstimateCost,
+    double? chargingEstimate,
+    String? weatherTag,
+    String? trafficLevel,
   });
 }
 
@@ -497,6 +557,12 @@ class __$$PlanResultImplCopyWithImpl<$Res>
     Object? totalDistanceKm = null,
     Object? durationMinutes = null,
     Object? gaps = null,
+    Object? etaMinutes = freezed,
+    Object? tollsEstimate = freezed,
+    Object? fuelEstimateCost = freezed,
+    Object? chargingEstimate = freezed,
+    Object? weatherTag = freezed,
+    Object? trafficLevel = freezed,
   }) {
     return _then(
       _$PlanResultImpl(
@@ -524,6 +590,30 @@ class __$$PlanResultImplCopyWithImpl<$Res>
             ? _value._gaps
             : gaps // ignore: cast_nullable_to_non_nullable
                   as List<ChargingGap>,
+        etaMinutes: freezed == etaMinutes
+            ? _value.etaMinutes
+            : etaMinutes // ignore: cast_nullable_to_non_nullable
+                  as int?,
+        tollsEstimate: freezed == tollsEstimate
+            ? _value.tollsEstimate
+            : tollsEstimate // ignore: cast_nullable_to_non_nullable
+                  as double?,
+        fuelEstimateCost: freezed == fuelEstimateCost
+            ? _value.fuelEstimateCost
+            : fuelEstimateCost // ignore: cast_nullable_to_non_nullable
+                  as double?,
+        chargingEstimate: freezed == chargingEstimate
+            ? _value.chargingEstimate
+            : chargingEstimate // ignore: cast_nullable_to_non_nullable
+                  as double?,
+        weatherTag: freezed == weatherTag
+            ? _value.weatherTag
+            : weatherTag // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        trafficLevel: freezed == trafficLevel
+            ? _value.trafficLevel
+            : trafficLevel // ignore: cast_nullable_to_non_nullable
+                  as String?,
       ),
     );
   }
@@ -539,6 +629,12 @@ class _$PlanResultImpl implements PlanResult {
     required this.totalDistanceKm,
     required this.durationMinutes,
     final List<ChargingGap> gaps = const [],
+    this.etaMinutes,
+    this.tollsEstimate,
+    this.fuelEstimateCost,
+    this.chargingEstimate,
+    this.weatherTag,
+    this.trafficLevel,
   }) : _stations = stations,
        _gaps = gaps;
 
@@ -567,9 +663,34 @@ class _$PlanResultImpl implements PlanResult {
     return EqualUnmodifiableListView(_gaps);
   }
 
+  // P1-018: cost / time picture ------------------------------------------------
+  /// Total journey time including estimated charging/fuel stops (minutes).
+  @override
+  final int? etaMinutes;
+
+  /// Estimated toll cost for the route (₹). Null for bikes.
+  @override
+  final double? tollsEstimate;
+
+  /// Estimated fuel cost (₹) using vehicle.fuelEfficiencyKmpl. Null for EVs.
+  @override
+  final double? fuelEstimateCost;
+
+  /// Estimated charging cost (₹) based on station count. Null for ICE vehicles.
+  @override
+  final double? chargingEstimate;
+
+  /// Brief weather descriptor e.g. "Clear", "Rainy". Null until weather API wired.
+  @override
+  final String? weatherTag;
+
+  /// Traffic descriptor derived from route duration: "Low" | "Moderate" | "High".
+  @override
+  final String? trafficLevel;
+
   @override
   String toString() {
-    return 'PlanState.result(from: $from, to: $to, stations: $stations, totalDistanceKm: $totalDistanceKm, durationMinutes: $durationMinutes, gaps: $gaps)';
+    return 'PlanState.result(from: $from, to: $to, stations: $stations, totalDistanceKm: $totalDistanceKm, durationMinutes: $durationMinutes, gaps: $gaps, etaMinutes: $etaMinutes, tollsEstimate: $tollsEstimate, fuelEstimateCost: $fuelEstimateCost, chargingEstimate: $chargingEstimate, weatherTag: $weatherTag, trafficLevel: $trafficLevel)';
   }
 
   @override
@@ -584,7 +705,19 @@ class _$PlanResultImpl implements PlanResult {
                 other.totalDistanceKm == totalDistanceKm) &&
             (identical(other.durationMinutes, durationMinutes) ||
                 other.durationMinutes == durationMinutes) &&
-            const DeepCollectionEquality().equals(other._gaps, _gaps));
+            const DeepCollectionEquality().equals(other._gaps, _gaps) &&
+            (identical(other.etaMinutes, etaMinutes) ||
+                other.etaMinutes == etaMinutes) &&
+            (identical(other.tollsEstimate, tollsEstimate) ||
+                other.tollsEstimate == tollsEstimate) &&
+            (identical(other.fuelEstimateCost, fuelEstimateCost) ||
+                other.fuelEstimateCost == fuelEstimateCost) &&
+            (identical(other.chargingEstimate, chargingEstimate) ||
+                other.chargingEstimate == chargingEstimate) &&
+            (identical(other.weatherTag, weatherTag) ||
+                other.weatherTag == weatherTag) &&
+            (identical(other.trafficLevel, trafficLevel) ||
+                other.trafficLevel == trafficLevel));
   }
 
   @override
@@ -596,6 +729,12 @@ class _$PlanResultImpl implements PlanResult {
     totalDistanceKm,
     durationMinutes,
     const DeepCollectionEquality().hash(_gaps),
+    etaMinutes,
+    tollsEstimate,
+    fuelEstimateCost,
+    chargingEstimate,
+    weatherTag,
+    trafficLevel,
   );
 
   /// Create a copy of PlanState
@@ -618,12 +757,31 @@ class _$PlanResultImpl implements PlanResult {
       double totalDistanceKm,
       int durationMinutes,
       List<ChargingGap> gaps,
+      int? etaMinutes,
+      double? tollsEstimate,
+      double? fuelEstimateCost,
+      double? chargingEstimate,
+      String? weatherTag,
+      String? trafficLevel,
     )
     result,
     required TResult Function(String from, String to) empty,
     required TResult Function(String message) error,
   }) {
-    return result(from, to, stations, totalDistanceKm, durationMinutes, gaps);
+    return result(
+      from,
+      to,
+      stations,
+      totalDistanceKm,
+      durationMinutes,
+      gaps,
+      etaMinutes,
+      tollsEstimate,
+      fuelEstimateCost,
+      chargingEstimate,
+      weatherTag,
+      trafficLevel,
+    );
   }
 
   @override
@@ -638,6 +796,12 @@ class _$PlanResultImpl implements PlanResult {
       double totalDistanceKm,
       int durationMinutes,
       List<ChargingGap> gaps,
+      int? etaMinutes,
+      double? tollsEstimate,
+      double? fuelEstimateCost,
+      double? chargingEstimate,
+      String? weatherTag,
+      String? trafficLevel,
     )?
     result,
     TResult? Function(String from, String to)? empty,
@@ -650,6 +814,12 @@ class _$PlanResultImpl implements PlanResult {
       totalDistanceKm,
       durationMinutes,
       gaps,
+      etaMinutes,
+      tollsEstimate,
+      fuelEstimateCost,
+      chargingEstimate,
+      weatherTag,
+      trafficLevel,
     );
   }
 
@@ -665,6 +835,12 @@ class _$PlanResultImpl implements PlanResult {
       double totalDistanceKm,
       int durationMinutes,
       List<ChargingGap> gaps,
+      int? etaMinutes,
+      double? tollsEstimate,
+      double? fuelEstimateCost,
+      double? chargingEstimate,
+      String? weatherTag,
+      String? trafficLevel,
     )?
     result,
     TResult Function(String from, String to)? empty,
@@ -672,7 +848,20 @@ class _$PlanResultImpl implements PlanResult {
     required TResult orElse(),
   }) {
     if (result != null) {
-      return result(from, to, stations, totalDistanceKm, durationMinutes, gaps);
+      return result(
+        from,
+        to,
+        stations,
+        totalDistanceKm,
+        durationMinutes,
+        gaps,
+        etaMinutes,
+        tollsEstimate,
+        fuelEstimateCost,
+        chargingEstimate,
+        weatherTag,
+        trafficLevel,
+      );
     }
     return orElse();
   }
@@ -726,6 +915,12 @@ abstract class PlanResult implements PlanState {
     required final double totalDistanceKm,
     required final int durationMinutes,
     final List<ChargingGap> gaps,
+    final int? etaMinutes,
+    final double? tollsEstimate,
+    final double? fuelEstimateCost,
+    final double? chargingEstimate,
+    final String? weatherTag,
+    final String? trafficLevel,
   }) = _$PlanResultImpl;
 
   String get from;
@@ -733,7 +928,25 @@ abstract class PlanResult implements PlanState {
   List<ChargingStation> get stations;
   double get totalDistanceKm;
   int get durationMinutes;
-  List<ChargingGap> get gaps;
+  List<ChargingGap>
+  get gaps; // P1-018: cost / time picture ------------------------------------------------
+  /// Total journey time including estimated charging/fuel stops (minutes).
+  int? get etaMinutes;
+
+  /// Estimated toll cost for the route (₹). Null for bikes.
+  double? get tollsEstimate;
+
+  /// Estimated fuel cost (₹) using vehicle.fuelEfficiencyKmpl. Null for EVs.
+  double? get fuelEstimateCost;
+
+  /// Estimated charging cost (₹) based on station count. Null for ICE vehicles.
+  double? get chargingEstimate;
+
+  /// Brief weather descriptor e.g. "Clear", "Rainy". Null until weather API wired.
+  String? get weatherTag;
+
+  /// Traffic descriptor derived from route duration: "Low" | "Moderate" | "High".
+  String? get trafficLevel;
 
   /// Create a copy of PlanState
   /// with the given fields replaced by the non-null parameter values.
@@ -828,6 +1041,12 @@ class _$PlanEmptyImpl implements PlanEmpty {
       double totalDistanceKm,
       int durationMinutes,
       List<ChargingGap> gaps,
+      int? etaMinutes,
+      double? tollsEstimate,
+      double? fuelEstimateCost,
+      double? chargingEstimate,
+      String? weatherTag,
+      String? trafficLevel,
     )
     result,
     required TResult Function(String from, String to) empty,
@@ -848,6 +1067,12 @@ class _$PlanEmptyImpl implements PlanEmpty {
       double totalDistanceKm,
       int durationMinutes,
       List<ChargingGap> gaps,
+      int? etaMinutes,
+      double? tollsEstimate,
+      double? fuelEstimateCost,
+      double? chargingEstimate,
+      String? weatherTag,
+      String? trafficLevel,
     )?
     result,
     TResult? Function(String from, String to)? empty,
@@ -868,6 +1093,12 @@ class _$PlanEmptyImpl implements PlanEmpty {
       double totalDistanceKm,
       int durationMinutes,
       List<ChargingGap> gaps,
+      int? etaMinutes,
+      double? tollsEstimate,
+      double? fuelEstimateCost,
+      double? chargingEstimate,
+      String? weatherTag,
+      String? trafficLevel,
     )?
     result,
     TResult Function(String from, String to)? empty,
@@ -1016,6 +1247,12 @@ class _$PlanErrorImpl implements PlanError {
       double totalDistanceKm,
       int durationMinutes,
       List<ChargingGap> gaps,
+      int? etaMinutes,
+      double? tollsEstimate,
+      double? fuelEstimateCost,
+      double? chargingEstimate,
+      String? weatherTag,
+      String? trafficLevel,
     )
     result,
     required TResult Function(String from, String to) empty,
@@ -1036,6 +1273,12 @@ class _$PlanErrorImpl implements PlanError {
       double totalDistanceKm,
       int durationMinutes,
       List<ChargingGap> gaps,
+      int? etaMinutes,
+      double? tollsEstimate,
+      double? fuelEstimateCost,
+      double? chargingEstimate,
+      String? weatherTag,
+      String? trafficLevel,
     )?
     result,
     TResult? Function(String from, String to)? empty,
@@ -1056,6 +1299,12 @@ class _$PlanErrorImpl implements PlanError {
       double totalDistanceKm,
       int durationMinutes,
       List<ChargingGap> gaps,
+      int? etaMinutes,
+      double? tollsEstimate,
+      double? fuelEstimateCost,
+      double? chargingEstimate,
+      String? weatherTag,
+      String? trafficLevel,
     )?
     result,
     TResult Function(String from, String to)? empty,

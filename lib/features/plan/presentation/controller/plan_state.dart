@@ -18,6 +18,20 @@ sealed class PlanState with _$PlanState {
     required double totalDistanceKm,
     required int durationMinutes,
     @Default([]) List<ChargingGap> gaps,
+    // P1-018: cost / time picture ------------------------------------------------
+    /// Total journey time including estimated charging/fuel stops (minutes).
+    int? etaMinutes,
+    /// Estimated toll cost for the route (₹). Null for bikes.
+    double? tollsEstimate,
+    /// Estimated fuel cost (₹) using vehicle.fuelEfficiencyKmpl. Null for EVs.
+    double? fuelEstimateCost,
+    /// Estimated charging cost (₹) based on station count. Null for ICE vehicles.
+    double? chargingEstimate,
+    /// Brief weather descriptor e.g. "Clear", "Rainy". Null until weather API wired.
+    String? weatherTag,
+    /// Traffic descriptor derived from route duration: "Low" | "Moderate" | "High".
+    String? trafficLevel,
+    // ---------------------------------------------------------------------------
   }) = PlanResult;
   const factory PlanState.empty({
     required String from,

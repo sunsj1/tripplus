@@ -10,6 +10,7 @@ import 'package:tripplus/features/plan/presentation/controller/plan_state.dart';
 import 'package:tripplus/features/plan/presentation/view/calculating_screen.dart';
 import 'package:tripplus/features/plan/presentation/view/empty_state_screen.dart';
 import 'package:tripplus/features/plan/presentation/view/plan_result_view.dart';
+import 'package:tripplus/core/utils/trip_plan_copy.dart';
 import 'package:tripplus/features/plan/presentation/widget/route_input_card.dart';
 import 'package:tripplus/features/profile/presentation/controller/profile_providers.dart';
 
@@ -56,10 +57,12 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
     // Resolve the effective vehicle (per-trip override > saved profile)
     final profile = ref.read(profileControllerProvider).data;
     final vehicle = _tripVehicle ?? profile.vehicle;
+    final preferences = _tripPreferences ?? profile.preferences;
     ref.read(planControllerProvider.notifier).analyzeRoute(
           from: from,
           to: to,
           vehicle: vehicle,
+          tripPreferences: preferences,
         );
   }
 
@@ -87,14 +90,18 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
       body: SafeArea(
         child: switch (planState) {
           PlanIdle() => _buildIdleView(),
-          PlanCalculating(:final from, :final to) => CalculatingView(
+          PlanCalculating(:final from, :final to, :final vehicleType) =>
+            CalculatingView(
             from: from,
             to: to,
+            vehicleType: vehicleType,
           ),
           PlanResult(
             :final stations,
             :final from,
             :final to,
+            :final vehicleType,
+            :final tripPreferences,
             :final totalDistanceKm,
             :final durationMinutes,
             :final gaps,
@@ -109,6 +116,8 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
             PlanResultView(
               from: from,
               to: to,
+              vehicleType: vehicleType,
+              tripPreferences: tripPreferences,
               stations: stations,
               totalDistanceKm: totalDistanceKm,
               durationMinutes: durationMinutes,
@@ -130,6 +139,10 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
   }
 
   Widget _buildIdleView() {
+    final profile = ref.watch(profileControllerProvider).data;
+    final vehicleType = _tripVehicle?.type ?? profile.vehicle?.type;
+    final isEv = TripPlanCopy.isEv(vehicleType);
+
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
       child: Column(
@@ -151,7 +164,7 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Plan your EV journey and find charging\nstations along the route.',
+                  TripPlanCopy.planSubtitle(vehicleType),
                   style: AppTextStyles.bodyMedium,
                 ),
               ],
@@ -192,7 +205,7 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
             ),
           ),
           const SizedBox(height: 14),
-          const _HowItWorksRow(),
+          _HowItWorksRow(vehicleType: vehicleType),
           const SizedBox(height: 28),
 
           // Popular routes
@@ -210,9 +223,9 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
           _PopularRoutes(onTap: _quickRoute),
           const SizedBox(height: 28),
 
-          // EV tip
-          const _EvTipCard(),
-          const SizedBox(height: 24),
+          if (isEv) const _EvTipCard(),
+          if (isEv) const SizedBox(height: 24),
+          if (!isEv) const SizedBox(height: 24),
         ],
       ),
     );
@@ -258,30 +271,32 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
 // How it works - 3 steps
 // ---------------------------------------------------------------------------
 class _HowItWorksRow extends StatelessWidget {
-  const _HowItWorksRow();
+  const _HowItWorksRow({required this.vehicleType});
+
+  final VehicleType? vehicleType;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
-        children: const [
-          _StepCard(
+        children: [
+          const _StepCard(
             step: '1',
             icon: Icons.edit_location_alt_outlined,
             title: 'Enter\nRoute',
           ),
-          SizedBox(width: 10),
-          _StepCard(
+          const SizedBox(width: 10),
+          const _StepCard(
             step: '2',
             icon: Icons.route_outlined,
             title: 'Analyze\nPath',
           ),
-          SizedBox(width: 10),
+          const SizedBox(width: 10),
           _StepCard(
             step: '3',
-            icon: Icons.ev_station_outlined,
-            title: 'Find\nStations',
+            icon: TripPlanCopy.howItWorksStep3Icon(vehicleType),
+            title: TripPlanCopy.howItWorksStep3Title(vehicleType),
           ),
         ],
       ),

@@ -62,6 +62,7 @@ class RouteStationService {
   Future<Result<RouteAnalysis>> analyzeRoute({
     required String from,
     required String to,
+    bool includeEvStations = true,
   }) async {
     try {
       // 1. Geocode locations
@@ -72,6 +73,12 @@ class RouteStationService {
       // 2. Get driving route
       final route = await _directions.getRoute(origin, destination);
       _logger.i('Route distance: ${route.distanceKm.round()} km');
+
+      if (!includeEvStations) {
+        return Result.success(
+          RouteAnalysis(route: route, stations: const [], gaps: const []),
+        );
+      }
 
       // 3. Determine sample points along the route
       final sampleInterval = _sampleInterval(route.distanceKm);

@@ -11,6 +11,7 @@ class ProfileBox {
   static const String boxName = 'user_profile';
   static const String _vehicleKey = 'vehicle';
   static const String _preferencesKey = 'preferences';
+  static const String _setupCompleteKey = 'setup_complete';
 
   final Box<dynamic> _box;
 
@@ -28,12 +29,20 @@ class ProfileBox {
       prefs = UserPreferences.fromJson(Map<String, dynamic>.from(prefsJson));
     }
 
-    return ProfileData(vehicle: vehicle, preferences: prefs);
+    final setupComplete =
+        _box.get(_setupCompleteKey) == true || vehicle != null;
+
+    return ProfileData(
+      vehicle: vehicle,
+      preferences: prefs,
+      setupComplete: setupComplete,
+    );
   }
 
   Future<void> write(ProfileData data) async {
     await _box.put(_vehicleKey, data.vehicle?.toJson());
     await _box.put(_preferencesKey, data.preferences.toJson());
+    await _box.put(_setupCompleteKey, data.setupComplete);
   }
 
   Future<void> clear() => _box.clear();

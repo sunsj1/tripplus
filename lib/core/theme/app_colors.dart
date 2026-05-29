@@ -78,4 +78,24 @@ class AppColors {
     end: Alignment.bottomCenter,
     colors: [Color(0xFFE8F5E9), Color(0xFFF5F7F5)],
   );
+
+  // Route details — multi-accent palette (beyond primary green)
+  static const accentBlue = Color(0xFF1565C0);
+  static const accentIndigo = Color(0xFF283593);
+  static const accentAmber = Color(0xFFF57F17);
+  static const accentTeal = Color(0xFF00695C);
+  static const accentPurple = Color(0xFF6A1B9A);
+  static const accentBrown = Color(0xFF5D4037);
+
+  static const routeHeroGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF0D47A1), Color(0xFF1565C0)],
+  );
+
+  static const routeHeroGradientEv = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF1B5E20), Color(0xFF00897B)],
+  );
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tripplus/core/theme/app_colors.dart';
 import 'package:tripplus/features/profile/presentation/controller/profile_providers.dart';
 import 'package:tripplus/features/profile/presentation/view/profile_setup_screen.dart';
 import 'package:tripplus/features/shell/presentation/view/app_shell.dart';
@@ -12,6 +13,14 @@ class VehicleSetupGate extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final uid = ref.watch(profileSessionUidProvider);
+    if (uid == null) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(color: AppColors.primary),
+        ),
+      );
+    }
     final state = ref.watch(profileControllerProvider);
     if (state.data.isVehicleSetupComplete) {
       return const AppShell();

@@ -1,18 +1,22 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:tripplus/core/domain/vehicle.dart';
 import 'package:tripplus/core/theme/app_colors.dart';
 import 'package:tripplus/core/theme/app_text_styles.dart';
+import 'package:tripplus/core/utils/trip_plan_copy.dart';
 import 'package:tripplus/core/widgets/app_top_bar.dart';
 
 class CalculatingView extends StatefulWidget {
   final String from;
   final String to;
+  final VehicleType? vehicleType;
 
   const CalculatingView({
     super.key,
     required this.from,
     required this.to,
+    this.vehicleType,
   });
 
   @override
@@ -60,7 +64,7 @@ class _CalculatingViewState extends State<CalculatingView>
             const _AnimatedProgress(),
             const SizedBox(height: 40),
             Text(
-              'Analyzing route for\ncharging gaps...',
+              TripPlanCopy.calculatingTitle(widget.vehicleType),
               textAlign: TextAlign.center,
               style: AppTextStyles.h3.copyWith(height: 1.3),
             ),
@@ -68,7 +72,11 @@ class _CalculatingViewState extends State<CalculatingView>
             _RouteChip(from: widget.from, to: widget.to),
             const SizedBox(height: 14),
             Text(
-              'Finding stations between ${widget.from}\nand ${widget.to}',
+              TripPlanCopy.calculatingSubtitle(
+                widget.vehicleType,
+                widget.from,
+                widget.to,
+              ),
               textAlign: TextAlign.center,
               style: AppTextStyles.bodyMedium,
             ),

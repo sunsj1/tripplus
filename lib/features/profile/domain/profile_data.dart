@@ -18,12 +18,14 @@ abstract class ProfileData with _$ProfileData {
   const factory ProfileData({
     Vehicle? vehicle,
     @Default(UserPreferences()) UserPreferences preferences,
+    /// Set `true` only after the user taps save on setup (or legacy hydrate).
+    /// Draft vehicle selection alone must not skip [ProfileSetupScreen].
+    @Default(false) bool setupComplete,
   }) = _ProfileData;
 
   factory ProfileData.fromJson(Map<String, dynamic> json) =>
       _$ProfileDataFromJson(json);
 
-  /// True once the user has picked at least their vehicle. The setup gate
-  /// uses this to decide between [ProfileSetupScreen] and [AppShell].
-  bool get isVehicleSetupComplete => vehicle != null;
+  /// True once onboarding setup was saved. [VehicleSetupGate] uses this.
+  bool get isVehicleSetupComplete => setupComplete;
 }

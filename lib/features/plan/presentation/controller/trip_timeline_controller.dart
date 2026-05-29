@@ -1,56 +1,101 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tripplus/core/domain/user_preferences.dart';
+import 'package:tripplus/core/utils/trip_plan_copy.dart';
 import 'package:tripplus/features/charging/domain/models/charging_station.dart';
 import 'package:tripplus/features/plan/domain/timeline_stop.dart';
 import 'package:tripplus/features/plan/presentation/controller/plan_state.dart';
 
+/// Input for building the route timeline (plan + trip context).
+@immutable
+class TripTimelineKey {
+  const TripTimelineKey({
+    required this.plan,
+    required this.isEv,
+    this.preferences,
+  });
+
+  final PlanResult plan;
+  final bool isEv;
+  final UserPreferences? preferences;
+
+  @override
+  bool operator ==(Object other) =>
+      other is TripTimelineKey &&
+      other.plan == plan &&
+      other.isEv == isEv &&
+      other.preferences == preferences;
+
+  @override
+  int get hashCode => Object.hash(plan, isEv, preferences);
+}
+
 /// Manages the ordered list of [TimelineStop]s for the current [PlanResult].
-///
-/// Handles P1-020 (display) and P1-021 (pin/unpin editing). The state is
-/// rebuilt fresh whenever [PlanResult] changes and never persisted — it is
-/// purely UI session state.
 class TripTimelineController extends StateNotifier<List<TimelineStop>> {
-  TripTimelineController(PlanResult plan) : super(_buildStops(plan));
+  TripTimelineController(TripTimelineKey key) : super(_buildStops(key));
 
-  // ---------------------------------------------------------------------------
-  // P1-021 — Pin / unpin
-  // ---------------------------------------------------------------------------
-
-  /// Toggles the [pinned] flag for the stop at [index].
-  ///
-  /// Origin and destination nodes are always pinned; toggling them is a no-op.
   void togglePin(int index) {
     final stops = List<TimelineStop>.from(state);
     if (index < 0 || index >= stops.length) return;
-    if (stops[index].isEndpoint) return; // endpoints cannot be unpinned
+    if (stops[index].isEndpoint) return;
     stops[index] = stops[index].copyWith(pinned: !stops[index].pinned);
     state = stops;
   }
 
-  /// Returns only pinned stops (excluding origin and destination).
   List<TimelineStop> get pinnedStops =>
       state.where((s) => s.pinned && !s.isEndpoint).toList();
 
-  // ---------------------------------------------------------------------------
-  // Builder
-  // ---------------------------------------------------------------------------
+  static List<TimelineStop> _buildStops(TripTimelineKey key) {
+    final plan = key.plan;
+    final prefs = key.preferences ?? const UserPreferences();
+    final prefItems = prefs.timelineItems(forEv: key.isEv);
 
-  static List<TimelineStop> _buildStops(PlanResult plan) {
-    final stops = <TimelineStop>[];
+    final stops = <TimelineStop>[
+      TimelineStop(
+        type: TimelineStopType.origin,
+        label: plan.from.isEmpty ? 'Current location' : plan.from,
+        distanceFromStartKm: 0,
+      ),
+    ];
 
-    // Origin
-    stops.add(TimelineStop(
-      type: TimelineStopType.origin,
-      label: plan.from.isEmpty ? 'Current location' : plan.from,
-      distanceFromStartKm: 0,
-      distanceToNextKm: plan.stations.isEmpty ? plan.totalDistanceKm : null,
-    ));
+    // Preference milestones spaced along the corridor
+    for (var i = 0; i < prefItems.length; i++) {
+      final item = prefItems[i];
+      final frac = (i + 1) / (prefItems.length + 1);
+      stops.add(
+        TimelineStop(
+          type: TimelineStopType.preference,
+          label: item.label,
+          subtitle: item.hint,
+          distanceFromStartKm: plan.totalDistanceKm * frac,
+          pinned: true,
+          accentColor: item.accent,
+          iconOverride: item.icon,
+        ),
+      );
+    }
 
-    // Charging / fuel stations sorted by ascending distance from origin
+    if (key.isEv) {
+      stops.addAll(_chargingStops(plan));
+    }
+
+    stops.add(
+      TimelineStop(
+        type: TimelineStopType.destination,
+        label: plan.to,
+        distanceFromStartKm: plan.totalDistanceKm,
+      ),
+    );
+
+    return stops;
+  }
+
+  static List<TimelineStop> _chargingStops(PlanResult plan) {
     final sorted = List<ChargingStation>.from(plan.stations)
-      ..sort(
-          (a, b) => (a.distanceKm ?? 0).compareTo(b.distanceKm ?? 0));
+      ..sort((a, b) => (a.distanceKm ?? 0).compareTo(b.distanceKm ?? 0));
 
-    for (int i = 0; i < sorted.length; i++) {
+    final out = <TimelineStop>[];
+    for (var i = 0; i < sorted.length; i++) {
       final station = sorted[i];
       final dist = station.distanceKm ?? 0;
       final nextDist = i + 1 < sorted.length
@@ -64,33 +109,24 @@ class TripTimelineController extends StateNotifier<List<TimelineStop>> {
           ? 'Fast charge · $connCount connector${connCount != 1 ? 's' : ''}'
           : '$connCount connector${connCount != 1 ? 's' : ''}';
 
-      stops.add(TimelineStop(
-        type: TimelineStopType.chargingStation,
-        label: station.name,
-        distanceFromStartKm: dist,
-        distanceToNextKm: nextDist > 0 ? nextDist : null,
-        subtitle: subtitle,
-        connectorCount: connCount,
-        hasFastCharge: hasFast,
-      ));
-
+      out.add(
+        TimelineStop(
+          type: TimelineStopType.chargingStation,
+          label: station.name,
+          distanceFromStartKm: dist,
+          distanceToNextKm: nextDist > 0 ? nextDist : null,
+          subtitle: subtitle,
+          connectorCount: connCount,
+          hasFastCharge: hasFast,
+          pinned: false,
+        ),
+      );
     }
-
-    // Destination
-    stops.add(TimelineStop(
-      type: TimelineStopType.destination,
-      label: plan.to,
-      distanceFromStartKm: plan.totalDistanceKm,
-    ));
-
-    return stops;
+    return out;
   }
 }
 
-/// Auto-disposed per [PlanResult] instance.
-///
-/// Keyed by the [PlanResult] object so it rebuilds if the plan changes.
 final tripTimelineControllerProvider = StateNotifierProvider.autoDispose
-    .family<TripTimelineController, List<TimelineStop>, PlanResult>(
-  (ref, plan) => TripTimelineController(plan),
+    .family<TripTimelineController, List<TimelineStop>, TripTimelineKey>(
+  (ref, key) => TripTimelineController(key),
 );

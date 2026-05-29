@@ -34,17 +34,59 @@ AuthUiState _mapUserDoc(
   return AuthNeedsRegistration(user, p);
 }
 
-/// Merges [authStateChanges] with the signed-in user's Firestore profile doc.
+bool _isFirestorePermissionDenied(Object error) {
+  return error is FirebaseException &&
+      error.plugin == 'cloud_firestore' &&
+      error.code == 'permission-denied';
+}
+
+/// Waits until Firebase Auth has a non-empty ID token (avoids iOS cold-start races).
+Future<bool> _waitForAuthToken(User user, {bool forceRefresh = false}) async {
+  try {
+    final token = await user.getIdToken(forceRefresh);
+    return token != null && token.isNotEmpty;
+  } catch (_) {
+    return false;
+  }
+}
+
+/// Listens to `users/{uid}` after auth token is ready. Retries once on permission-denied.
+Stream<AuthUiState> _watchProfileForUser(User user) async* {
+  if (!await _waitForAuthToken(user)) {
+    yield AuthSignedOut();
+    return;
+  }
+
+  var retriedAfterDeny = false;
+  while (true) {
+    try {
+      await for (final snap in FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .snapshots()) {
+        yield _mapUserDoc(user, snap);
+      }
+      return;
+    } catch (e) {
+      if (!_isFirestorePermissionDenied(e) || retriedAfterDeny) {
+        rethrow;
+      }
+      retriedAfterDeny = true;
+      if (!await _waitForAuthToken(user, forceRefresh: true)) {
+        rethrow;
+      }
+    }
+  }
+}
+
+/// Merges auth + Firestore profile. Uses [idTokenChanges] so Firestore reads run only
+/// after the ID token is available (fixes iOS `permission-denied` on cold start).
 final authUiProvider = StreamProvider<AuthUiState>((ref) {
-  return FirebaseAuth.instance.authStateChanges().asyncExpand((user) {
+  return FirebaseAuth.instance.idTokenChanges().asyncExpand((user) {
     if (user == null) {
       return Stream.value(AuthSignedOut());
     }
-    return FirebaseFirestore.instance
-        .collection('users')
-        .doc(user.uid)
-        .snapshots()
-        .map((snap) => _mapUserDoc(user, snap));
+    return _watchProfileForUser(user);
   });
 });
 

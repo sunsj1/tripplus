@@ -16,10 +16,12 @@ _$ProfileDataImpl _$$ProfileDataImplFromJson(Map<String, dynamic> json) =>
           : UserPreferences.fromJson(
               json['preferences'] as Map<String, dynamic>,
             ),
+      setupComplete: json['setupComplete'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$$ProfileDataImplToJson(_$ProfileDataImpl instance) =>
     <String, dynamic>{
       'vehicle': instance.vehicle,
       'preferences': instance.preferences,
+      'setupComplete': instance.setupComplete,
     };

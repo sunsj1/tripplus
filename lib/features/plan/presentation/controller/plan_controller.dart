@@ -1,7 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
+import 'package:tripplus/core/domain/user_preferences.dart';
 import 'package:tripplus/core/domain/vehicle.dart';
 import 'package:tripplus/core/services/route_station_service.dart';
+import 'package:tripplus/core/utils/trip_plan_copy.dart';
 import 'package:tripplus/features/plan/presentation/controller/plan_state.dart';
 
 // Petrol/diesel price per litre (₹) — rough Indian highway average.
@@ -28,24 +30,31 @@ class PlanController extends StateNotifier<PlanState> {
     required String from,
     required String to,
     Vehicle? vehicle,
+    UserPreferences? tripPreferences,
   }) async {
-    state = PlanState.calculating(from: from, to: to);
+    final vehicleType = vehicle?.type;
+    final isEv = TripPlanCopy.isEv(vehicleType);
 
-    _logger.i('Analyzing route: "$from" → "$to" | vehicle: ${vehicle?.type}');
+    state = PlanState.calculating(from: from, to: to, vehicleType: vehicleType);
 
-    final result = await _routeService.analyzeRoute(from: from, to: to);
+    _logger.i('Analyzing route: "$from" → "$to" | vehicle: $vehicleType');
+
+    final result = await _routeService.analyzeRoute(
+      from: from,
+      to: to,
+      includeEvStations: isEv,
+    );
 
     result.when(
       success: (analysis) {
-        if (analysis.stations.isEmpty) {
-          state = PlanState.empty(from: from, to: to);
+        if (isEv && analysis.stations.isEmpty) {
+          state = PlanState.empty(from: from, to: to, vehicleType: vehicleType);
         } else {
           final distKm = analysis.route.distanceKm;
           final driveMins = analysis.route.durationMinutes;
           final stationCount = analysis.stations.length;
 
           // --- P1-018: compute estimates -----------------------------------------
-          final isEv = vehicle?.isElectric ?? false;
           final isBike = vehicle?.type == VehicleType.bike;
 
           // ETA: driving time + stop time
@@ -84,10 +93,12 @@ class PlanController extends StateNotifier<PlanState> {
           state = PlanState.result(
             from: from,
             to: to,
-            stations: analysis.stations,
+            stations: isEv ? analysis.stations : const [],
+            vehicleType: vehicleType,
+            tripPreferences: tripPreferences,
             totalDistanceKm: distKm,
             durationMinutes: driveMins,
-            gaps: analysis.gaps,
+            gaps: isEv ? analysis.gaps : const [],
             etaMinutes: etaMins,
             tollsEstimate: tollsEst,
             fuelEstimateCost: fuelEst,

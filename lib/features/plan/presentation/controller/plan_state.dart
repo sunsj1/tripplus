@@ -1,4 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:tripplus/core/domain/user_preferences.dart';
+import 'package:tripplus/core/domain/vehicle.dart';
 import 'package:tripplus/core/services/route_station_service.dart';
 import 'package:tripplus/features/charging/domain/models/charging_station.dart';
 
@@ -10,11 +12,14 @@ sealed class PlanState with _$PlanState {
   const factory PlanState.calculating({
     required String from,
     required String to,
+    VehicleType? vehicleType,
   }) = PlanCalculating;
   const factory PlanState.result({
     required String from,
     required String to,
     required List<ChargingStation> stations,
+    VehicleType? vehicleType,
+    UserPreferences? tripPreferences,
     required double totalDistanceKm,
     required int durationMinutes,
     @Default([]) List<ChargingGap> gaps,
@@ -38,6 +43,7 @@ sealed class PlanState with _$PlanState {
   const factory PlanState.empty({
     required String from,
     required String to,
+    VehicleType? vehicleType,
   }) = PlanEmpty;
   const factory PlanState.error(String message) = PlanError;
 }

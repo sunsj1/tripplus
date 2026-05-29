@@ -20,11 +20,14 @@ mixin _$PlanState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() idle,
-    required TResult Function(String from, String to) calculating,
+    required TResult Function(String from, String to, VehicleType? vehicleType)
+    calculating,
     required TResult Function(
       String from,
       String to,
       List<ChargingStation> stations,
+      VehicleType? vehicleType,
+      UserPreferences? tripPreferences,
       double totalDistanceKm,
       int durationMinutes,
       List<ChargingGap> gaps,
@@ -37,17 +40,21 @@ mixin _$PlanState {
       String? encodedRoutePolyline,
     )
     result,
-    required TResult Function(String from, String to) empty,
+    required TResult Function(String from, String to, VehicleType? vehicleType)
+    empty,
     required TResult Function(String message) error,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? idle,
-    TResult? Function(String from, String to)? calculating,
+    TResult? Function(String from, String to, VehicleType? vehicleType)?
+    calculating,
     TResult? Function(
       String from,
       String to,
       List<ChargingStation> stations,
+      VehicleType? vehicleType,
+      UserPreferences? tripPreferences,
       double totalDistanceKm,
       int durationMinutes,
       List<ChargingGap> gaps,
@@ -60,17 +67,20 @@ mixin _$PlanState {
       String? encodedRoutePolyline,
     )?
     result,
-    TResult? Function(String from, String to)? empty,
+    TResult? Function(String from, String to, VehicleType? vehicleType)? empty,
     TResult? Function(String message)? error,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? idle,
-    TResult Function(String from, String to)? calculating,
+    TResult Function(String from, String to, VehicleType? vehicleType)?
+    calculating,
     TResult Function(
       String from,
       String to,
       List<ChargingStation> stations,
+      VehicleType? vehicleType,
+      UserPreferences? tripPreferences,
       double totalDistanceKm,
       int durationMinutes,
       List<ChargingGap> gaps,
@@ -83,7 +93,7 @@ mixin _$PlanState {
       String? encodedRoutePolyline,
     )?
     result,
-    TResult Function(String from, String to)? empty,
+    TResult Function(String from, String to, VehicleType? vehicleType)? empty,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
@@ -178,11 +188,14 @@ class _$PlanIdleImpl implements PlanIdle {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() idle,
-    required TResult Function(String from, String to) calculating,
+    required TResult Function(String from, String to, VehicleType? vehicleType)
+    calculating,
     required TResult Function(
       String from,
       String to,
       List<ChargingStation> stations,
+      VehicleType? vehicleType,
+      UserPreferences? tripPreferences,
       double totalDistanceKm,
       int durationMinutes,
       List<ChargingGap> gaps,
@@ -195,7 +208,8 @@ class _$PlanIdleImpl implements PlanIdle {
       String? encodedRoutePolyline,
     )
     result,
-    required TResult Function(String from, String to) empty,
+    required TResult Function(String from, String to, VehicleType? vehicleType)
+    empty,
     required TResult Function(String message) error,
   }) {
     return idle();
@@ -205,11 +219,14 @@ class _$PlanIdleImpl implements PlanIdle {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? idle,
-    TResult? Function(String from, String to)? calculating,
+    TResult? Function(String from, String to, VehicleType? vehicleType)?
+    calculating,
     TResult? Function(
       String from,
       String to,
       List<ChargingStation> stations,
+      VehicleType? vehicleType,
+      UserPreferences? tripPreferences,
       double totalDistanceKm,
       int durationMinutes,
       List<ChargingGap> gaps,
@@ -222,7 +239,7 @@ class _$PlanIdleImpl implements PlanIdle {
       String? encodedRoutePolyline,
     )?
     result,
-    TResult? Function(String from, String to)? empty,
+    TResult? Function(String from, String to, VehicleType? vehicleType)? empty,
     TResult? Function(String message)? error,
   }) {
     return idle?.call();
@@ -232,11 +249,14 @@ class _$PlanIdleImpl implements PlanIdle {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? idle,
-    TResult Function(String from, String to)? calculating,
+    TResult Function(String from, String to, VehicleType? vehicleType)?
+    calculating,
     TResult Function(
       String from,
       String to,
       List<ChargingStation> stations,
+      VehicleType? vehicleType,
+      UserPreferences? tripPreferences,
       double totalDistanceKm,
       int durationMinutes,
       List<ChargingGap> gaps,
@@ -249,7 +269,7 @@ class _$PlanIdleImpl implements PlanIdle {
       String? encodedRoutePolyline,
     )?
     result,
-    TResult Function(String from, String to)? empty,
+    TResult Function(String from, String to, VehicleType? vehicleType)? empty,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
@@ -311,7 +331,7 @@ abstract class _$$PlanCalculatingImplCopyWith<$Res> {
     $Res Function(_$PlanCalculatingImpl) then,
   ) = __$$PlanCalculatingImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({String from, String to});
+  $Res call({String from, String to, VehicleType? vehicleType});
 }
 
 /// @nodoc
@@ -327,7 +347,11 @@ class __$$PlanCalculatingImplCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? from = null, Object? to = null}) {
+  $Res call({
+    Object? from = null,
+    Object? to = null,
+    Object? vehicleType = freezed,
+  }) {
     return _then(
       _$PlanCalculatingImpl(
         from: null == from
@@ -338,6 +362,10 @@ class __$$PlanCalculatingImplCopyWithImpl<$Res>
             ? _value.to
             : to // ignore: cast_nullable_to_non_nullable
                   as String,
+        vehicleType: freezed == vehicleType
+            ? _value.vehicleType
+            : vehicleType // ignore: cast_nullable_to_non_nullable
+                  as VehicleType?,
       ),
     );
   }
@@ -346,16 +374,22 @@ class __$$PlanCalculatingImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$PlanCalculatingImpl implements PlanCalculating {
-  const _$PlanCalculatingImpl({required this.from, required this.to});
+  const _$PlanCalculatingImpl({
+    required this.from,
+    required this.to,
+    this.vehicleType,
+  });
 
   @override
   final String from;
   @override
   final String to;
+  @override
+  final VehicleType? vehicleType;
 
   @override
   String toString() {
-    return 'PlanState.calculating(from: $from, to: $to)';
+    return 'PlanState.calculating(from: $from, to: $to, vehicleType: $vehicleType)';
   }
 
   @override
@@ -364,11 +398,13 @@ class _$PlanCalculatingImpl implements PlanCalculating {
         (other.runtimeType == runtimeType &&
             other is _$PlanCalculatingImpl &&
             (identical(other.from, from) || other.from == from) &&
-            (identical(other.to, to) || other.to == to));
+            (identical(other.to, to) || other.to == to) &&
+            (identical(other.vehicleType, vehicleType) ||
+                other.vehicleType == vehicleType));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, from, to);
+  int get hashCode => Object.hash(runtimeType, from, to, vehicleType);
 
   /// Create a copy of PlanState
   /// with the given fields replaced by the non-null parameter values.
@@ -385,11 +421,14 @@ class _$PlanCalculatingImpl implements PlanCalculating {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() idle,
-    required TResult Function(String from, String to) calculating,
+    required TResult Function(String from, String to, VehicleType? vehicleType)
+    calculating,
     required TResult Function(
       String from,
       String to,
       List<ChargingStation> stations,
+      VehicleType? vehicleType,
+      UserPreferences? tripPreferences,
       double totalDistanceKm,
       int durationMinutes,
       List<ChargingGap> gaps,
@@ -402,21 +441,25 @@ class _$PlanCalculatingImpl implements PlanCalculating {
       String? encodedRoutePolyline,
     )
     result,
-    required TResult Function(String from, String to) empty,
+    required TResult Function(String from, String to, VehicleType? vehicleType)
+    empty,
     required TResult Function(String message) error,
   }) {
-    return calculating(from, to);
+    return calculating(from, to, vehicleType);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? idle,
-    TResult? Function(String from, String to)? calculating,
+    TResult? Function(String from, String to, VehicleType? vehicleType)?
+    calculating,
     TResult? Function(
       String from,
       String to,
       List<ChargingStation> stations,
+      VehicleType? vehicleType,
+      UserPreferences? tripPreferences,
       double totalDistanceKm,
       int durationMinutes,
       List<ChargingGap> gaps,
@@ -429,21 +472,24 @@ class _$PlanCalculatingImpl implements PlanCalculating {
       String? encodedRoutePolyline,
     )?
     result,
-    TResult? Function(String from, String to)? empty,
+    TResult? Function(String from, String to, VehicleType? vehicleType)? empty,
     TResult? Function(String message)? error,
   }) {
-    return calculating?.call(from, to);
+    return calculating?.call(from, to, vehicleType);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? idle,
-    TResult Function(String from, String to)? calculating,
+    TResult Function(String from, String to, VehicleType? vehicleType)?
+    calculating,
     TResult Function(
       String from,
       String to,
       List<ChargingStation> stations,
+      VehicleType? vehicleType,
+      UserPreferences? tripPreferences,
       double totalDistanceKm,
       int durationMinutes,
       List<ChargingGap> gaps,
@@ -456,12 +502,12 @@ class _$PlanCalculatingImpl implements PlanCalculating {
       String? encodedRoutePolyline,
     )?
     result,
-    TResult Function(String from, String to)? empty,
+    TResult Function(String from, String to, VehicleType? vehicleType)? empty,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
     if (calculating != null) {
-      return calculating(from, to);
+      return calculating(from, to, vehicleType);
     }
     return orElse();
   }
@@ -511,10 +557,12 @@ abstract class PlanCalculating implements PlanState {
   const factory PlanCalculating({
     required final String from,
     required final String to,
+    final VehicleType? vehicleType,
   }) = _$PlanCalculatingImpl;
 
   String get from;
   String get to;
+  VehicleType? get vehicleType;
 
   /// Create a copy of PlanState
   /// with the given fields replaced by the non-null parameter values.
@@ -534,6 +582,8 @@ abstract class _$$PlanResultImplCopyWith<$Res> {
     String from,
     String to,
     List<ChargingStation> stations,
+    VehicleType? vehicleType,
+    UserPreferences? tripPreferences,
     double totalDistanceKm,
     int durationMinutes,
     List<ChargingGap> gaps,
@@ -545,6 +595,8 @@ abstract class _$$PlanResultImplCopyWith<$Res> {
     String? trafficLevel,
     String? encodedRoutePolyline,
   });
+
+  $UserPreferencesCopyWith<$Res>? get tripPreferences;
 }
 
 /// @nodoc
@@ -564,6 +616,8 @@ class __$$PlanResultImplCopyWithImpl<$Res>
     Object? from = null,
     Object? to = null,
     Object? stations = null,
+    Object? vehicleType = freezed,
+    Object? tripPreferences = freezed,
     Object? totalDistanceKm = null,
     Object? durationMinutes = null,
     Object? gaps = null,
@@ -589,6 +643,14 @@ class __$$PlanResultImplCopyWithImpl<$Res>
             ? _value._stations
             : stations // ignore: cast_nullable_to_non_nullable
                   as List<ChargingStation>,
+        vehicleType: freezed == vehicleType
+            ? _value.vehicleType
+            : vehicleType // ignore: cast_nullable_to_non_nullable
+                  as VehicleType?,
+        tripPreferences: freezed == tripPreferences
+            ? _value.tripPreferences
+            : tripPreferences // ignore: cast_nullable_to_non_nullable
+                  as UserPreferences?,
         totalDistanceKm: null == totalDistanceKm
             ? _value.totalDistanceKm
             : totalDistanceKm // ignore: cast_nullable_to_non_nullable
@@ -632,6 +694,20 @@ class __$$PlanResultImplCopyWithImpl<$Res>
       ),
     );
   }
+
+  /// Create a copy of PlanState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $UserPreferencesCopyWith<$Res>? get tripPreferences {
+    if (_value.tripPreferences == null) {
+      return null;
+    }
+
+    return $UserPreferencesCopyWith<$Res>(_value.tripPreferences!, (value) {
+      return _then(_value.copyWith(tripPreferences: value));
+    });
+  }
 }
 
 /// @nodoc
@@ -641,6 +717,8 @@ class _$PlanResultImpl implements PlanResult {
     required this.from,
     required this.to,
     required final List<ChargingStation> stations,
+    this.vehicleType,
+    this.tripPreferences,
     required this.totalDistanceKm,
     required this.durationMinutes,
     final List<ChargingGap> gaps = const [],
@@ -666,6 +744,10 @@ class _$PlanResultImpl implements PlanResult {
     return EqualUnmodifiableListView(_stations);
   }
 
+  @override
+  final VehicleType? vehicleType;
+  @override
+  final UserPreferences? tripPreferences;
   @override
   final double totalDistanceKm;
   @override
@@ -710,7 +792,7 @@ class _$PlanResultImpl implements PlanResult {
 
   @override
   String toString() {
-    return 'PlanState.result(from: $from, to: $to, stations: $stations, totalDistanceKm: $totalDistanceKm, durationMinutes: $durationMinutes, gaps: $gaps, etaMinutes: $etaMinutes, tollsEstimate: $tollsEstimate, fuelEstimateCost: $fuelEstimateCost, chargingEstimate: $chargingEstimate, weatherTag: $weatherTag, trafficLevel: $trafficLevel, encodedRoutePolyline: $encodedRoutePolyline)';
+    return 'PlanState.result(from: $from, to: $to, stations: $stations, vehicleType: $vehicleType, tripPreferences: $tripPreferences, totalDistanceKm: $totalDistanceKm, durationMinutes: $durationMinutes, gaps: $gaps, etaMinutes: $etaMinutes, tollsEstimate: $tollsEstimate, fuelEstimateCost: $fuelEstimateCost, chargingEstimate: $chargingEstimate, weatherTag: $weatherTag, trafficLevel: $trafficLevel, encodedRoutePolyline: $encodedRoutePolyline)';
   }
 
   @override
@@ -721,6 +803,10 @@ class _$PlanResultImpl implements PlanResult {
             (identical(other.from, from) || other.from == from) &&
             (identical(other.to, to) || other.to == to) &&
             const DeepCollectionEquality().equals(other._stations, _stations) &&
+            (identical(other.vehicleType, vehicleType) ||
+                other.vehicleType == vehicleType) &&
+            (identical(other.tripPreferences, tripPreferences) ||
+                other.tripPreferences == tripPreferences) &&
             (identical(other.totalDistanceKm, totalDistanceKm) ||
                 other.totalDistanceKm == totalDistanceKm) &&
             (identical(other.durationMinutes, durationMinutes) ||
@@ -748,6 +834,8 @@ class _$PlanResultImpl implements PlanResult {
     from,
     to,
     const DeepCollectionEquality().hash(_stations),
+    vehicleType,
+    tripPreferences,
     totalDistanceKm,
     durationMinutes,
     const DeepCollectionEquality().hash(_gaps),
@@ -772,11 +860,14 @@ class _$PlanResultImpl implements PlanResult {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() idle,
-    required TResult Function(String from, String to) calculating,
+    required TResult Function(String from, String to, VehicleType? vehicleType)
+    calculating,
     required TResult Function(
       String from,
       String to,
       List<ChargingStation> stations,
+      VehicleType? vehicleType,
+      UserPreferences? tripPreferences,
       double totalDistanceKm,
       int durationMinutes,
       List<ChargingGap> gaps,
@@ -789,13 +880,16 @@ class _$PlanResultImpl implements PlanResult {
       String? encodedRoutePolyline,
     )
     result,
-    required TResult Function(String from, String to) empty,
+    required TResult Function(String from, String to, VehicleType? vehicleType)
+    empty,
     required TResult Function(String message) error,
   }) {
     return result(
       from,
       to,
       stations,
+      vehicleType,
+      tripPreferences,
       totalDistanceKm,
       durationMinutes,
       gaps,
@@ -813,11 +907,14 @@ class _$PlanResultImpl implements PlanResult {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? idle,
-    TResult? Function(String from, String to)? calculating,
+    TResult? Function(String from, String to, VehicleType? vehicleType)?
+    calculating,
     TResult? Function(
       String from,
       String to,
       List<ChargingStation> stations,
+      VehicleType? vehicleType,
+      UserPreferences? tripPreferences,
       double totalDistanceKm,
       int durationMinutes,
       List<ChargingGap> gaps,
@@ -830,13 +927,15 @@ class _$PlanResultImpl implements PlanResult {
       String? encodedRoutePolyline,
     )?
     result,
-    TResult? Function(String from, String to)? empty,
+    TResult? Function(String from, String to, VehicleType? vehicleType)? empty,
     TResult? Function(String message)? error,
   }) {
     return result?.call(
       from,
       to,
       stations,
+      vehicleType,
+      tripPreferences,
       totalDistanceKm,
       durationMinutes,
       gaps,
@@ -854,11 +953,14 @@ class _$PlanResultImpl implements PlanResult {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? idle,
-    TResult Function(String from, String to)? calculating,
+    TResult Function(String from, String to, VehicleType? vehicleType)?
+    calculating,
     TResult Function(
       String from,
       String to,
       List<ChargingStation> stations,
+      VehicleType? vehicleType,
+      UserPreferences? tripPreferences,
       double totalDistanceKm,
       int durationMinutes,
       List<ChargingGap> gaps,
@@ -871,7 +973,7 @@ class _$PlanResultImpl implements PlanResult {
       String? encodedRoutePolyline,
     )?
     result,
-    TResult Function(String from, String to)? empty,
+    TResult Function(String from, String to, VehicleType? vehicleType)? empty,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
@@ -880,6 +982,8 @@ class _$PlanResultImpl implements PlanResult {
         from,
         to,
         stations,
+        vehicleType,
+        tripPreferences,
         totalDistanceKm,
         durationMinutes,
         gaps,
@@ -941,6 +1045,8 @@ abstract class PlanResult implements PlanState {
     required final String from,
     required final String to,
     required final List<ChargingStation> stations,
+    final VehicleType? vehicleType,
+    final UserPreferences? tripPreferences,
     required final double totalDistanceKm,
     required final int durationMinutes,
     final List<ChargingGap> gaps,
@@ -956,6 +1062,8 @@ abstract class PlanResult implements PlanState {
   String get from;
   String get to;
   List<ChargingStation> get stations;
+  VehicleType? get vehicleType;
+  UserPreferences? get tripPreferences;
   double get totalDistanceKm;
   int get durationMinutes;
   List<ChargingGap>
@@ -995,7 +1103,7 @@ abstract class _$$PlanEmptyImplCopyWith<$Res> {
     $Res Function(_$PlanEmptyImpl) then,
   ) = __$$PlanEmptyImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({String from, String to});
+  $Res call({String from, String to, VehicleType? vehicleType});
 }
 
 /// @nodoc
@@ -1011,7 +1119,11 @@ class __$$PlanEmptyImplCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? from = null, Object? to = null}) {
+  $Res call({
+    Object? from = null,
+    Object? to = null,
+    Object? vehicleType = freezed,
+  }) {
     return _then(
       _$PlanEmptyImpl(
         from: null == from
@@ -1022,6 +1134,10 @@ class __$$PlanEmptyImplCopyWithImpl<$Res>
             ? _value.to
             : to // ignore: cast_nullable_to_non_nullable
                   as String,
+        vehicleType: freezed == vehicleType
+            ? _value.vehicleType
+            : vehicleType // ignore: cast_nullable_to_non_nullable
+                  as VehicleType?,
       ),
     );
   }
@@ -1030,16 +1146,22 @@ class __$$PlanEmptyImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$PlanEmptyImpl implements PlanEmpty {
-  const _$PlanEmptyImpl({required this.from, required this.to});
+  const _$PlanEmptyImpl({
+    required this.from,
+    required this.to,
+    this.vehicleType,
+  });
 
   @override
   final String from;
   @override
   final String to;
+  @override
+  final VehicleType? vehicleType;
 
   @override
   String toString() {
-    return 'PlanState.empty(from: $from, to: $to)';
+    return 'PlanState.empty(from: $from, to: $to, vehicleType: $vehicleType)';
   }
 
   @override
@@ -1048,11 +1170,13 @@ class _$PlanEmptyImpl implements PlanEmpty {
         (other.runtimeType == runtimeType &&
             other is _$PlanEmptyImpl &&
             (identical(other.from, from) || other.from == from) &&
-            (identical(other.to, to) || other.to == to));
+            (identical(other.to, to) || other.to == to) &&
+            (identical(other.vehicleType, vehicleType) ||
+                other.vehicleType == vehicleType));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, from, to);
+  int get hashCode => Object.hash(runtimeType, from, to, vehicleType);
 
   /// Create a copy of PlanState
   /// with the given fields replaced by the non-null parameter values.
@@ -1066,11 +1190,14 @@ class _$PlanEmptyImpl implements PlanEmpty {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() idle,
-    required TResult Function(String from, String to) calculating,
+    required TResult Function(String from, String to, VehicleType? vehicleType)
+    calculating,
     required TResult Function(
       String from,
       String to,
       List<ChargingStation> stations,
+      VehicleType? vehicleType,
+      UserPreferences? tripPreferences,
       double totalDistanceKm,
       int durationMinutes,
       List<ChargingGap> gaps,
@@ -1083,21 +1210,25 @@ class _$PlanEmptyImpl implements PlanEmpty {
       String? encodedRoutePolyline,
     )
     result,
-    required TResult Function(String from, String to) empty,
+    required TResult Function(String from, String to, VehicleType? vehicleType)
+    empty,
     required TResult Function(String message) error,
   }) {
-    return empty(from, to);
+    return empty(from, to, vehicleType);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? idle,
-    TResult? Function(String from, String to)? calculating,
+    TResult? Function(String from, String to, VehicleType? vehicleType)?
+    calculating,
     TResult? Function(
       String from,
       String to,
       List<ChargingStation> stations,
+      VehicleType? vehicleType,
+      UserPreferences? tripPreferences,
       double totalDistanceKm,
       int durationMinutes,
       List<ChargingGap> gaps,
@@ -1110,21 +1241,24 @@ class _$PlanEmptyImpl implements PlanEmpty {
       String? encodedRoutePolyline,
     )?
     result,
-    TResult? Function(String from, String to)? empty,
+    TResult? Function(String from, String to, VehicleType? vehicleType)? empty,
     TResult? Function(String message)? error,
   }) {
-    return empty?.call(from, to);
+    return empty?.call(from, to, vehicleType);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? idle,
-    TResult Function(String from, String to)? calculating,
+    TResult Function(String from, String to, VehicleType? vehicleType)?
+    calculating,
     TResult Function(
       String from,
       String to,
       List<ChargingStation> stations,
+      VehicleType? vehicleType,
+      UserPreferences? tripPreferences,
       double totalDistanceKm,
       int durationMinutes,
       List<ChargingGap> gaps,
@@ -1137,12 +1271,12 @@ class _$PlanEmptyImpl implements PlanEmpty {
       String? encodedRoutePolyline,
     )?
     result,
-    TResult Function(String from, String to)? empty,
+    TResult Function(String from, String to, VehicleType? vehicleType)? empty,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
     if (empty != null) {
-      return empty(from, to);
+      return empty(from, to, vehicleType);
     }
     return orElse();
   }
@@ -1192,10 +1326,12 @@ abstract class PlanEmpty implements PlanState {
   const factory PlanEmpty({
     required final String from,
     required final String to,
+    final VehicleType? vehicleType,
   }) = _$PlanEmptyImpl;
 
   String get from;
   String get to;
+  VehicleType? get vehicleType;
 
   /// Create a copy of PlanState
   /// with the given fields replaced by the non-null parameter values.
@@ -1275,11 +1411,14 @@ class _$PlanErrorImpl implements PlanError {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() idle,
-    required TResult Function(String from, String to) calculating,
+    required TResult Function(String from, String to, VehicleType? vehicleType)
+    calculating,
     required TResult Function(
       String from,
       String to,
       List<ChargingStation> stations,
+      VehicleType? vehicleType,
+      UserPreferences? tripPreferences,
       double totalDistanceKm,
       int durationMinutes,
       List<ChargingGap> gaps,
@@ -1292,7 +1431,8 @@ class _$PlanErrorImpl implements PlanError {
       String? encodedRoutePolyline,
     )
     result,
-    required TResult Function(String from, String to) empty,
+    required TResult Function(String from, String to, VehicleType? vehicleType)
+    empty,
     required TResult Function(String message) error,
   }) {
     return error(message);
@@ -1302,11 +1442,14 @@ class _$PlanErrorImpl implements PlanError {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? idle,
-    TResult? Function(String from, String to)? calculating,
+    TResult? Function(String from, String to, VehicleType? vehicleType)?
+    calculating,
     TResult? Function(
       String from,
       String to,
       List<ChargingStation> stations,
+      VehicleType? vehicleType,
+      UserPreferences? tripPreferences,
       double totalDistanceKm,
       int durationMinutes,
       List<ChargingGap> gaps,
@@ -1319,7 +1462,7 @@ class _$PlanErrorImpl implements PlanError {
       String? encodedRoutePolyline,
     )?
     result,
-    TResult? Function(String from, String to)? empty,
+    TResult? Function(String from, String to, VehicleType? vehicleType)? empty,
     TResult? Function(String message)? error,
   }) {
     return error?.call(message);
@@ -1329,11 +1472,14 @@ class _$PlanErrorImpl implements PlanError {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? idle,
-    TResult Function(String from, String to)? calculating,
+    TResult Function(String from, String to, VehicleType? vehicleType)?
+    calculating,
     TResult Function(
       String from,
       String to,
       List<ChargingStation> stations,
+      VehicleType? vehicleType,
+      UserPreferences? tripPreferences,
       double totalDistanceKm,
       int durationMinutes,
       List<ChargingGap> gaps,
@@ -1346,7 +1492,7 @@ class _$PlanErrorImpl implements PlanError {
       String? encodedRoutePolyline,
     )?
     result,
-    TResult Function(String from, String to)? empty,
+    TResult Function(String from, String to, VehicleType? vehicleType)? empty,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {

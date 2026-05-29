@@ -52,6 +52,7 @@ class ProfileSetupScreen extends ConsumerWidget {
               const SizedBox(height: 32),
               PreferencesChips(
                 value: data.preferences,
+                vehicleType: data.vehicle?.type,
                 onChanged: controller.updateDraftPreferences,
               ),
               const SizedBox(height: 36),

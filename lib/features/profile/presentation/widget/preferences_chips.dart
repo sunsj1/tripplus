@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:tripplus/core/domain/user_preferences.dart';
+import 'package:tripplus/core/domain/vehicle.dart';
 import 'package:tripplus/core/theme/app_colors.dart';
 import 'package:tripplus/core/theme/app_text_styles.dart';
+import 'package:tripplus/core/utils/trip_plan_copy.dart';
 
 /// Wrap of toggleable filter chips covering every boolean field on
 /// [UserPreferences]. `BudgetTier` is rendered as a separate segmented row
@@ -11,10 +13,14 @@ class PreferencesChips extends StatelessWidget {
     super.key,
     required this.value,
     required this.onChanged,
+    this.vehicleType,
   });
 
   final UserPreferences value;
   final ValueChanged<UserPreferences> onChanged;
+  final VehicleType? vehicleType;
+
+  bool get _showEvPrefs => TripPlanCopy.isEv(vehicleType);
 
   @override
   Widget build(BuildContext context) {
@@ -31,10 +37,11 @@ class PreferencesChips extends StatelessWidget {
         const _FlagDef('Women safe', Icons.shield_outlined),
         value.womenSafe,
       ),
-      (
-        const _FlagDef('Fast chargers only', Icons.bolt),
-        value.fastChargersOnly,
-      ),
+      if (_showEvPrefs)
+        (
+          const _FlagDef('Fast chargers only', Icons.bolt),
+          value.fastChargersOnly,
+        ),
       (
         const _FlagDef('Pet friendly', Icons.pets),
         value.petFriendly,
@@ -78,11 +85,18 @@ class PreferencesChips extends StatelessWidget {
         Text('Budget', style: AppTextStyles.titleSmall),
         const SizedBox(height: 8),
         SegmentedButton<BudgetTier>(
+          style: const ButtonStyle(
+            visualDensity: VisualDensity.compact,
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
           segments: BudgetTier.values
               .map(
                 (t) => ButtonSegment<BudgetTier>(
                   value: t,
-                  label: Text(t.label),
+                  label: Text(
+                    t.label,
+                    style: const TextStyle(fontSize: 12),
+                  ),
                 ),
               )
               .toList(),

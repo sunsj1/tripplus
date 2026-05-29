@@ -37,10 +37,14 @@ class ProfileRepository {
         return right(local);
       }
 
+      final remoteVehicle = _readVehicle(data[_vehicleField]);
       final merged = ProfileData(
-        vehicle: _readVehicle(data[_vehicleField]) ?? local.vehicle,
+        vehicle: remoteVehicle ?? local.vehicle,
         preferences:
             _readPreferences(data[_preferencesField]) ?? local.preferences,
+        setupComplete: data['setupComplete'] == true ||
+            remoteVehicle != null ||
+            local.setupComplete,
       );
 
       await _box.write(merged);
@@ -58,17 +62,21 @@ class ProfileRepository {
     required String uid,
     required ProfileData data,
   }) async {
+    final toSave = data.vehicle != null
+        ? data.copyWith(setupComplete: true)
+        : data;
     try {
-      await _box.write(data);
+      await _box.write(toSave);
       await _db.collection('users').doc(uid).set(
         {
-          _vehicleField: data.vehicle?.toJson(),
-          _preferencesField: data.preferences.toJson(),
+          _vehicleField: toSave.vehicle?.toJson(),
+          _preferencesField: toSave.preferences.toJson(),
+          'setupComplete': toSave.setupComplete,
           'updatedAt': FieldValue.serverTimestamp(),
         },
         SetOptions(merge: true),
       );
-      return right(data);
+      return right(toSave);
     } on FirebaseException catch (e) {
       return left(_mapFirebase(e));
     } on PlatformException catch (e) {

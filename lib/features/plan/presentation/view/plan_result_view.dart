@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tripplus/core/domain/user_preferences.dart';
 import 'package:tripplus/core/domain/vehicle.dart';
 import 'package:tripplus/core/services/route_station_service.dart';
+import 'package:tripplus/core/utils/trip_plan_copy.dart';
 import 'package:tripplus/core/theme/app_colors.dart';
 import 'package:tripplus/core/theme/app_text_styles.dart';
 import 'package:tripplus/core/widgets/animated_list_item.dart';
@@ -36,6 +38,8 @@ PlanResult _toPlanResult(PlanResultView v) => PlanResult(
 class PlanResultView extends ConsumerWidget {
   final String from;
   final String to;
+  final VehicleType? vehicleType;
+  final UserPreferences? tripPreferences;
   final List<ChargingStation> stations;
   final double totalDistanceKm;
   final int durationMinutes;
@@ -51,10 +55,14 @@ class PlanResultView extends ConsumerWidget {
   final String? trafficLevel;
   final String? encodedRoutePolyline;
 
+  bool get _isEv => TripPlanCopy.isEv(vehicleType);
+
   const PlanResultView({
     super.key,
     required this.from,
     required this.to,
+    this.vehicleType,
+    this.tripPreferences,
     required this.stations,
     required this.totalDistanceKm,
     this.durationMinutes = 0,
@@ -79,8 +87,9 @@ class PlanResultView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final maxGap = gaps.isNotEmpty ? gaps.first.gapKm : 0.0;
-    final nearest = _nearestStation;
+    final maxGap = _isEv && gaps.isNotEmpty ? gaps.first.gapKm : 0.0;
+    final nearest = _isEv ? _nearestStation : null;
+    final plan = _toPlanResult(this);
 
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
@@ -96,6 +105,7 @@ class PlanResultView extends ConsumerWidget {
               _RouteSummaryCard(
                 from: from,
                 to: to,
+                vehicleType: vehicleType,
                 stationCount: stations.length,
                 totalDistanceKm: totalDistanceKm,
                 durationMinutes: durationMinutes,
@@ -137,61 +147,69 @@ class PlanResultView extends ConsumerWidget {
               ),
               const SizedBox(height: 24),
 
-              // P1-020 / P1-021 — Smart Trip Timeline
-              SmartTripTimeline(plan: _toPlanResult(this)),
-              const SizedBox(height: 24),
+              SmartTripTimeline(
+                plan: plan,
+                isEv: _isEv,
+                preferences: tripPreferences,
+              ),
+              const SizedBox(height: 20),
 
-              if (nearest != null) _NearestStationCard(station: nearest),
-              if (nearest != null) const SizedBox(height: 16),
+              if (_isEv && nearest != null) ...[
+                _NearestStationCard(station: nearest),
+                const SizedBox(height: 16),
+              ],
 
-              if (gaps.isNotEmpty)
+              if (_isEv && gaps.isNotEmpty) ...[
                 _GapWarningBanner(
                   gapKm: gaps.first.gapKm,
                   afterStation: gaps.first.afterStation,
                 ),
-              if (gaps.isNotEmpty) const SizedBox(height: 16),
+                const SizedBox(height: 16),
+              ],
 
-              _RouteStatsRow(
-                stationCount: stations.length,
-                maxGapKm: maxGap,
-                coveragePercent: _coveragePercent(),
-              ),
-              const SizedBox(height: 12),
-              _RouteRiskPanel(
-                maxGapKm: maxGap,
-                stationCount: stations.length,
-                totalDistanceKm: totalDistanceKm,
-              ),
-              const SizedBox(height: 20),
-
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Text(
-                  'Stations on Route (${stations.length})',
-                  style: AppTextStyles.titleMedium,
+              if (_isEv) ...[
+                _RouteStatsRow(
+                  stationCount: stations.length,
+                  maxGapKm: maxGap,
+                  coveragePercent: _coveragePercent(),
                 ),
-              ),
-              const SizedBox(height: 8),
+                const SizedBox(height: 12),
+                _RouteRiskPanel(
+                  maxGapKm: maxGap,
+                  stationCount: stations.length,
+                  totalDistanceKm: totalDistanceKm,
+                ),
+                const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Text(
+                    'Chargers on route (${stations.length})',
+                    style: AppTextStyles.titleMedium,
+                  ),
+                ),
+                const SizedBox(height: 8),
+              ],
             ],
           ),
         ),
-        SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (context, index) => AnimatedListItem(
-              index: index,
-              child: StationListTile(
-                station: stations[index],
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) =>
-                        StationDetailScreen(station: stations[index]),
+        if (_isEv)
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) => AnimatedListItem(
+                index: index,
+                child: StationListTile(
+                  station: stations[index],
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          StationDetailScreen(station: stations[index]),
+                    ),
                   ),
                 ),
               ),
+              childCount: stations.length,
             ),
-            childCount: stations.length,
           ),
-        ),
         const SliverToBoxAdapter(child: SizedBox(height: 24)),
       ],
     );
@@ -328,6 +346,7 @@ class _NearestStationCard extends StatelessWidget {
 class _RouteSummaryCard extends StatelessWidget {
   final String from;
   final String to;
+  final VehicleType? vehicleType;
   final int stationCount;
   final double totalDistanceKm;
   final int durationMinutes;
@@ -335,6 +354,7 @@ class _RouteSummaryCard extends StatelessWidget {
   const _RouteSummaryCard({
     required this.from,
     required this.to,
+    required this.vehicleType,
     required this.stationCount,
     required this.totalDistanceKm,
     this.durationMinutes = 0,
@@ -346,11 +366,16 @@ class _RouteSummaryCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 20),
       padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
-        gradient: AppColors.greenGradient,
+        gradient: TripPlanCopy.isEv(vehicleType)
+            ? AppColors.routeHeroGradientEv
+            : AppColors.routeHeroGradient,
         borderRadius: BorderRadius.circular(22),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.2),
+            color: (TripPlanCopy.isEv(vehicleType)
+                    ? AppColors.primary
+                    : AppColors.accentBlue)
+                .withValues(alpha: 0.22),
             blurRadius: 16,
             offset: const Offset(0, 6),
           ),
@@ -400,10 +425,6 @@ class _RouteSummaryCard extends StatelessWidget {
             runSpacing: 8,
             children: [
               _SummaryChip(
-                icon: Icons.ev_station,
-                text: '$stationCount stations',
-              ),
-              _SummaryChip(
                 icon: Icons.straighten,
                 text: '~${totalDistanceKm.round()} km',
               ),
@@ -411,6 +432,11 @@ class _RouteSummaryCard extends StatelessWidget {
                 _SummaryChip(
                   icon: Icons.access_time,
                   text: '~${(durationMinutes / 60).toStringAsFixed(1)} hrs',
+                ),
+              if (TripPlanCopy.isEv(vehicleType) && stationCount > 0)
+                _SummaryChip(
+                  icon: TripPlanCopy.summaryStopsIcon(vehicleType),
+                  text: TripPlanCopy.summaryStopsLabel(vehicleType, stationCount),
                 ),
             ],
           ),
@@ -774,46 +800,78 @@ class _TripDashboardStatRow extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          Row(
-            children: [
-              if (etaMinutes != null)
-                StatCard(
-                  icon: Icons.schedule_outlined,
-                  iconColor: AppColors.primary,
-                  label: 'ETA',
-                  value: _fmtDuration(etaMinutes!),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                  child: Row(
+                    children: _statChildren(),
+                  ),
                 ),
-              if (etaMinutes != null) const SizedBox(width: 10),
-              if (tollsEstimate != null)
-                StatCard(
-                  icon: Icons.toll_outlined,
-                  iconColor: AppColors.warning,
-                  label: 'Tolls',
-                  value: _fmtRupees(tollsEstimate!),
-                ),
-              if (tollsEstimate != null) const SizedBox(width: 10),
-              if (costEstimate != null)
-                StatCard(
-                  icon: isCharging
-                      ? Icons.electric_bolt_outlined
-                      : Icons.local_gas_station_outlined,
-                  iconColor: isCharging ? AppColors.success : AppColors.primary,
-                  label: isCharging ? 'Charging' : 'Fuel',
-                  value: _fmtRupees(costEstimate!),
-                ),
-              if (costEstimate != null) const SizedBox(width: 10),
-              if (trafficLevel != null)
-                StatCard(
-                  icon: Icons.traffic_outlined,
-                  iconColor: _trafficColor(trafficLevel),
-                  label: 'Traffic',
-                  value: trafficLevel!,
-                ),
-            ],
+              );
+            },
           ),
         ],
       ),
     );
+  }
+
+  List<Widget> _statChildren() {
+    final children = <Widget>[];
+    void add(Widget w) {
+      if (children.isNotEmpty) children.add(const SizedBox(width: 10));
+      children.add(w);
+    }
+
+    if (etaMinutes != null) {
+      add(
+        StatCard(
+          compact: true,
+          icon: Icons.schedule_outlined,
+          iconColor: AppColors.accentBlue,
+          label: 'ETA',
+          value: _fmtDuration(etaMinutes!),
+        ),
+      );
+    }
+    if (tollsEstimate != null) {
+      add(
+        StatCard(
+          compact: true,
+          icon: Icons.toll_outlined,
+          iconColor: AppColors.accentAmber,
+          label: 'Tolls',
+          value: _fmtRupees(tollsEstimate!),
+        ),
+      );
+    }
+    if (costEstimate != null) {
+      add(
+        StatCard(
+          compact: true,
+          icon: isCharging
+              ? Icons.electric_bolt_outlined
+              : Icons.local_gas_station_outlined,
+          iconColor: isCharging ? AppColors.accentTeal : AppColors.primary,
+          label: isCharging ? 'Charging' : 'Fuel',
+          value: _fmtRupees(costEstimate!),
+        ),
+      );
+    }
+    if (trafficLevel != null) {
+      add(
+        StatCard(
+          compact: true,
+          icon: Icons.traffic_outlined,
+          iconColor: _trafficColor(trafficLevel),
+          label: 'Traffic',
+          value: trafficLevel!,
+        ),
+      );
+    }
+    return children;
   }
 }
 

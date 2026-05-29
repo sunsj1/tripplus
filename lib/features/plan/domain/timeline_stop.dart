@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:tripplus/core/theme/app_colors.dart';
 
 /// The type of a single stop on the Smart Trip Timeline.
 enum TimelineStopType {
   origin,
+  preference,
   chargingStation,
   fuelStation,
   destination,
@@ -22,6 +24,8 @@ class TimelineStop {
     this.pinned = true,
     this.connectorCount,
     this.hasFastCharge,
+    this.accentColor,
+    this.iconOverride,
   });
 
   final TimelineStopType type;
@@ -49,24 +53,32 @@ class TimelineStop {
   /// Fast-charge capable (EV stations only).
   final bool? hasFastCharge;
 
+  /// Optional per-stop accent (preferences use distinct colors).
+  final Color? accentColor;
+  final IconData? iconOverride;
+
   // ---------------------------------------------------------------------------
   // Presentation helpers
   // ---------------------------------------------------------------------------
 
-  IconData get icon => switch (type) {
+  IconData get icon => iconOverride ?? switch (type) {
         TimelineStopType.origin => Icons.trip_origin,
+        TimelineStopType.preference => Icons.bookmark_outline,
         TimelineStopType.chargingStation => Icons.ev_station,
         TimelineStopType.fuelStation => Icons.local_gas_station,
         TimelineStopType.destination => Icons.flag_rounded,
       };
 
-  Color iconColor(Color primary, Color success, Color warning) =>
-      switch (type) {
-        TimelineStopType.origin => primary,
-        TimelineStopType.chargingStation => success,
-        TimelineStopType.fuelStation => primary,
-        TimelineStopType.destination => warning,
-      };
+  Color iconColor(Color primary, Color success, Color warning) {
+    if (accentColor != null) return accentColor!;
+    return switch (type) {
+      TimelineStopType.origin => primary,
+      TimelineStopType.preference => AppColors.accentBlue,
+      TimelineStopType.chargingStation => success,
+      TimelineStopType.fuelStation => AppColors.accentAmber,
+      TimelineStopType.destination => warning,
+    };
+  }
 
   bool get isEndpoint =>
       type == TimelineStopType.origin ||
@@ -81,5 +93,7 @@ class TimelineStop {
         pinned: pinned ?? this.pinned,
         connectorCount: connectorCount,
         hasFastCharge: hasFastCharge,
+        accentColor: accentColor,
+        iconOverride: iconOverride,
       );
 }

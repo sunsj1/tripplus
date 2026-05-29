@@ -3,6 +3,7 @@ import 'package:tripplus/core/domain/user_preferences.dart';
 import 'package:tripplus/core/domain/vehicle.dart';
 import 'package:tripplus/core/theme/app_colors.dart';
 import 'package:tripplus/core/theme/app_text_styles.dart';
+import 'package:tripplus/core/utils/trip_plan_copy.dart';
 
 /// Compact "for this trip" controls shown above the from/to fields:
 /// a single-select vehicle row + a wrap of toggleable preference chips.
@@ -21,6 +22,8 @@ class TripContextRow extends StatelessWidget {
   final UserPreferences preferences;
   final ValueChanged<Vehicle> onVehicleChanged;
   final ValueChanged<UserPreferences> onPreferencesChanged;
+
+  bool get _isEv => TripPlanCopy.isEv(vehicle?.type);
 
   @override
   Widget build(BuildContext context) {
@@ -66,16 +69,17 @@ class TripContextRow extends StatelessWidget {
                 preferences.copyWith(womenSafe: !preferences.womenSafe),
               ),
             ),
-            _PrefChip(
-              icon: Icons.bolt,
-              label: 'Fast chargers',
-              selected: preferences.fastChargersOnly,
-              onTap: () => onPreferencesChanged(
-                preferences.copyWith(
-                  fastChargersOnly: !preferences.fastChargersOnly,
+            if (_isEv)
+              _PrefChip(
+                icon: Icons.bolt,
+                label: 'Fast chargers',
+                selected: preferences.fastChargersOnly,
+                onTap: () => onPreferencesChanged(
+                  preferences.copyWith(
+                    fastChargersOnly: !preferences.fastChargersOnly,
+                  ),
                 ),
               ),
-            ),
             _PrefChip(
               icon: Icons.nightlight_round,
               label: 'Night safe',

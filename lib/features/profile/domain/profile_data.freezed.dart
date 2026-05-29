@@ -24,6 +24,10 @@ mixin _$ProfileData {
   Vehicle? get vehicle => throw _privateConstructorUsedError;
   UserPreferences get preferences => throw _privateConstructorUsedError;
 
+  /// Set `true` only after the user taps save on setup (or legacy hydrate).
+  /// Draft vehicle selection alone must not skip [ProfileSetupScreen].
+  bool get setupComplete => throw _privateConstructorUsedError;
+
   /// Serializes this ProfileData to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
@@ -41,7 +45,11 @@ abstract class $ProfileDataCopyWith<$Res> {
     $Res Function(ProfileData) then,
   ) = _$ProfileDataCopyWithImpl<$Res, ProfileData>;
   @useResult
-  $Res call({Vehicle? vehicle, UserPreferences preferences});
+  $Res call({
+    Vehicle? vehicle,
+    UserPreferences preferences,
+    bool setupComplete,
+  });
 
   $VehicleCopyWith<$Res>? get vehicle;
   $UserPreferencesCopyWith<$Res> get preferences;
@@ -61,7 +69,11 @@ class _$ProfileDataCopyWithImpl<$Res, $Val extends ProfileData>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? vehicle = freezed, Object? preferences = null}) {
+  $Res call({
+    Object? vehicle = freezed,
+    Object? preferences = null,
+    Object? setupComplete = null,
+  }) {
     return _then(
       _value.copyWith(
             vehicle: freezed == vehicle
@@ -72,6 +84,10 @@ class _$ProfileDataCopyWithImpl<$Res, $Val extends ProfileData>
                 ? _value.preferences
                 : preferences // ignore: cast_nullable_to_non_nullable
                       as UserPreferences,
+            setupComplete: null == setupComplete
+                ? _value.setupComplete
+                : setupComplete // ignore: cast_nullable_to_non_nullable
+                      as bool,
           )
           as $Val,
     );
@@ -111,7 +127,11 @@ abstract class _$$ProfileDataImplCopyWith<$Res>
   ) = __$$ProfileDataImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({Vehicle? vehicle, UserPreferences preferences});
+  $Res call({
+    Vehicle? vehicle,
+    UserPreferences preferences,
+    bool setupComplete,
+  });
 
   @override
   $VehicleCopyWith<$Res>? get vehicle;
@@ -132,7 +152,11 @@ class __$$ProfileDataImplCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? vehicle = freezed, Object? preferences = null}) {
+  $Res call({
+    Object? vehicle = freezed,
+    Object? preferences = null,
+    Object? setupComplete = null,
+  }) {
     return _then(
       _$ProfileDataImpl(
         vehicle: freezed == vehicle
@@ -143,6 +167,10 @@ class __$$ProfileDataImplCopyWithImpl<$Res>
             ? _value.preferences
             : preferences // ignore: cast_nullable_to_non_nullable
                   as UserPreferences,
+        setupComplete: null == setupComplete
+            ? _value.setupComplete
+            : setupComplete // ignore: cast_nullable_to_non_nullable
+                  as bool,
       ),
     );
   }
@@ -154,6 +182,7 @@ class _$ProfileDataImpl extends _ProfileData {
   const _$ProfileDataImpl({
     this.vehicle,
     this.preferences = const UserPreferences(),
+    this.setupComplete = false,
   }) : super._();
 
   factory _$ProfileDataImpl.fromJson(Map<String, dynamic> json) =>
@@ -165,9 +194,15 @@ class _$ProfileDataImpl extends _ProfileData {
   @JsonKey()
   final UserPreferences preferences;
 
+  /// Set `true` only after the user taps save on setup (or legacy hydrate).
+  /// Draft vehicle selection alone must not skip [ProfileSetupScreen].
+  @override
+  @JsonKey()
+  final bool setupComplete;
+
   @override
   String toString() {
-    return 'ProfileData(vehicle: $vehicle, preferences: $preferences)';
+    return 'ProfileData(vehicle: $vehicle, preferences: $preferences, setupComplete: $setupComplete)';
   }
 
   @override
@@ -177,12 +212,15 @@ class _$ProfileDataImpl extends _ProfileData {
             other is _$ProfileDataImpl &&
             (identical(other.vehicle, vehicle) || other.vehicle == vehicle) &&
             (identical(other.preferences, preferences) ||
-                other.preferences == preferences));
+                other.preferences == preferences) &&
+            (identical(other.setupComplete, setupComplete) ||
+                other.setupComplete == setupComplete));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, vehicle, preferences);
+  int get hashCode =>
+      Object.hash(runtimeType, vehicle, preferences, setupComplete);
 
   /// Create a copy of ProfileData
   /// with the given fields replaced by the non-null parameter values.
@@ -202,6 +240,7 @@ abstract class _ProfileData extends ProfileData {
   const factory _ProfileData({
     final Vehicle? vehicle,
     final UserPreferences preferences,
+    final bool setupComplete,
   }) = _$ProfileDataImpl;
   const _ProfileData._() : super._();
 
@@ -212,6 +251,11 @@ abstract class _ProfileData extends ProfileData {
   Vehicle? get vehicle;
   @override
   UserPreferences get preferences;
+
+  /// Set `true` only after the user taps save on setup (or legacy hydrate).
+  /// Draft vehicle selection alone must not skip [ProfileSetupScreen].
+  @override
+  bool get setupComplete;
 
   /// Create a copy of ProfileData
   /// with the given fields replaced by the non-null parameter values.

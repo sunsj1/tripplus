@@ -1,7 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:tripplus/core/domain/vehicle.dart';
+import 'package:tripplus/core/services/location_service.dart';
 import 'package:tripplus/features/plan/presentation/controller/plan_state.dart';
+import 'package:tripplus/features/trip/data/local_db/corridor_cache_box.dart';
 import 'package:tripplus/features/trip/data/local_db/trip_box.dart';
+import 'package:tripplus/features/trip/domain/models/corridor_cache.dart';
 import 'package:tripplus/features/trip/domain/models/trip.dart';
 import 'package:tripplus/features/trip/domain/models/trip_status.dart';
 import 'package:tripplus/features/trip/presentation/controller/active_trip_state.dart';
@@ -11,8 +17,22 @@ import 'package:uuid/uuid.dart';
 ///
 /// All state transitions are immediately Hive-persisted so the trip
 /// survives app restarts and background/foreground cycles.
+///
+/// P1-042 — integrates foreground location tracking via [LocationService].
+/// P1-043 — builds and persists a [CorridorCache] on [prepareTrip].
 class ActiveTripController extends StateNotifier<ActiveTripState> {
-  ActiveTripController() : super(_loadFromHive());
+  ActiveTripController({required this.locationService})
+      : super(_loadFromHive());
+
+  final LocationService locationService;
+
+  /// Live position subscription — non-null while the trip is [TripStatus.active].
+  StreamSubscription<Position>? _positionSub;
+
+  /// Latest recorded position (for route deviation and display).
+  Position? _lastPosition;
+
+  Position? get lastPosition => _lastPosition;
 
   // ---------------------------------------------------------------------------
   // Initialisation — restore from Hive on construction
@@ -34,7 +54,9 @@ class ActiveTripController extends StateNotifier<ActiveTripState> {
   // ---------------------------------------------------------------------------
 
   /// Creates a [Trip] from a completed [PlanResult] and [vehicle], places it
-  /// in [ActiveTripReady]. The user confirms by tapping "Start trip".
+  /// in [ActiveTripState.ready].
+  ///
+  /// Also builds and persists a [CorridorCache] for offline resilience (P1-043).
   Future<void> prepareTrip({
     required PlanResult plan,
     required Vehicle vehicle,
@@ -54,11 +76,24 @@ class ActiveTripController extends StateNotifier<ActiveTripState> {
       stationCount: plan.stations.length,
       createdAt: DateTime.now(),
     );
+
+    // P1-043 — persist corridor cache so offline mode has route data.
+    final cache = CorridorCache(
+      tripId: trip.id,
+      encodedPolyline: '', // populated when DirectionsService returns polyline
+      stationIds: plan.stations
+          .map((s) => s.id.toString())
+          .toList(),
+      totalDistanceKm: plan.totalDistanceKm,
+      cachedAt: DateTime.now(),
+    );
+    await CorridorCacheBox.save(cache);
+
     await _persist(trip);
     state = ActiveTripState.ready(trip: trip);
   }
 
-  /// [ready] → [running]: starts tracking, records [startedAt].
+  /// [ready] → [running]: starts location tracking, records [startedAt].
   Future<void> startTrip() async {
     final current = state.trip;
     if (current == null || current.status != TripStatus.notStarted) return;
@@ -68,12 +103,14 @@ class ActiveTripController extends StateNotifier<ActiveTripState> {
     );
     await _persist(updated);
     state = ActiveTripState.running(trip: updated);
+    _startLocationTracking(); // P1-042
   }
 
-  /// [running] → [paused]: suspends tracking, records [pausedAt].
+  /// [running] → [paused]: suspends location tracking, records [pausedAt].
   Future<void> pauseTrip() async {
     final current = state.trip;
     if (current == null || current.status != TripStatus.active) return;
+    _stopLocationTracking(); // P1-042
     final updated = current.copyWith(
       status: TripStatus.paused,
       pausedAt: DateTime.now(),
@@ -82,7 +119,7 @@ class ActiveTripController extends StateNotifier<ActiveTripState> {
     state = ActiveTripState.paused(trip: updated);
   }
 
-  /// [paused] → [running]: resumes tracking, accumulates paused time.
+  /// [paused] → [running]: resumes location tracking, accumulates paused time.
   Future<void> resumeTrip() async {
     final current = state.trip;
     if (current == null || current.status != TripStatus.paused) return;
@@ -96,12 +133,14 @@ class ActiveTripController extends StateNotifier<ActiveTripState> {
     );
     await _persist(updated);
     state = ActiveTripState.running(trip: updated);
+    _startLocationTracking(); // P1-042
   }
 
   /// Any → [completed]: finalises the trip, persists summary.
   Future<void> endTrip() async {
     final current = state.trip;
     if (current == null) return;
+    _stopLocationTracking(); // P1-042
     // Accumulate remaining paused time if we ended while paused.
     int pausedMs = current.elapsedPausedMs;
     if (current.status == TripStatus.paused && current.pausedAt != null) {
@@ -113,6 +152,7 @@ class ActiveTripController extends StateNotifier<ActiveTripState> {
       elapsedPausedMs: pausedMs,
     );
     await _persist(updated);
+    await CorridorCacheBox.clear(); // evict cache when trip ends
     state = ActiveTripState.completed(trip: updated);
   }
 
@@ -120,6 +160,33 @@ class ActiveTripController extends StateNotifier<ActiveTripState> {
   Future<void> dismissCompleted() async {
     await TripBox.clear();
     state = const ActiveTripState.idle();
+  }
+
+  // ---------------------------------------------------------------------------
+  // P1-042 — Location helpers
+  // ---------------------------------------------------------------------------
+
+  void _startLocationTracking() {
+    _positionSub?.cancel();
+    _positionSub = locationService.listenToPosition(
+      (pos) => _lastPosition = pos,
+      onError: (_) {}, // silent — UI shows offline banner instead
+    );
+  }
+
+  void _stopLocationTracking() {
+    _positionSub?.cancel();
+    _positionSub = null;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Lifecycle
+  // ---------------------------------------------------------------------------
+
+  @override
+  void dispose() {
+    _positionSub?.cancel();
+    super.dispose();
   }
 
   // ---------------------------------------------------------------------------

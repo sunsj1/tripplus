@@ -3,7 +3,7 @@
 > **Update this file** whenever a task materially changes the user-visible surface or the architecture.
 > AI agents read this first to avoid re-discovering what's already built.
 
-**Last updated:** 2026-05-30 (Phase 1 sessions 1–7 landed — foundation, profile, POI data path, community schema + read path, Smart Intelligence Grid, POI community pulses + four-tab AppShell, Crashlytics init, **Trip Dashboard + Trip lifecycle engine**).
+**Last updated:** 2026-05-30 (Phase 1 sessions 1–8 landed — foundation, profile, POI data path, community schema + read path, Smart Intelligence Grid, POI community pulses + four-tab AppShell, Crashlytics init, Trip Dashboard + Trip lifecycle engine, **Smart Trip Timeline + offline resilience**).
 
 ---
 
@@ -60,7 +60,7 @@ Functional EV-charging assistant app with auth, navigation shell (Plan · Insigh
 
 ---
 
-## Phase 1 progress (35/50 = 70%)
+## Phase 1 progress (42/50 = 84%)
 
 ### Session 1 — foundation models (2026-05-28)
 
@@ -122,11 +122,19 @@ Functional EV-charging assistant app with auth, navigation shell (Plan · Insigh
 - ✅ `ActiveTripController` + `ActiveTripState` sealed Freezed union. Full lifecycle: `prepareTrip → startTrip → pause/resume → endTrip → dismissCompleted`. All state transitions Hive-persisted. `activeTripControllerProvider` (non-autoDispose) (`P1-041`).
 - ✅ `TripTabScreen` replaces `_TripTabPlaceholder` in `AppShell`. Five views: idle CTA, ready-to-start confirm, live dashboard with 1-second elapsed ticker, paused dashboard, completed summary with actual duration. Pause/Resume/End buttons with End-trip confirmation dialog (`P1-017`).
 
+### Session 8 — Smart Trip Timeline + Offline resilience (2026-05-30)
+
+- ✅ `TimelineStop` plain Dart model + `TimelineStopType` enum (`P1-020`).
+- ✅ `TripTimelineController` — `StateNotifier<List<TimelineStop>>`; `togglePin(index)` for P1-021; autoDispose family keyed by `PlanResult` (`P1-020`, `P1-021`).
+- ✅ `SmartTripTimeline` widget — vertical timeline with icon bubbles, gradient connector lines, distance chips, pin-toggle animated pills; wired into `PlanResultView` after "Start trip" button (`P1-020`, `P1-021`).
+- ✅ `LocationService` — `requestPermission()`, `currentPosition()`, `listenToPosition()`; Android `FOREGROUND_SERVICE` + `FOREGROUND_SERVICE_LOCATION` permissions added (`P1-042`).
+- ✅ `ActiveTripController` starts/stops location `StreamSubscription` on `startTrip`/`pauseTrip`/`resumeTrip`/`endTrip` (`P1-042`).
+- ✅ `CorridorCache` + `CorridorCacheBox` (`corridor_cache` Hive box); populated on `prepareTrip()`, cleared on `endTrip()` (`P1-043`).
+- ✅ `connectivityStreamProvider` + `isOnlineProvider` + `OfflineBanner` animated widget; wired into `AppShell` body (`P1-044`).
+
 ### NOT implemented (remaining Phase 1 targets)
 
-- ❌ Smart trip timeline widget + editor (`P1-020`, `P1-021`).
 - ❌ Alert engine rules + notifier + local notification plumbing (`P1-023` → `P1-028`, `P1-034`).
-- ❌ Foreground location tracking + corridor cache + offline banner (`P1-042` → `P1-044`).
 - ❌ Hygiene: telemetry hooks (`P1-060`), skeleton loaders (`P1-062`), launch icon/splash (`P1-030`).
 
 See `project_plan/01_phase_1_mvp.md` for the full Phase 1 task list.

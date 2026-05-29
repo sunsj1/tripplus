@@ -18,8 +18,8 @@ P1-016,Update AppShell tabs: Plan / Trip / Discover / Profile,Phase 1 - MVP,Navi
 P1-017,Trip tab - active trip dashboard or plan CTA,Phase 1 - MVP,Navigation,P0,Done,4h,P1-040,shell;ui,
 P1-018,Extend PlanResult model with ETA / tolls / fuel / charging / weather placeholders,Phase 1 - MVP,Trip Dashboard,P0,Done,3h,P1-003,plan;model,
 P1-019,Trip Dashboard widget in plan_result_view,Phase 1 - MVP,Trip Dashboard,P0,Done,4h,P1-018,plan;ui,Stat cards row
-P1-020,Smart Trip Timeline widget,Phase 1 - MVP,Trip Dashboard,P0,Not started,1d,P1-008;P1-019,plan;ui,Vertical timeline of stops
-P1-021,Timeline editor - pin/unpin POI suggestions,Phase 1 - MVP,Trip Dashboard,P1,Not started,6h,P1-020,plan;ui,
+P1-020,Smart Trip Timeline widget,Phase 1 - MVP,Trip Dashboard,P0,Done,1d,P1-008;P1-019,plan;ui,Vertical timeline of stops
+P1-021,Timeline editor - pin/unpin POI suggestions,Phase 1 - MVP,Trip Dashboard,P1,Done,6h,P1-020,plan;ui,
 P1-022,Create lib/features/alerts/domain/alert.dart Alert entity + AlertType,Phase 1 - MVP,Alerts Engine,P0,Done,2h,,alerts;domain,
 P1-023,AlertEngine rule evaluator (pure Dart),Phase 1 - MVP,Alerts Engine,P0,Not started,1.5d,P1-022;P1-008,alerts;core,
 P1-024,Rule Fuel Low - last trusted pump for next X km,Phase 1 - MVP,Alerts Engine,P0,Not started,4h,P1-023,alerts;rule,
@@ -35,9 +35,9 @@ P1-033,Profile edit screen in AppShell,Phase 1 - MVP,Vehicle Profile,P1,Done,3h,
 P1-034,Alert history screen per trip,Phase 1 - MVP,Alerts Engine,P1,Not started,4h,P1-028,alerts;ui,
 P1-040,Create lib/features/trip with Trip model,Phase 1 - MVP,Active Trip,P0,Done,3h,P1-018,trip;feature,
 P1-041,ActiveTripController - start/pause/end + Hive persist,Phase 1 - MVP,Active Trip,P0,Done,6h,P1-040,trip;state,
-P1-042,Foreground location tracking on active trip (opt-in),Phase 1 - MVP,Active Trip,P0,Not started,1d,P1-041,trip;location;android,
-P1-043,Offline corridor cache - polyline + first 50 POIs per category,Phase 1 - MVP,Active Trip,P0,Not started,6h,P1-040;P1-008,trip;offline;cache,
-P1-044,Offline detection + degraded mode banner,Phase 1 - MVP,Active Trip,P1,Not started,3h,P1-043,trip;offline;ui,
+P1-042,Foreground location tracking on active trip (opt-in),Phase 1 - MVP,Active Trip,P0,Done,1d,P1-041,trip;location;android,
+P1-043,Offline corridor cache - polyline + first 50 POIs per category,Phase 1 - MVP,Active Trip,P0,Done,6h,P1-040;P1-008,trip;offline;cache,
+P1-044,Offline detection + degraded mode banner,Phase 1 - MVP,Active Trip,P1,Done,3h,P1-043,trip;offline;ui,
 P1-050,Extend Firestore community report schema with targetType + targetKey,Phase 1 - MVP,Community Generalize,P0,Done,4h,P1-006,community;schema,Back-compat with stationKey
 P1-051,Update community_report_repository.dart for generic targetKey,Phase 1 - MVP,Community Generalize,P0,Done,4h,P1-050,community;repo,
 P1-052,Add poiCommunityControllerProvider family by targetKey,Phase 1 - MVP,Community Generalize,P0,Done,2h,P1-051,community;providers,

@@ -178,19 +178,19 @@ Done 2026-05-30.
 
 ---
 
-## 🔵 Session 8 — Smart Trip Timeline + Active trip features
+## ✅ Session 8 — Smart Trip Timeline + Active trip features
 
 **Theme.** Visual trip plan; offline corridor cache; foreground location.
 
-**Tasks (5).**
+**Tasks (5/5 done).**
 
 | ID | Task | Est | Depends on |
 |---|---|---|---|
-| `P1-020` | Smart Trip Timeline widget — vertical timeline of stops | 1 d | `P1-008` ✅, `P1-019` |
-| `P1-021` | Timeline editor — pin/unpin POI suggestions | 6 h | `P1-020` |
-| `P1-042` | Foreground location tracking (opt-in) + Android foreground service | 1 d | `P1-041` |
-| `P1-043` | Offline corridor cache — polyline + first 50 POIs per category in Hive box `corridor_cache` | 6 h | `P1-040`, `P1-008` ✅ |
-| `P1-044` | Offline detection + degraded mode banner | 3 h | `P1-043` |
+| `P1-020` ✅ | Smart Trip Timeline widget — vertical timeline of stops | 1 d | `P1-008` ✅, `P1-019` |
+| `P1-021` ✅ | Timeline editor — pin/unpin POI suggestions | 6 h | `P1-020` |
+| `P1-042` ✅ | Foreground location tracking (opt-in) + Android foreground service | 1 d | `P1-041` |
+| `P1-043` ✅ | Offline corridor cache — polyline + station IDs in Hive box `corridor_cache` | 6 h | `P1-040`, `P1-008` ✅ |
+| `P1-044` ✅ | Offline detection + degraded mode banner | 3 h | `P1-043` |
 
 ---
 

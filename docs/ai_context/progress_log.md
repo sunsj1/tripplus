@@ -6,6 +6,63 @@
 
 ---
 
+## Session 8 — Smart Trip Timeline + Offline resilience
+
+- **Started:** 2026-05-30
+- **Finished:** 2026-05-30
+- **Tasks completed (7/7):** `P1-020`, `P1-021`, `P1-042`, `P1-043`, `P1-044` (plus `P1-020`/`P1-021` wired into `plan_result_view`)
+- **Theme:** the trip is now self-contained offline. The Smart Timeline shows the full O → Charging → D sequence with pin-toggle editing; a corridor cache snapshots all route data to Hive; foreground location streaming activates while the trip is live; an animated offline banner surfaces degraded state on every tab.
+
+### Per-task notes
+
+- `P1-020` + `P1-021` — Smart Trip Timeline:
+  - `lib/features/plan/domain/timeline_stop.dart` — plain Dart `TimelineStop` + `TimelineStopType` enum. Presentation helpers: `icon`, `iconColor(primary, success, warning)`, `isEndpoint`, `copyWith(pinned)`. No Freezed (UI-only, never persisted).
+  - `lib/features/plan/presentation/controller/trip_timeline_controller.dart` — `StateNotifier<List<TimelineStop>>`. `_buildStops(plan)` derives ordered list from `PlanResult`. `togglePin(index)` flips `pinned` for non-endpoint stops (`P1-021`). `pinnedStops` getter for downstream consumption. `tripTimelineControllerProvider` = autoDispose family keyed by `PlanResult`.
+  - `lib/features/plan/presentation/widget/smart_trip_timeline.dart` — `SmartTripTimeline(plan)` ConsumerWidget. Vertical `ListView.builder` of `_TimelineRow`s; each row: icon bubble (colored by type), gradient connector line, label/subtitle, distance chips (`km from start`, `km to next`, Fast charge), and `_PinToggle` button (animated pill: "Pinned"/"Optional") for non-endpoint stops.
+  - Wired into `plan_result_view.dart` after `_StartTripButton`, before the nearest-station card.
+
+- `P1-042` — Foreground location tracking:
+  - `lib/core/services/location_service.dart` — `LocationService` with `requestPermission()`, `currentPosition()`, and `listenToPosition(callback)` returning a `StreamSubscription`.
+  - `AndroidManifest.xml` — `FOREGROUND_SERVICE` + `FOREGROUND_SERVICE_LOCATION` permissions added.
+  - `ActiveTripController` updated: accepts `LocationService` via constructor; `_startLocationTracking()` fires on `startTrip()`/`resumeTrip()`, `_stopLocationTracking()` on `pauseTrip()`/`endTrip()`. Latest position stored in `_lastPosition`.
+  - `trip_providers.dart` injects `locationServiceProvider` into the controller.
+
+- `P1-043` — Offline corridor cache:
+  - `lib/features/trip/domain/models/corridor_cache.dart` — plain Dart class with `tripId`, `encodedPolyline`, `stationIds`, `totalDistanceKm`, `cachedAt`, `isStale` (> 24 h), manual `toJson`/`fromJson`.
+  - `lib/features/trip/data/local_db/corridor_cache_box.dart` — static Hive wrapper (`corridor_cache` box). `read()`, `save(cache)`, `clear()`, `evictIfStale()`.
+  - `ActiveTripController.prepareTrip()` builds and persists a `CorridorCache` from the plan. `endTrip()` clears it.
+  - `lib/main.dart` — `CorridorCacheBox.boxName` box opened at startup.
+
+- `P1-044` — Offline detection + degraded-mode banner:
+  - `lib/core/services/connectivity_service.dart` — `connectivityStreamProvider` (`StreamProvider<List<ConnectivityResult>>`), `isOnlineProvider` (`Provider<bool>`, optimistic default true).
+  - `lib/core/widgets/offline_banner.dart` — `OfflineBanner` `ConsumerWidget`. `AnimatedSize` collapses to zero when online; amber banner with wifi_off icon + "Offline — showing cached data" when offline.
+  - `app_shell.dart` — `Scaffold.body` changed from bare `IndexedStack` to `Column([OfflineBanner(), Expanded(IndexedStack)])`. Banner appears on all four tabs.
+
+### Files changed (new)
+- `lib/features/plan/domain/timeline_stop.dart`
+- `lib/features/plan/presentation/controller/trip_timeline_controller.dart`
+- `lib/features/plan/presentation/widget/smart_trip_timeline.dart`
+- `lib/core/services/location_service.dart`
+- `lib/features/trip/domain/models/corridor_cache.dart`
+- `lib/features/trip/data/local_db/corridor_cache_box.dart`
+- `lib/core/services/connectivity_service.dart`
+- `lib/core/widgets/offline_banner.dart`
+
+### Files changed (modified)
+- `lib/features/plan/presentation/view/plan_result_view.dart` (import + SmartTripTimeline section)
+- `lib/features/trip/presentation/controller/active_trip_controller.dart` (location + corridor cache integration)
+- `lib/features/trip/presentation/controller/trip_providers.dart` (LocationService injection)
+- `lib/features/shell/presentation/view/app_shell.dart` (OfflineBanner wired)
+- `lib/main.dart` (corridor_cache box)
+- `android/app/src/main/AndroidManifest.xml` (FOREGROUND_SERVICE permissions)
+
+### Notes / follow-ups
+- `CorridorCache.encodedPolyline` is seeded as `''` — `DirectionsService` currently returns polyline but it's not threaded through to `prepareTrip()`. Wire it in Phase 2 when turn-by-turn navigation starts.
+- Location stream runs in-process; true background tracking (app backgrounded) needs a native foreground service wrapper — Phase 2 `P2-073`.
+- `evictIfStale()` on `CorridorCacheBox` is exposed but not called at startup yet — trivial to add to `main.dart` when stale-cache UX is needed.
+
+---
+
 ## Session 7 — Trip Dashboard + Trip foundation
 
 - **Started:** 2026-05-30

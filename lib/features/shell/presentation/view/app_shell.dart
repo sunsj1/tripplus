@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tripplus/core/widgets/app_bottom_nav.dart';
+import 'package:tripplus/core/widgets/offline_banner.dart';
 import 'package:tripplus/features/discovery/presentation/view/discovery_screen.dart';
 import 'package:tripplus/features/plan/presentation/view/plan_screen.dart';
 import 'package:tripplus/features/profile/presentation/view/profile_tab_screen.dart';
@@ -27,9 +28,17 @@ class _AppShellState extends State<AppShell> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _screens,
+      // P1-044 — offline degraded-mode banner sits above the tab content.
+      body: Column(
+        children: [
+          const OfflineBanner(),
+          Expanded(
+            child: IndexedStack(
+              index: _currentIndex,
+              children: _screens,
+            ),
+          ),
+        ],
       ),
       bottomNavigationBar: AppBottomNav(
         currentIndex: _currentIndex,

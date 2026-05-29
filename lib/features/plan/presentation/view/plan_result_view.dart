@@ -8,6 +8,7 @@ import 'package:tripplus/core/widgets/animated_list_item.dart';
 import 'package:tripplus/core/widgets/app_top_bar.dart';
 import 'package:tripplus/features/charging/domain/models/charging_station.dart';
 import 'package:tripplus/features/plan/presentation/controller/plan_state.dart';
+import 'package:tripplus/features/plan/presentation/widget/smart_trip_timeline.dart';
 import 'package:tripplus/features/plan/presentation/widget/stat_card.dart';
 import 'package:tripplus/features/profile/presentation/controller/profile_providers.dart';
 import 'package:tripplus/features/stations/presentation/view/station_detail_screen.dart';
@@ -131,7 +132,11 @@ class PlanResultView extends ConsumerWidget {
                   );
                 },
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 24),
+
+              // P1-020 / P1-021 — Smart Trip Timeline
+              SmartTripTimeline(plan: _toPlanResult(this)),
+              const SizedBox(height: 24),
 
               if (nearest != null) _NearestStationCard(station: nearest),
               if (nearest != null) const SizedBox(height: 16),

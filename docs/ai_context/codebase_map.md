@@ -8,7 +8,7 @@
 - `firebase/firestore.indexes.json` — composite indexes (extend for `targetKey + createdAt` in `P1-055`).
 
 ## Core
-- `lib/core/services/` — `directions_service.dart`, `geocoding_service.dart`, `google_ev_station_service.dart`, `places_autocomplete_service.dart`, `route_station_service.dart` (EV-typed, still in use by `PlanController`), **`route_poi_service.dart`** — generic POI-typed service dispatching EV → `RouteStationService` (adapter) and non-EV → `PoiRepository` (`P1-009`).
+- `lib/core/services/` — `directions_service.dart`, `geocoding_service.dart`, `google_ev_station_service.dart`, `places_autocomplete_service.dart`, `route_station_service.dart` (EV-typed), **`route_poi_service.dart`** (`P1-009`), **`location_service.dart`** — `LocationService` + `locationServiceProvider`; `requestPermission()`, `currentPosition()`, `listenToPosition(cb)` returning `StreamSubscription` (`P1-042`), **`connectivity_service.dart`** — `connectivityStreamProvider` (`Stream<List<ConnectivityResult>>`), `isOnlineProvider` (`bool`, optimistic default true) (`P1-044`).
 - `lib/core/utils/` — `location_helper.dart`, `polyline_decoder.dart`, `result.dart` (Freezed Result type), `station_merger.dart`, **`failure.dart`** — canonical `Failure` sealed class with 6 variants (`P1-007`/`P1-061`).
 - `lib/core/theme/` — `app_theme.dart`, plus `AppColors` / `AppTextStyles`.
 - `lib/core/constants/cache_constants.dart` — Hive box names (existing). Note: profile box name lives on `ProfileBox.boxName` (feature-internal).
@@ -21,7 +21,7 @@
 ## Features (today)
 - `auth/` `data domain presentation` — `AuthGate` routes signed-in users through `VehicleSetupGate` before AppShell (`P1-032`).
 - `onboarding/`
-- `shell/presentation/view/app_shell.dart` — four tabs: **Plan · Trip · Discover · Profile** (`P1-016`). Trip is a `_TripTabPlaceholder` until `P1-017`. Old `InsightsScreen` + `StationsScreen` are now orphan code (still compile, not in nav).
+- `shell/presentation/view/app_shell.dart` — four tabs: **Plan · Trip · Discover · Profile** (`P1-016`). `Scaffold.body` is `Column([OfflineBanner(), Expanded(IndexedStack)])` so the offline banner appears on all tabs (`P1-044`). Old `InsightsScreen` + `StationsScreen` are orphan code (still compile, not in nav).
 - `plan/presentation/` — `RouteInputCard` (now takes vehicle + preferences, `P1-005`), `TripContextRow` widget, `PlanController`, `PlanState`, `PlanResultView`. `PlanScreen` holds per-trip override state for vehicle + preferences.
 - `stations/presentation/` — list + map screens, station detail.
 - `community/` `data domain presentation` — Firestore-backed pulses; offline queue; widgets `CommunityReportsSection`, `CommunityRatingPulse`. **Still uses `Either<String, T>` prefix strings** — not migrated to typed `Failure` yet.
@@ -65,16 +65,18 @@
   - `domain/models/trip.dart` — `Trip` Freezed + json_serializable. Fields: id, from, to, vehicle, status, totalDistanceKm, drivingMinutes, etaMinutes?, tollsEstimate?, tripCostEstimate?, isCostCharging, stationCount, createdAt, startedAt?, pausedAt?, completedAt?, elapsedPausedMs. Derived: `isTracking`, `elapsed` (`P1-040`).
   - `domain/models/trip_status.dart` — `TripStatus { notStarted, active, paused, completed }` (`P1-040`).
   - `presentation/controller/active_trip_state.dart` — Freezed sealed `ActiveTripState { idle, ready(trip), running(trip), paused(trip), completed(trip) }`. Extension `ActiveTripStateX.trip` extracts trip from any sub-state (`P1-041`).
-  - `presentation/controller/active_trip_controller.dart` — `StateNotifier<ActiveTripState>`. Entry point: `prepareTrip(plan, vehicle)`. Transitions: `startTrip` / `pauseTrip` / `resumeTrip` / `endTrip` / `dismissCompleted`. All Hive-persisted (`P1-041`).
-  - `presentation/controller/trip_providers.dart` — `activeTripControllerProvider` (NOT autoDispose) (`P1-041`).
+  - `presentation/controller/active_trip_controller.dart` — `StateNotifier<ActiveTripState>`. Entry point: `prepareTrip(plan, vehicle)`. Transitions: `startTrip` / `pauseTrip` / `resumeTrip` / `endTrip` / `dismissCompleted`. All Hive-persisted. Accepts `LocationService`; starts/stops `StreamSubscription<Position>` on trip state changes; builds `CorridorCache` on `prepareTrip` (`P1-041`, `P1-042`, `P1-043`).
+  - `presentation/controller/trip_providers.dart` — `activeTripControllerProvider` (NOT autoDispose); injects `locationServiceProvider` (`P1-041`, `P1-042`).
+  - `domain/models/corridor_cache.dart` — plain Dart; `tripId`, `encodedPolyline`, `stationIds`, `totalDistanceKm`, `cachedAt`, `isStale`, `toJson`/`fromJson` (`P1-043`).
+  - `data/local_db/corridor_cache_box.dart` — Hive `corridor_cache` box; `read()`, `save()`, `clear()`, `evictIfStale()` (`P1-043`).
   - `presentation/view/trip_tab_screen.dart` — `TripTabScreen(onPlanTrip)`. Switches on state: idle→CTA, ready→confirm+Start, running/paused→live dashboard with elapsed ticker, completed→summary. Pause/Resume/End trip buttons. End trip shows confirmation dialog (`P1-017`).
 
 ## Hive boxes already open in `main.dart`
 - `CacheConstants.chargingBoxName` — existing.
 - `CommunitySubmitQueue.boxName` (`community_submit_queue`) — existing.
-- `ProfileBox.boxName` (`user_profile`) — opened in `P1-004`.
-- `TripBox.boxName` (`active_trip`) — opened in `P1-040`.
-- New boxes still to open: `corridor_cache` (`P1-043`).
+- `ProfileBox.boxName` (`user_profile`) — `P1-004`.
+- `TripBox.boxName` (`active_trip`) — `P1-040`.
+- `CorridorCacheBox.boxName` (`corridor_cache`) — `P1-043`.
 
 ## Build-runner
 After ANY change to a `*.freezed.dart` source class, run:

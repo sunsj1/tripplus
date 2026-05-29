@@ -12,12 +12,16 @@ class RouteInfo {
   final int durationMinutes;
   final List<LatLng> polylinePoints;
 
+  /// Google-encoded overview polyline when sourced from Directions API.
+  final String? encodedPolyline;
+
   const RouteInfo({
     required this.origin,
     required this.destination,
     required this.distanceKm,
     required this.durationMinutes,
     required this.polylinePoints,
+    this.encodedPolyline,
   });
 }
 
@@ -87,6 +91,7 @@ class DirectionsService {
       distanceKm: distanceKm,
       durationMinutes: (durationSeconds / 60).round(),
       polylinePoints: polylinePoints,
+      encodedPolyline: encodedPolyline,
     );
   }
 

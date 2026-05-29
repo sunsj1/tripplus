@@ -93,6 +93,7 @@ class PlanController extends StateNotifier<PlanState> {
             fuelEstimateCost: fuelEst,
             chargingEstimate: chargingEst,
             trafficLevel: trafficLevel,
+            encodedRoutePolyline: analysis.route.encodedPolyline,
           );
         }
       },

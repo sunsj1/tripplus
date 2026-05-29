@@ -30,6 +30,7 @@ PlanResult _toPlanResult(PlanResultView v) => PlanResult(
       chargingEstimate: v.chargingEstimate,
       weatherTag: v.weatherTag,
       trafficLevel: v.trafficLevel,
+      encodedRoutePolyline: v.encodedRoutePolyline,
     );
 
 class PlanResultView extends ConsumerWidget {
@@ -48,6 +49,7 @@ class PlanResultView extends ConsumerWidget {
   final double? chargingEstimate;
   final String? weatherTag;
   final String? trafficLevel;
+  final String? encodedRoutePolyline;
 
   const PlanResultView({
     super.key,
@@ -64,6 +66,7 @@ class PlanResultView extends ConsumerWidget {
     this.chargingEstimate,
     this.weatherTag,
     this.trafficLevel,
+    this.encodedRoutePolyline,
   });
 
   ChargingStation? get _nearestStation {

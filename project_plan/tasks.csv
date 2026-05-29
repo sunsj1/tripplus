@@ -26,13 +26,13 @@ P1-024,Rule Fuel Low - last trusted pump for next X km,Phase 1 - MVP,Alerts Engi
 P1-025,Rule EV Gap - next fast charger X km away,Phase 1 - MVP,Alerts Engine,P0,Done,3h,P1-023,alerts;rule;ev,
 P1-026,Rule Food Window - next highly rated restaurant after X km,Phase 1 - MVP,Alerts Engine,P0,Done,4h,P1-023,alerts;rule,Honors pureVeg
 P1-027,Add flutter_local_notifications + platform setup,Phase 1 - MVP,Alerts Engine,P0,Done,3h,,alerts;deps,
-P1-028,AlertNotifier - stream from AlertEngine to local notifications + banner,Phase 1 - MVP,Alerts Engine,P0,Not started,6h,P1-027;P1-023,alerts;providers,
+P1-028,AlertNotifier - stream from AlertEngine to local notifications + banner,Phase 1 - MVP,Alerts Engine,P0,Done,6h,P1-027;P1-023,alerts;providers,
 P1-029,Replace default Flutter README with product README,Phase 1 - MVP,Branding,P1,Done,1h,P1-001,docs,
-P1-030,Launch icon and splash for new brand identity,Phase 1 - MVP,Branding,P2,Not started,2h,,assets,Placeholder OK
+P1-030,Launch icon and splash for new brand identity,Phase 1 - MVP,Branding,P2,Done,2h,,assets,Placeholder OK
 P1-031,UserPreferences model with all preference flags,Phase 1 - MVP,Vehicle Profile,P0,Done,1h,P1-003,domain;preferences,
 P1-032,Profile setup screen post-onboarding,Phase 1 - MVP,Vehicle Profile,P0,Done,4h,P1-031,profile;ui,
 P1-033,Profile edit screen in AppShell,Phase 1 - MVP,Vehicle Profile,P1,Done,3h,P1-032,profile;ui,
-P1-034,Alert history screen per trip,Phase 1 - MVP,Alerts Engine,P1,Not started,4h,P1-028,alerts;ui,
+P1-034,Alert history screen per trip,Phase 1 - MVP,Alerts Engine,P1,Done,4h,P1-028,alerts;ui,
 P1-040,Create lib/features/trip with Trip model,Phase 1 - MVP,Active Trip,P0,Done,3h,P1-018,trip;feature,
 P1-041,ActiveTripController - start/pause/end + Hive persist,Phase 1 - MVP,Active Trip,P0,Done,6h,P1-040,trip;state,
 P1-042,Foreground location tracking on active trip (opt-in),Phase 1 - MVP,Active Trip,P0,Done,1d,P1-041,trip;location;android,
@@ -44,9 +44,9 @@ P1-052,Add poiCommunityControllerProvider family by targetKey,Phase 1 - MVP,Comm
 P1-053,Mount CommunityReportsSection inside POI detail screens,Phase 1 - MVP,Community Generalize,P0,Done,3h,P1-052;P1-012,community;ui;reuse,
 P1-054,Mount CommunityRatingPulse chip on every POI list tile,Phase 1 - MVP,Community Generalize,P0,Done,2h,P1-052;P1-012,community;ui;reuse,
 P1-055,Add Firestore composite index targetKey + createdAt,Phase 1 - MVP,Community Generalize,P1,Done,1h,P1-050,community;firestore;index,
-P1-060,Lightweight telemetry hooks on new flows,Phase 1 - MVP,Hygiene,P1,Not started,3h,,telemetry,
+P1-060,Lightweight telemetry hooks on new flows,Phase 1 - MVP,Hygiene,P1,Done,3h,,telemetry,
 P1-061,Error taxonomy parity for PoiRepository,Phase 1 - MVP,Hygiene,P0,Done,2h,P1-007,errors,
-P1-062,Skeleton loaders for POI lists,Phase 1 - MVP,Hygiene,P1,Not started,3h,P1-012,ui,
+P1-062,Skeleton loaders for POI lists,Phase 1 - MVP,Hygiene,P1,Done,3h,P1-012,ui,
 P1-063,Add flutter_local_notifications + connectivity_plus to pubspec,Phase 1 - MVP,Hygiene,P0,Done,30m,,deps,
 P1-064,Add Crashlytics dependency (init only),Phase 1 - MVP,Hygiene,P1,Done,1h,,deps;observability,
 P1-065,Update docs/context/current_state.md after each subsection,Phase 1 - MVP,Hygiene,P0,Not started,rolling,,docs,

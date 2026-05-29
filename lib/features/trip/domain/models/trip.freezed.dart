@@ -72,6 +72,9 @@ mixin _$Trip {
   /// Cumulative milliseconds spent in paused state (for accurate elapsed).
   int get elapsedPausedMs => throw _privateConstructorUsedError;
 
+  /// Predictive alerts fired during this trip (`P1-028` / `P1-034`).
+  List<Alert> get firedAlerts => throw _privateConstructorUsedError;
+
   /// Serializes this Trip to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
@@ -104,6 +107,7 @@ abstract class $TripCopyWith<$Res> {
     DateTime? pausedAt,
     DateTime? completedAt,
     int elapsedPausedMs,
+    List<Alert> firedAlerts,
   });
 
   $VehicleCopyWith<$Res> get vehicle;
@@ -141,6 +145,7 @@ class _$TripCopyWithImpl<$Res, $Val extends Trip>
     Object? pausedAt = freezed,
     Object? completedAt = freezed,
     Object? elapsedPausedMs = null,
+    Object? firedAlerts = null,
   }) {
     return _then(
       _value.copyWith(
@@ -212,6 +217,10 @@ class _$TripCopyWithImpl<$Res, $Val extends Trip>
                 ? _value.elapsedPausedMs
                 : elapsedPausedMs // ignore: cast_nullable_to_non_nullable
                       as int,
+            firedAlerts: null == firedAlerts
+                ? _value.firedAlerts
+                : firedAlerts // ignore: cast_nullable_to_non_nullable
+                      as List<Alert>,
           )
           as $Val,
     );
@@ -254,6 +263,7 @@ abstract class _$$TripImplCopyWith<$Res> implements $TripCopyWith<$Res> {
     DateTime? pausedAt,
     DateTime? completedAt,
     int elapsedPausedMs,
+    List<Alert> firedAlerts,
   });
 
   @override
@@ -289,6 +299,7 @@ class __$$TripImplCopyWithImpl<$Res>
     Object? pausedAt = freezed,
     Object? completedAt = freezed,
     Object? elapsedPausedMs = null,
+    Object? firedAlerts = null,
   }) {
     return _then(
       _$TripImpl(
@@ -360,6 +371,10 @@ class __$$TripImplCopyWithImpl<$Res>
             ? _value.elapsedPausedMs
             : elapsedPausedMs // ignore: cast_nullable_to_non_nullable
                   as int,
+        firedAlerts: null == firedAlerts
+            ? _value._firedAlerts
+            : firedAlerts // ignore: cast_nullable_to_non_nullable
+                  as List<Alert>,
       ),
     );
   }
@@ -386,7 +401,9 @@ class _$TripImpl extends _Trip {
     this.pausedAt,
     this.completedAt,
     this.elapsedPausedMs = 0,
-  }) : super._();
+    final List<Alert> firedAlerts = const <Alert>[],
+  }) : _firedAlerts = firedAlerts,
+       super._();
 
   factory _$TripImpl.fromJson(Map<String, dynamic> json) =>
       _$$TripImplFromJson(json);
@@ -463,9 +480,21 @@ class _$TripImpl extends _Trip {
   @JsonKey()
   final int elapsedPausedMs;
 
+  /// Predictive alerts fired during this trip (`P1-028` / `P1-034`).
+  final List<Alert> _firedAlerts;
+
+  /// Predictive alerts fired during this trip (`P1-028` / `P1-034`).
+  @override
+  @JsonKey()
+  List<Alert> get firedAlerts {
+    if (_firedAlerts is EqualUnmodifiableListView) return _firedAlerts;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_firedAlerts);
+  }
+
   @override
   String toString() {
-    return 'Trip(id: $id, from: $from, to: $to, vehicle: $vehicle, status: $status, totalDistanceKm: $totalDistanceKm, drivingMinutes: $drivingMinutes, etaMinutes: $etaMinutes, tollsEstimate: $tollsEstimate, tripCostEstimate: $tripCostEstimate, isCostCharging: $isCostCharging, stationCount: $stationCount, createdAt: $createdAt, startedAt: $startedAt, pausedAt: $pausedAt, completedAt: $completedAt, elapsedPausedMs: $elapsedPausedMs)';
+    return 'Trip(id: $id, from: $from, to: $to, vehicle: $vehicle, status: $status, totalDistanceKm: $totalDistanceKm, drivingMinutes: $drivingMinutes, etaMinutes: $etaMinutes, tollsEstimate: $tollsEstimate, tripCostEstimate: $tripCostEstimate, isCostCharging: $isCostCharging, stationCount: $stationCount, createdAt: $createdAt, startedAt: $startedAt, pausedAt: $pausedAt, completedAt: $completedAt, elapsedPausedMs: $elapsedPausedMs, firedAlerts: $firedAlerts)';
   }
 
   @override
@@ -501,7 +530,11 @@ class _$TripImpl extends _Trip {
             (identical(other.completedAt, completedAt) ||
                 other.completedAt == completedAt) &&
             (identical(other.elapsedPausedMs, elapsedPausedMs) ||
-                other.elapsedPausedMs == elapsedPausedMs));
+                other.elapsedPausedMs == elapsedPausedMs) &&
+            const DeepCollectionEquality().equals(
+              other._firedAlerts,
+              _firedAlerts,
+            ));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -525,6 +558,7 @@ class _$TripImpl extends _Trip {
     pausedAt,
     completedAt,
     elapsedPausedMs,
+    const DeepCollectionEquality().hash(_firedAlerts),
   );
 
   /// Create a copy of Trip
@@ -560,6 +594,7 @@ abstract class _Trip extends Trip {
     final DateTime? pausedAt,
     final DateTime? completedAt,
     final int elapsedPausedMs,
+    final List<Alert> firedAlerts,
   }) = _$TripImpl;
   const _Trip._() : super._();
 
@@ -630,6 +665,10 @@ abstract class _Trip extends Trip {
   /// Cumulative milliseconds spent in paused state (for accurate elapsed).
   @override
   int get elapsedPausedMs;
+
+  /// Predictive alerts fired during this trip (`P1-028` / `P1-034`).
+  @override
+  List<Alert> get firedAlerts;
 
   /// Create a copy of Trip
   /// with the given fields replaced by the non-null parameter values.

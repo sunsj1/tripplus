@@ -34,6 +34,7 @@ mixin _$PlanState {
       double? chargingEstimate,
       String? weatherTag,
       String? trafficLevel,
+      String? encodedRoutePolyline,
     )
     result,
     required TResult Function(String from, String to) empty,
@@ -56,6 +57,7 @@ mixin _$PlanState {
       double? chargingEstimate,
       String? weatherTag,
       String? trafficLevel,
+      String? encodedRoutePolyline,
     )?
     result,
     TResult? Function(String from, String to)? empty,
@@ -78,6 +80,7 @@ mixin _$PlanState {
       double? chargingEstimate,
       String? weatherTag,
       String? trafficLevel,
+      String? encodedRoutePolyline,
     )?
     result,
     TResult Function(String from, String to)? empty,
@@ -189,6 +192,7 @@ class _$PlanIdleImpl implements PlanIdle {
       double? chargingEstimate,
       String? weatherTag,
       String? trafficLevel,
+      String? encodedRoutePolyline,
     )
     result,
     required TResult Function(String from, String to) empty,
@@ -215,6 +219,7 @@ class _$PlanIdleImpl implements PlanIdle {
       double? chargingEstimate,
       String? weatherTag,
       String? trafficLevel,
+      String? encodedRoutePolyline,
     )?
     result,
     TResult? Function(String from, String to)? empty,
@@ -241,6 +246,7 @@ class _$PlanIdleImpl implements PlanIdle {
       double? chargingEstimate,
       String? weatherTag,
       String? trafficLevel,
+      String? encodedRoutePolyline,
     )?
     result,
     TResult Function(String from, String to)? empty,
@@ -393,6 +399,7 @@ class _$PlanCalculatingImpl implements PlanCalculating {
       double? chargingEstimate,
       String? weatherTag,
       String? trafficLevel,
+      String? encodedRoutePolyline,
     )
     result,
     required TResult Function(String from, String to) empty,
@@ -419,6 +426,7 @@ class _$PlanCalculatingImpl implements PlanCalculating {
       double? chargingEstimate,
       String? weatherTag,
       String? trafficLevel,
+      String? encodedRoutePolyline,
     )?
     result,
     TResult? Function(String from, String to)? empty,
@@ -445,6 +453,7 @@ class _$PlanCalculatingImpl implements PlanCalculating {
       double? chargingEstimate,
       String? weatherTag,
       String? trafficLevel,
+      String? encodedRoutePolyline,
     )?
     result,
     TResult Function(String from, String to)? empty,
@@ -534,6 +543,7 @@ abstract class _$$PlanResultImplCopyWith<$Res> {
     double? chargingEstimate,
     String? weatherTag,
     String? trafficLevel,
+    String? encodedRoutePolyline,
   });
 }
 
@@ -563,6 +573,7 @@ class __$$PlanResultImplCopyWithImpl<$Res>
     Object? chargingEstimate = freezed,
     Object? weatherTag = freezed,
     Object? trafficLevel = freezed,
+    Object? encodedRoutePolyline = freezed,
   }) {
     return _then(
       _$PlanResultImpl(
@@ -614,6 +625,10 @@ class __$$PlanResultImplCopyWithImpl<$Res>
             ? _value.trafficLevel
             : trafficLevel // ignore: cast_nullable_to_non_nullable
                   as String?,
+        encodedRoutePolyline: freezed == encodedRoutePolyline
+            ? _value.encodedRoutePolyline
+            : encodedRoutePolyline // ignore: cast_nullable_to_non_nullable
+                  as String?,
       ),
     );
   }
@@ -635,6 +650,7 @@ class _$PlanResultImpl implements PlanResult {
     this.chargingEstimate,
     this.weatherTag,
     this.trafficLevel,
+    this.encodedRoutePolyline,
   }) : _stations = stations,
        _gaps = gaps;
 
@@ -688,9 +704,13 @@ class _$PlanResultImpl implements PlanResult {
   @override
   final String? trafficLevel;
 
+  /// Google-encoded route polyline for corridor cache + alert engine (P1-028).
+  @override
+  final String? encodedRoutePolyline;
+
   @override
   String toString() {
-    return 'PlanState.result(from: $from, to: $to, stations: $stations, totalDistanceKm: $totalDistanceKm, durationMinutes: $durationMinutes, gaps: $gaps, etaMinutes: $etaMinutes, tollsEstimate: $tollsEstimate, fuelEstimateCost: $fuelEstimateCost, chargingEstimate: $chargingEstimate, weatherTag: $weatherTag, trafficLevel: $trafficLevel)';
+    return 'PlanState.result(from: $from, to: $to, stations: $stations, totalDistanceKm: $totalDistanceKm, durationMinutes: $durationMinutes, gaps: $gaps, etaMinutes: $etaMinutes, tollsEstimate: $tollsEstimate, fuelEstimateCost: $fuelEstimateCost, chargingEstimate: $chargingEstimate, weatherTag: $weatherTag, trafficLevel: $trafficLevel, encodedRoutePolyline: $encodedRoutePolyline)';
   }
 
   @override
@@ -717,7 +737,9 @@ class _$PlanResultImpl implements PlanResult {
             (identical(other.weatherTag, weatherTag) ||
                 other.weatherTag == weatherTag) &&
             (identical(other.trafficLevel, trafficLevel) ||
-                other.trafficLevel == trafficLevel));
+                other.trafficLevel == trafficLevel) &&
+            (identical(other.encodedRoutePolyline, encodedRoutePolyline) ||
+                other.encodedRoutePolyline == encodedRoutePolyline));
   }
 
   @override
@@ -735,6 +757,7 @@ class _$PlanResultImpl implements PlanResult {
     chargingEstimate,
     weatherTag,
     trafficLevel,
+    encodedRoutePolyline,
   );
 
   /// Create a copy of PlanState
@@ -763,6 +786,7 @@ class _$PlanResultImpl implements PlanResult {
       double? chargingEstimate,
       String? weatherTag,
       String? trafficLevel,
+      String? encodedRoutePolyline,
     )
     result,
     required TResult Function(String from, String to) empty,
@@ -781,6 +805,7 @@ class _$PlanResultImpl implements PlanResult {
       chargingEstimate,
       weatherTag,
       trafficLevel,
+      encodedRoutePolyline,
     );
   }
 
@@ -802,6 +827,7 @@ class _$PlanResultImpl implements PlanResult {
       double? chargingEstimate,
       String? weatherTag,
       String? trafficLevel,
+      String? encodedRoutePolyline,
     )?
     result,
     TResult? Function(String from, String to)? empty,
@@ -820,6 +846,7 @@ class _$PlanResultImpl implements PlanResult {
       chargingEstimate,
       weatherTag,
       trafficLevel,
+      encodedRoutePolyline,
     );
   }
 
@@ -841,6 +868,7 @@ class _$PlanResultImpl implements PlanResult {
       double? chargingEstimate,
       String? weatherTag,
       String? trafficLevel,
+      String? encodedRoutePolyline,
     )?
     result,
     TResult Function(String from, String to)? empty,
@@ -861,6 +889,7 @@ class _$PlanResultImpl implements PlanResult {
         chargingEstimate,
         weatherTag,
         trafficLevel,
+        encodedRoutePolyline,
       );
     }
     return orElse();
@@ -921,6 +950,7 @@ abstract class PlanResult implements PlanState {
     final double? chargingEstimate,
     final String? weatherTag,
     final String? trafficLevel,
+    final String? encodedRoutePolyline,
   }) = _$PlanResultImpl;
 
   String get from;
@@ -947,6 +977,9 @@ abstract class PlanResult implements PlanState {
 
   /// Traffic descriptor derived from route duration: "Low" | "Moderate" | "High".
   String? get trafficLevel;
+
+  /// Google-encoded route polyline for corridor cache + alert engine (P1-028).
+  String? get encodedRoutePolyline;
 
   /// Create a copy of PlanState
   /// with the given fields replaced by the non-null parameter values.
@@ -1047,6 +1080,7 @@ class _$PlanEmptyImpl implements PlanEmpty {
       double? chargingEstimate,
       String? weatherTag,
       String? trafficLevel,
+      String? encodedRoutePolyline,
     )
     result,
     required TResult Function(String from, String to) empty,
@@ -1073,6 +1107,7 @@ class _$PlanEmptyImpl implements PlanEmpty {
       double? chargingEstimate,
       String? weatherTag,
       String? trafficLevel,
+      String? encodedRoutePolyline,
     )?
     result,
     TResult? Function(String from, String to)? empty,
@@ -1099,6 +1134,7 @@ class _$PlanEmptyImpl implements PlanEmpty {
       double? chargingEstimate,
       String? weatherTag,
       String? trafficLevel,
+      String? encodedRoutePolyline,
     )?
     result,
     TResult Function(String from, String to)? empty,
@@ -1253,6 +1289,7 @@ class _$PlanErrorImpl implements PlanError {
       double? chargingEstimate,
       String? weatherTag,
       String? trafficLevel,
+      String? encodedRoutePolyline,
     )
     result,
     required TResult Function(String from, String to) empty,
@@ -1279,6 +1316,7 @@ class _$PlanErrorImpl implements PlanError {
       double? chargingEstimate,
       String? weatherTag,
       String? trafficLevel,
+      String? encodedRoutePolyline,
     )?
     result,
     TResult? Function(String from, String to)? empty,
@@ -1305,6 +1343,7 @@ class _$PlanErrorImpl implements PlanError {
       double? chargingEstimate,
       String? weatherTag,
       String? trafficLevel,
+      String? encodedRoutePolyline,
     )?
     result,
     TResult Function(String from, String to)? empty,

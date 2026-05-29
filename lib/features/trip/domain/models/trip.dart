@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:tripplus/core/domain/vehicle.dart';
+import 'package:tripplus/features/alerts/domain/alert.dart';
 import 'package:tripplus/features/trip/domain/models/trip_status.dart';
 
 part 'trip.freezed.dart';
@@ -68,6 +69,9 @@ abstract class Trip with _$Trip {
 
     /// Cumulative milliseconds spent in paused state (for accurate elapsed).
     @Default(0) int elapsedPausedMs,
+
+    /// Predictive alerts fired during this trip (`P1-028` / `P1-034`).
+    @Default(<Alert>[]) List<Alert> firedAlerts,
   }) = _Trip;
 
   factory Trip.fromJson(Map<String, dynamic> json) => _$TripFromJson(json);

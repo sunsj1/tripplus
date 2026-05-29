@@ -9,6 +9,8 @@ import 'package:tripplus/features/pois/presentation/controller/poi_category_ui_s
 import 'package:tripplus/features/pois/presentation/controller/pois_providers.dart';
 import 'package:tripplus/features/pois/presentation/widget/poi_category_map_view.dart';
 import 'package:tripplus/features/pois/presentation/widget/poi_detail_sheet.dart';
+import 'package:tripplus/core/telemetry/app_telemetry.dart';
+import 'package:tripplus/core/widgets/poi_list_skeleton.dart';
 import 'package:tripplus/features/pois/presentation/widget/poi_list_tile.dart';
 
 /// Reusable category screen (`P1-012`). Decides between route-aware and nearby
@@ -27,6 +29,12 @@ enum _ViewMode { list, map }
 
 class _PoiCategoryScreenState extends ConsumerState<PoiCategoryScreen> {
   _ViewMode _mode = _ViewMode.list;
+
+  @override
+  void initState() {
+    super.initState();
+    AppTelemetry.poiCategoryOpened(category: widget.category);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +66,7 @@ class _PoiCategoryScreenState extends ConsumerState<PoiCategoryScreen> {
       ),
       body: SafeArea(
         child: switch (state) {
-          PoiCategoryLoading() => const _Loading(),
+          PoiCategoryLoading() => const PoiListSkeleton(),
           PoiCategoryEmpty(:final reason) => _Empty(
               reason: reason,
               onRetry: controller.refresh,
@@ -80,35 +88,6 @@ class _PoiCategoryScreenState extends ConsumerState<PoiCategoryScreen> {
 // ---------------------------------------------------------------------------
 // States
 // ---------------------------------------------------------------------------
-
-class _Loading extends StatelessWidget {
-  const _Loading();
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.separated(
-      padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
-      itemCount: 6,
-      separatorBuilder: (_, _) => const SizedBox(height: 12),
-      itemBuilder: (_, _) => const _SkeletonTile(),
-    );
-  }
-}
-
-class _SkeletonTile extends StatelessWidget {
-  const _SkeletonTile();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 92,
-      decoration: BoxDecoration(
-        color: AppColors.shimmer.withValues(alpha: 0.4),
-        borderRadius: BorderRadius.circular(16),
-      ),
-    );
-  }
-}
 
 class _Empty extends StatelessWidget {
   const _Empty({required this.reason, required this.onRetry});

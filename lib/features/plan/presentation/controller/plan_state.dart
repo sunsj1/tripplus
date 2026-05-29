@@ -31,6 +31,8 @@ sealed class PlanState with _$PlanState {
     String? weatherTag,
     /// Traffic descriptor derived from route duration: "Low" | "Moderate" | "High".
     String? trafficLevel,
+    /// Google-encoded route polyline for corridor cache + alert engine (P1-028).
+    String? encodedRoutePolyline,
     // ---------------------------------------------------------------------------
   }) = PlanResult;
   const factory PlanState.empty({

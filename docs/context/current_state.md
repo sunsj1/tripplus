@@ -3,7 +3,7 @@
 > **Update this file** whenever a task materially changes the user-visible surface or the architecture.
 > AI agents read this first to avoid re-discovering what's already built.
 
-**Last updated:** 2026-05-30 (Phase 1 sessions 1–9 landed — through **Alert engine MVP**: pure-Dart `AlertEngine` + fuel/EV/food rules + `flutter_local_notifications` platform setup).
+**Last updated:** 2026-05-30 (Phase 1 sessions 1–10 landed — **alert delivery + hygiene**: `AlertNotifier`, history screen, telemetry, POI skeletons, brand splash).
 
 ---
 
@@ -60,7 +60,7 @@ Functional EV-charging assistant app with auth, navigation shell (Plan · Insigh
 
 ---
 
-## Phase 1 progress (47/50 = 94%)
+## Phase 1 progress (49/50 = 98%)
 
 ### Session 1 — foundation models (2026-05-28)
 
@@ -141,10 +141,19 @@ Functional EV-charging assistant app with auth, navigation shell (Plan · Insigh
 - ✅ `LocalNotificationService` — Android channel + receivers + `POST_NOTIFICATIONS`; init in `main.dart`; `alertEngineProvider` (`P1-027`).
 - ✅ Unit tests: `test/features/alerts/alert_engine_test.dart` (4 cases).
 
+### Session 10 — Alert delivery + hygiene (2026-05-30)
+
+- ✅ `AlertNotifierController` — 30s poll while trip active; evaluates `AlertEngine`; local notification + `TripAlertBanner` in `AppShell` (`P1-028`).
+- ✅ `Trip.firedAlerts` persisted via `ActiveTripController.recordFiredAlert()` (`P1-028`/`P1-034`).
+- ✅ `AlertHistoryScreen` linked from Trip tab (`P1-034`).
+- ✅ `AppTelemetry` for trip + alert + POI category events (`P1-060`).
+- ✅ `PoiListSkeleton` shared widget on category screens (`P1-062`).
+- ✅ Brand splash — Android `#1B5E20`, iOS display name `TripPlus` (`P1-030`).
+- ✅ `PlanResult.encodedRoutePolyline` threaded into corridor cache for alert geometry.
+
 ### NOT implemented (remaining Phase 1 targets)
 
-- ❌ Alert delivery: `AlertNotifier` stream → banner + notification (`P1-028`), history screen (`P1-034`).
-- ❌ Hygiene: telemetry hooks (`P1-060`), skeleton loaders (`P1-062`), launch icon/splash (`P1-030`).
+- ❌ Session 11: end-to-end verification checklist only (`P1-065` rolling doc refresh).
 
 See `project_plan/01_phase_1_mvp.md` for the full Phase 1 task list.
 

@@ -24,7 +24,7 @@
 - [x] `P1-001` Update `pubspec.yaml` description to "AI Highway Companion for Indian road trips"
 - [x] `P1-002` Update `MaterialApp.title` in `lib/main.dart`
 - [x] `P1-029` Replace default Flutter README with product README
-- [ ] `P1-030` Launch icon + splash for new brand
+- [x] `P1-030` Launch icon + splash for new brand
 
 ### 1.2 Vehicle profile & preferences
 - [x] `P1-003` Create `vehicle.dart` — VehicleType enum + Vehicle entity
@@ -65,8 +65,8 @@
 - [x] `P1-025` Rule: **EV Gap**
 - [x] `P1-026` Rule: **Food Window**
 - [x] `P1-027` Add `flutter_local_notifications` + platform setup
-- [ ] `P1-028` `AlertNotifier` stream + banner + notifications
-- [ ] `P1-034` Alert history screen per trip
+- [x] `P1-028` `AlertNotifier` stream + banner + notifications
+- [x] `P1-034` Alert history screen per trip
 
 ### 1.8 Active Trip & offline corridor cache
 - [x] `P1-040` `lib/features/trip/` + `Trip` model
@@ -84,9 +84,9 @@
 - [x] `P1-055` Firestore composite index `targetKey + createdAt`
 
 ### 1.10 Cross-cutting hygiene
-- [ ] `P1-060` Telemetry hooks on new flows
+- [x] `P1-060` Telemetry hooks on new flows
 - [x] `P1-061` Error taxonomy parity for `PoiRepository`
-- [ ] `P1-062` Skeleton loaders for POI lists
+- [x] `P1-062` Skeleton loaders for POI lists
 - [x] `P1-063` Add `flutter_local_notifications` + `connectivity_plus` deps
 - [x] `P1-064` Add Crashlytics dependency (init only)
 - [ ] `P1-065` Rolling: update `docs/context/current_state.md`
@@ -233,7 +233,7 @@
 
 | Phase | Total Tasks | Done | % |
 |---|---|---|---|
-| Phase 1 — MVP | 50 | 47 | 94% |
+| Phase 1 — MVP | 50 | 49 | 98% |
 | Phase 2 — Intelligence | 36 | 0 | 0% |
 | Phase 3 — AI Copilot | 30 | 0 | 0% |
 | Phase 4 — Scale | 18 | 0 | 0% |

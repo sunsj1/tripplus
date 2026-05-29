@@ -32,6 +32,11 @@ _$TripImpl _$$TripImplFromJson(Map<String, dynamic> json) => _$TripImpl(
       ? null
       : DateTime.parse(json['completedAt'] as String),
   elapsedPausedMs: (json['elapsedPausedMs'] as num?)?.toInt() ?? 0,
+  firedAlerts:
+      (json['firedAlerts'] as List<dynamic>?)
+          ?.map((e) => Alert.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const <Alert>[],
 );
 
 Map<String, dynamic> _$$TripImplToJson(_$TripImpl instance) =>
@@ -53,6 +58,7 @@ Map<String, dynamic> _$$TripImplToJson(_$TripImpl instance) =>
       'pausedAt': instance.pausedAt?.toIso8601String(),
       'completedAt': instance.completedAt?.toIso8601String(),
       'elapsedPausedMs': instance.elapsedPausedMs,
+      'firedAlerts': instance.firedAlerts,
     };
 
 const _$TripStatusEnumMap = {

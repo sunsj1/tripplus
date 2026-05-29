@@ -104,6 +104,7 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
             :final chargingEstimate,
             :final weatherTag,
             :final trafficLevel,
+            :final encodedRoutePolyline,
           ) =>
             PlanResultView(
               from: from,
@@ -119,6 +120,7 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
               chargingEstimate: chargingEstimate,
               weatherTag: weatherTag,
               trafficLevel: trafficLevel,
+              encodedRoutePolyline: encodedRoutePolyline,
             ),
           PlanEmpty() => EmptyStateScreen(onSearchAgain: _onReset),
           PlanError(:final message) => _buildErrorView(message),

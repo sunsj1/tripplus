@@ -9,6 +9,7 @@ import 'package:tripplus/features/trip/domain/models/trip.dart';
 import 'package:tripplus/features/trip/domain/models/trip_status.dart';
 import 'package:tripplus/features/trip/presentation/controller/active_trip_controller.dart';
 import 'package:tripplus/features/trip/presentation/controller/active_trip_state.dart';
+import 'package:tripplus/features/alerts/presentation/view/alert_history_screen.dart';
 import 'package:tripplus/features/trip/presentation/controller/trip_providers.dart';
 
 class TripTabScreen extends ConsumerWidget {
@@ -267,7 +268,23 @@ class _ActiveDashboardState extends ConsumerState<_ActiveDashboard> {
           const SizedBox(height: 20),
 
           _TripEstimateCards(trip: trip),
-          const SizedBox(height: 28),
+          const SizedBox(height: 16),
+          Center(
+            child: TextButton.icon(
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => AlertHistoryScreen(trip: trip),
+                ),
+              ),
+              icon: const Icon(Icons.notifications_active_outlined, size: 18),
+              label: Text(
+                trip.firedAlerts.isEmpty
+                    ? 'Alert history'
+                    : 'Alert history (${trip.firedAlerts.length})',
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
 
           // Pause / Resume / End buttons
           Padding(
@@ -420,7 +437,24 @@ class _CompletedView extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: 20),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => AlertHistoryScreen(trip: trip),
+                ),
+              ),
+              icon: const Icon(Icons.notifications_active_outlined),
+              label: Text(
+                trip.firedAlerts.isEmpty
+                    ? 'View alert history'
+                    : 'View alert history (${trip.firedAlerts.length})',
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
           SizedBox(
             width: double.infinity,
             height: 52,

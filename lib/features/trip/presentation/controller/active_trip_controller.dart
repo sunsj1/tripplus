@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:tripplus/core/domain/vehicle.dart';
 import 'package:tripplus/core/services/location_service.dart';
+import 'package:tripplus/core/telemetry/app_telemetry.dart';
+import 'package:tripplus/features/alerts/domain/alert.dart';
 import 'package:tripplus/features/plan/presentation/controller/plan_state.dart';
 import 'package:tripplus/features/trip/data/local_db/corridor_cache_box.dart';
 import 'package:tripplus/features/trip/data/local_db/trip_box.dart';
@@ -80,7 +82,7 @@ class ActiveTripController extends StateNotifier<ActiveTripState> {
     // P1-043 — persist corridor cache so offline mode has route data.
     final cache = CorridorCache(
       tripId: trip.id,
-      encodedPolyline: '', // populated when DirectionsService returns polyline
+      encodedPolyline: plan.encodedRoutePolyline ?? '',
       stationIds: plan.stations
           .map((s) => s.id.toString())
           .toList(),
@@ -91,6 +93,7 @@ class ActiveTripController extends StateNotifier<ActiveTripState> {
 
     await _persist(trip);
     state = ActiveTripState.ready(trip: trip);
+    AppTelemetry.tripPrepared(tripId: trip.id);
   }
 
   /// [ready] → [running]: starts location tracking, records [startedAt].
@@ -104,6 +107,7 @@ class ActiveTripController extends StateNotifier<ActiveTripState> {
     await _persist(updated);
     state = ActiveTripState.running(trip: updated);
     _startLocationTracking(); // P1-042
+    AppTelemetry.tripStarted(tripId: updated.id);
   }
 
   /// [running] → [paused]: suspends location tracking, records [pausedAt].
@@ -154,6 +158,29 @@ class ActiveTripController extends StateNotifier<ActiveTripState> {
     await _persist(updated);
     await CorridorCacheBox.clear(); // evict cache when trip ends
     state = ActiveTripState.completed(trip: updated);
+    AppTelemetry.tripEnded(
+      tripId: updated.id,
+      alertCount: updated.firedAlerts.length,
+    );
+  }
+
+  /// Appends a fired [alert] to the active trip log (deduped by [AlertType]).
+  Future<void> recordFiredAlert(Alert alert) async {
+    final current = state.trip;
+    if (current == null) return;
+    if (current.firedAlerts.any((a) => a.type == alert.type)) return;
+
+    final updated = current.copyWith(
+      firedAlerts: [...current.firedAlerts, alert],
+    );
+    await _persist(updated);
+    state = switch (state) {
+      ActiveTripReady() => ActiveTripState.ready(trip: updated),
+      ActiveTripRunning() => ActiveTripState.running(trip: updated),
+      ActiveTripPaused() => ActiveTripState.paused(trip: updated),
+      ActiveTripCompleted() => ActiveTripState.completed(trip: updated),
+      ActiveTripIdle() => const ActiveTripState.idle(),
+    };
   }
 
   /// Clears a completed trip and returns to [idle].

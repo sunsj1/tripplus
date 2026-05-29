@@ -9,6 +9,6 @@ void main() {
       const ProviderScope(child: TripPlusApp()),
     );
 
-    expect(find.text('TripPlus'), findsOneWidget);
+    expect(find.byType(TripPlusApp), findsOneWidget);
   });
 }

@@ -216,24 +216,28 @@ Done 2026-05-30.
 
 ---
 
-## 🔵 Session 10 — Alert delivery + hygiene
+## ✅ Session 10 — Alert delivery + hygiene
 
 **Theme.** Deliver alerts via banner + local notification; alert history per
 trip; cross-cutting hygiene (telemetry, skeletons, launch icon).
 
-**Tasks (5).**
+**Tasks (5/5 done).**
 
 | ID | Task | Est | Depends on |
 |---|---|---|---|
-| `P1-028` | `AlertNotifier` — Riverpod stream from `AlertEngine` → local notification + in-app banner | 6 h | `P1-027`, `P1-023` |
-| `P1-034` | Alert history screen (per-trip log of fired alerts) | 4 h | `P1-028` |
-| `P1-060` | Lightweight telemetry hooks on new flows (reuse `community_telemetry.dart` pattern) | 3 h | — |
-| `P1-062` | Skeleton loaders for POI lists | 3 h | `P1-012` |
-| `P1-030` | Launch icon + splash for new brand (placeholder assets OK) | 2 h | — |
+| `P1-028` ✅ | `AlertNotifier` — Riverpod stream from `AlertEngine` → local notification + in-app banner | 6 h | `P1-027`, `P1-023` |
+| `P1-034` ✅ | Alert history screen (per-trip log of fired alerts) | 4 h | `P1-028` |
+| `P1-060` ✅ | Lightweight telemetry hooks on new flows (reuse `community_telemetry.dart` pattern) | 3 h | — |
+| `P1-062` ✅ | Skeleton loaders for POI lists | 3 h | `P1-012` |
+| `P1-030` ✅ | Launch icon + splash for new brand (placeholder assets OK) | 2 h | — |
+
+Done 2026-05-30.
+
+**Unblocks:** Session 11 end-to-end verification.
 
 ---
 
-## ⬜ Session 11 — Phase 1 completion verification
+## 🔵 Session 11 — Phase 1 completion verification
 
 **Theme.** No new code — verify every line item in the Phase 1 completion
 checklist from `project_plan/01_phase_1_mvp.md` actually holds end-to-end.
@@ -272,9 +276,9 @@ end of each session. It does NOT get its own session.
 | 7 | 5 | ✅ |
 | 8 | 5 | ✅ |
 | 9 | 5 | ✅ |
-| 10 | 5 | 🔵 next |
-| 11 | verify | ⬜ |
-| **Total** | **50** | **47 / 50 = 94 %** |
+| 10 | 5 | ✅ |
+| 11 | verify | 🔵 next |
+| **Total** | **50** | **49 / 50 = 98 %** |
 
 When a session lands, update the row above (✅), the "Phase 1 progress tracker"
 metric in `project_plan/notion_tracker.md`, and the status block in

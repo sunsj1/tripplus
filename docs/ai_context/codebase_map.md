@@ -42,8 +42,14 @@
   - `domain/alert_engine_input.dart` — `(route, location, vehicle, prefs, upcomingPois)` (`P1-023`).
   - `domain/alert_route_utils.dart` — polyline projection + gap helpers (`P1-023`).
   - `domain/rules/` — `fuel_low_rule.dart` (`P1-024`), `ev_gap_rule.dart` (`P1-025`), `food_window_rule.dart` (`P1-026`).
-  - `presentation/controller/alerts_providers.dart` — `alertEngineProvider`, `localNotificationServiceProvider` (`P1-023`/`P1-027`).
-  - `presentation/view/gap_alert_screen.dart` — legacy EV gap UI (orphan until wired to engine).
+  - `presentation/controller/alerts_providers.dart` — `alertEngineProvider`, `localNotificationServiceProvider`, `alertNotifierProvider` (`P1-028`).
+  - `presentation/controller/alert_notifier_controller.dart` — polls every 30s while trip active; fires notifications + banner (`P1-028`).
+  - `domain/alert_notifier_state.dart` — `activeBanner`, `bannerDismissed` (`P1-028`).
+  - `presentation/widget/trip_alert_banner.dart` — in-app alert strip in `AppShell` (`P1-028`).
+  - `presentation/view/alert_history_screen.dart` — per-trip fired alert log (`P1-034`).
+  - `presentation/view/gap_alert_screen.dart` — legacy EV gap UI (orphan).
+- `lib/core/telemetry/app_telemetry.dart` — structured logs for trip + alert + POI flows (`P1-060`).
+- `lib/core/widgets/poi_list_skeleton.dart` — shared POI loading placeholders (`P1-062`).
 - `lib/core/services/local_notification_service.dart` — `FlutterLocalNotificationsPlugin` wrapper; init in `main.dart` (`P1-027`).
 - `profile/` — created in `P1-004`.
   - `domain/profile_data.dart` — `ProfileData { vehicle?, preferences }`.
@@ -68,7 +74,7 @@
 
 - `trip/`
   - `data/local_db/trip_box.dart` — Hive `active_trip` box; JSON-encoded single `Trip` under key `current`. API: `read()`, `save(trip)`, `clear()` (`P1-040`).
-  - `domain/models/trip.dart` — `Trip` Freezed + json_serializable. Fields: id, from, to, vehicle, status, totalDistanceKm, drivingMinutes, etaMinutes?, tollsEstimate?, tripCostEstimate?, isCostCharging, stationCount, createdAt, startedAt?, pausedAt?, completedAt?, elapsedPausedMs. Derived: `isTracking`, `elapsed` (`P1-040`).
+  - `domain/models/trip.dart` — `Trip` Freezed + json_serializable. Fields include lifecycle timestamps + `firedAlerts` list (`P1-028`/`P1-034`). Derived: `isTracking`, `elapsed` (`P1-040`).
   - `domain/models/trip_status.dart` — `TripStatus { notStarted, active, paused, completed }` (`P1-040`).
   - `presentation/controller/active_trip_state.dart` — Freezed sealed `ActiveTripState { idle, ready(trip), running(trip), paused(trip), completed(trip) }`. Extension `ActiveTripStateX.trip` extracts trip from any sub-state (`P1-041`).
   - `presentation/controller/active_trip_controller.dart` — `StateNotifier<ActiveTripState>`. Entry point: `prepareTrip(plan, vehicle)`. Transitions: `startTrip` / `pauseTrip` / `resumeTrip` / `endTrip` / `dismissCompleted`. All Hive-persisted. Accepts `LocationService`; starts/stops `StreamSubscription<Position>` on trip state changes; builds `CorridorCache` on `prepareTrip` (`P1-041`, `P1-042`, `P1-043`).

@@ -6,6 +6,48 @@
 
 ---
 
+## Session 10 — Alert delivery + hygiene
+
+- **Started:** 2026-05-30
+- **Finished:** 2026-05-30
+- **Tasks completed (5/5):** `P1-028`, `P1-034`, `P1-060`, `P1-062`, `P1-030`
+- **Theme:** predictive alerts now reach the driver — in-app banner, OS notification, per-trip history — plus hygiene polish.
+
+### Per-task notes
+
+- `P1-028` — `AlertNotifierController` + `alertNotifierProvider`:
+  - Listens to `activeTripControllerProvider`; starts 30s polling when trip enters `running`.
+  - Loads route from `CorridorCache.encodedPolyline` (now saved from `PlanResult.encodedRoutePolyline`).
+  - Prefetches corridor POIs via `RoutePoiService.findInCorridor`.
+  - Dedupes one alert per `AlertType` per trip; calls `LocalNotificationService.showTripAlert`.
+  - `TripAlertBanner` in `AppShell` above tab content.
+
+- `P1-034` — `AlertHistoryScreen` + `Trip.firedAlerts` field on Freezed model.
+
+- `P1-060` — `lib/core/telemetry/app_telemetry.dart`; hooks in trip lifecycle, alert fire/dismiss, POI category open.
+
+- `P1-062` — `lib/core/widgets/poi_list_skeleton.dart`; replaces inline skeleton in `PoiCategoryScreen`.
+
+- `P1-030` — Android splash `#1B5E20`; iOS `CFBundleDisplayName` → TripPlus (launcher icon asset swap deferred).
+
+### Validation
+- `flutter analyze` — clean
+- `flutter test` — 5 passed
+
+### Suggested commit message
+```
+feat(phase1): alert delivery + hygiene (session 10)
+
+Wire AlertNotifier to engine with banner and notifications, add alert
+history, telemetry, POI skeletons, and brand splash placeholders.
+```
+
+### Open follow-ups
+- Session 11 — manual E2E verification per batches file.
+- Custom `@mipmap` launcher artwork still placeholder (acceptable per P1-030).
+
+---
+
 ## Session 9 — Alert engine MVP
 
 - **Started:** 2026-05-30

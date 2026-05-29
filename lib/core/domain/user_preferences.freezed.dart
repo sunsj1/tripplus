@@ -29,7 +29,9 @@ mixin _$UserPreferences {
   bool get petFriendly => throw _privateConstructorUsedError;
   bool get nightSafe => throw _privateConstructorUsedError;
   bool get scenicRoute => throw _privateConstructorUsedError;
-  String? get preferredFuelBrand => throw _privateConstructorUsedError;
+
+  /// Selected fuel retailers for petrol/diesel trips (wire values from [FuelBrand]).
+  List<String> get preferredFuelBrands => throw _privateConstructorUsedError;
   List<String> get dietaryFlags => throw _privateConstructorUsedError;
 
   /// Serializes this UserPreferences to a JSON map.
@@ -58,7 +60,7 @@ abstract class $UserPreferencesCopyWith<$Res> {
     bool petFriendly,
     bool nightSafe,
     bool scenicRoute,
-    String? preferredFuelBrand,
+    List<String> preferredFuelBrands,
     List<String> dietaryFlags,
   });
 }
@@ -86,7 +88,7 @@ class _$UserPreferencesCopyWithImpl<$Res, $Val extends UserPreferences>
     Object? petFriendly = null,
     Object? nightSafe = null,
     Object? scenicRoute = null,
-    Object? preferredFuelBrand = freezed,
+    Object? preferredFuelBrands = null,
     Object? dietaryFlags = null,
   }) {
     return _then(
@@ -123,10 +125,10 @@ class _$UserPreferencesCopyWithImpl<$Res, $Val extends UserPreferences>
                 ? _value.scenicRoute
                 : scenicRoute // ignore: cast_nullable_to_non_nullable
                       as bool,
-            preferredFuelBrand: freezed == preferredFuelBrand
-                ? _value.preferredFuelBrand
-                : preferredFuelBrand // ignore: cast_nullable_to_non_nullable
-                      as String?,
+            preferredFuelBrands: null == preferredFuelBrands
+                ? _value.preferredFuelBrands
+                : preferredFuelBrands // ignore: cast_nullable_to_non_nullable
+                      as List<String>,
             dietaryFlags: null == dietaryFlags
                 ? _value.dietaryFlags
                 : dietaryFlags // ignore: cast_nullable_to_non_nullable
@@ -155,7 +157,7 @@ abstract class _$$UserPreferencesImplCopyWith<$Res>
     bool petFriendly,
     bool nightSafe,
     bool scenicRoute,
-    String? preferredFuelBrand,
+    List<String> preferredFuelBrands,
     List<String> dietaryFlags,
   });
 }
@@ -182,7 +184,7 @@ class __$$UserPreferencesImplCopyWithImpl<$Res>
     Object? petFriendly = null,
     Object? nightSafe = null,
     Object? scenicRoute = null,
-    Object? preferredFuelBrand = freezed,
+    Object? preferredFuelBrands = null,
     Object? dietaryFlags = null,
   }) {
     return _then(
@@ -219,10 +221,10 @@ class __$$UserPreferencesImplCopyWithImpl<$Res>
             ? _value.scenicRoute
             : scenicRoute // ignore: cast_nullable_to_non_nullable
                   as bool,
-        preferredFuelBrand: freezed == preferredFuelBrand
-            ? _value.preferredFuelBrand
-            : preferredFuelBrand // ignore: cast_nullable_to_non_nullable
-                  as String?,
+        preferredFuelBrands: null == preferredFuelBrands
+            ? _value._preferredFuelBrands
+            : preferredFuelBrands // ignore: cast_nullable_to_non_nullable
+                  as List<String>,
         dietaryFlags: null == dietaryFlags
             ? _value._dietaryFlags
             : dietaryFlags // ignore: cast_nullable_to_non_nullable
@@ -244,9 +246,10 @@ class _$UserPreferencesImpl extends _UserPreferences {
     this.petFriendly = false,
     this.nightSafe = false,
     this.scenicRoute = false,
-    this.preferredFuelBrand,
+    final List<String> preferredFuelBrands = const <String>[],
     final List<String> dietaryFlags = const <String>[],
-  }) : _dietaryFlags = dietaryFlags,
+  }) : _preferredFuelBrands = preferredFuelBrands,
+       _dietaryFlags = dietaryFlags,
        super._();
 
   factory _$UserPreferencesImpl.fromJson(Map<String, dynamic> json) =>
@@ -276,8 +279,20 @@ class _$UserPreferencesImpl extends _UserPreferences {
   @override
   @JsonKey()
   final bool scenicRoute;
+
+  /// Selected fuel retailers for petrol/diesel trips (wire values from [FuelBrand]).
+  final List<String> _preferredFuelBrands;
+
+  /// Selected fuel retailers for petrol/diesel trips (wire values from [FuelBrand]).
   @override
-  final String? preferredFuelBrand;
+  @JsonKey()
+  List<String> get preferredFuelBrands {
+    if (_preferredFuelBrands is EqualUnmodifiableListView)
+      return _preferredFuelBrands;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_preferredFuelBrands);
+  }
+
   final List<String> _dietaryFlags;
   @override
   @JsonKey()
@@ -289,7 +304,7 @@ class _$UserPreferencesImpl extends _UserPreferences {
 
   @override
   String toString() {
-    return 'UserPreferences(pureVeg: $pureVeg, familyMode: $familyMode, womenSafe: $womenSafe, budgetTier: $budgetTier, fastChargersOnly: $fastChargersOnly, petFriendly: $petFriendly, nightSafe: $nightSafe, scenicRoute: $scenicRoute, preferredFuelBrand: $preferredFuelBrand, dietaryFlags: $dietaryFlags)';
+    return 'UserPreferences(pureVeg: $pureVeg, familyMode: $familyMode, womenSafe: $womenSafe, budgetTier: $budgetTier, fastChargersOnly: $fastChargersOnly, petFriendly: $petFriendly, nightSafe: $nightSafe, scenicRoute: $scenicRoute, preferredFuelBrands: $preferredFuelBrands, dietaryFlags: $dietaryFlags)';
   }
 
   @override
@@ -312,8 +327,10 @@ class _$UserPreferencesImpl extends _UserPreferences {
                 other.nightSafe == nightSafe) &&
             (identical(other.scenicRoute, scenicRoute) ||
                 other.scenicRoute == scenicRoute) &&
-            (identical(other.preferredFuelBrand, preferredFuelBrand) ||
-                other.preferredFuelBrand == preferredFuelBrand) &&
+            const DeepCollectionEquality().equals(
+              other._preferredFuelBrands,
+              _preferredFuelBrands,
+            ) &&
             const DeepCollectionEquality().equals(
               other._dietaryFlags,
               _dietaryFlags,
@@ -332,7 +349,7 @@ class _$UserPreferencesImpl extends _UserPreferences {
     petFriendly,
     nightSafe,
     scenicRoute,
-    preferredFuelBrand,
+    const DeepCollectionEquality().hash(_preferredFuelBrands),
     const DeepCollectionEquality().hash(_dietaryFlags),
   );
 
@@ -363,7 +380,7 @@ abstract class _UserPreferences extends UserPreferences {
     final bool petFriendly,
     final bool nightSafe,
     final bool scenicRoute,
-    final String? preferredFuelBrand,
+    final List<String> preferredFuelBrands,
     final List<String> dietaryFlags,
   }) = _$UserPreferencesImpl;
   const _UserPreferences._() : super._();
@@ -387,8 +404,10 @@ abstract class _UserPreferences extends UserPreferences {
   bool get nightSafe;
   @override
   bool get scenicRoute;
+
+  /// Selected fuel retailers for petrol/diesel trips (wire values from [FuelBrand]).
   @override
-  String? get preferredFuelBrand;
+  List<String> get preferredFuelBrands;
   @override
   List<String> get dietaryFlags;
 

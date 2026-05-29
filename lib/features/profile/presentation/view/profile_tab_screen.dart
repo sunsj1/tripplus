@@ -4,32 +4,20 @@ import 'package:tripplus/core/theme/app_colors.dart';
 import 'package:tripplus/core/theme/app_text_styles.dart';
 import 'package:tripplus/core/widgets/app_top_bar.dart';
 import 'package:tripplus/features/auth/presentation/providers/auth_providers.dart';
-import 'package:tripplus/features/profile/presentation/controller/profile_providers.dart';
-import 'package:tripplus/features/profile/presentation/controller/profile_ui_state.dart';
-import 'package:tripplus/features/profile/presentation/widget/preferences_chips.dart';
-import 'package:tripplus/features/profile/presentation/widget/vehicle_picker.dart';
+import 'package:tripplus/features/profile/presentation/view/about_tripplus_screen.dart';
+import 'package:tripplus/features/profile/presentation/view/privacy_policy_screen.dart';
+import 'package:tripplus/features/profile/presentation/view/profile_preferences_screen.dart';
+import 'package:tripplus/features/profile/presentation/view/trip_history_screen.dart';
+import 'package:tripplus/features/trip/presentation/controller/trip_providers.dart';
 
-/// Profile tab in AppShell (`P1-016`). Mirrors [ProfileEditScreen] but doesn't
-/// pop on save — the user stays on the tab.
+/// Profile hub — menus for preferences, history, and privacy disclosures.
 class ProfileTabScreen extends ConsumerWidget {
   const ProfileTabScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(userAppStateProvider);
-    final state = ref.watch(profileControllerProvider);
-    final controller = ref.read(profileControllerProvider.notifier);
-    final data = state.data;
-    final saving = state is ProfileSaving;
-    final canSave = data.vehicle != null && !saving;
-
-    ref.listen(profileControllerProvider, (prev, next) {
-      if (next is ProfileErrored) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Could not save: ${next.failure.message}')),
-        );
-      }
-    });
+    final historyCount = ref.watch(tripHistoryProvider).length;
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -50,57 +38,68 @@ class ProfileTabScreen extends ConsumerWidget {
               ),
             ),
             SliverPadding(
-              padding: const EdgeInsets.fromLTRB(20, 28, 20, 28),
+              padding: const EdgeInsets.fromLTRB(20, 24, 20, 28),
               sliver: SliverList(
                 delegate: SliverChildListDelegate.fixed([
-                  VehiclePicker(
-                    selected: data.vehicle,
-                    onChanged: controller.updateDraftVehicle,
+                  Text(
+                    'ACCOUNT',
+                    style: AppTextStyles.caption.copyWith(
+                      color: AppColors.textTertiary,
+                      letterSpacing: 1.2,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
-                  const SizedBox(height: 32),
-                  PreferencesChips(
-                    value: data.preferences,
-                    vehicleType: data.vehicle?.type,
-                    onChanged: controller.updateDraftPreferences,
-                  ),
-                  const SizedBox(height: 36),
-                  SizedBox(
-                    height: 56,
-                    child: FilledButton(
-                      onPressed: canSave
-                          ? () async {
-                              final ok = await controller.save();
-                              if (ok && context.mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Preferences saved'),
-                                  ),
-                                );
-                              }
-                            }
-                          : null,
-                      style: FilledButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        disabledBackgroundColor: AppColors.border,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
+                  const SizedBox(height: 10),
+                  _MenuTile(
+                    icon: Icons.tune,
+                    title: 'Trip preferences',
+                    subtitle: 'Vehicle, food & safety defaults',
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const ProfilePreferencesScreen(),
                       ),
-                      child: saving
-                          ? const SizedBox(
-                              width: 22,
-                              height: 22,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: AppColors.textOnDark,
-                              ),
-                            )
-                          : Text(
-                              'Save changes',
-                              style: AppTextStyles.button.copyWith(
-                                color: AppColors.textOnDark,
-                              ),
-                            ),
+                    ),
+                  ),
+                  _MenuTile(
+                    icon: Icons.history,
+                    title: 'Trip history',
+                    subtitle: historyCount == 0
+                        ? 'On this device only'
+                        : '$historyCount completed trip${historyCount == 1 ? '' : 's'}',
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const TripHistoryScreen(),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    'TRUST & LEGAL',
+                    style: AppTextStyles.caption.copyWith(
+                      color: AppColors.textTertiary,
+                      letterSpacing: 1.2,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  _MenuTile(
+                    icon: Icons.shield_outlined,
+                    title: 'Privacy & location',
+                    subtitle: 'How we use GPS — and what we never store',
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const PrivacyPolicyScreen(),
+                      ),
+                    ),
+                  ),
+                  _MenuTile(
+                    icon: Icons.info_outline,
+                    title: 'About TripPlus',
+                    subtitle: 'Product overview & data practices',
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const AboutTripPlusScreen(),
+                      ),
                     ),
                   ),
                 ]),
@@ -138,11 +137,7 @@ class _Header extends StatelessWidget {
                 ? NetworkImage(photoUrl!)
                 : null,
             child: photoUrl == null || photoUrl!.isEmpty
-                ? const Icon(
-                    Icons.person,
-                    size: 28,
-                    color: AppColors.primary,
-                  )
+                ? const Icon(Icons.person, size: 28, color: AppColors.primary)
                 : null,
           ),
           const SizedBox(width: 14),
@@ -150,10 +145,7 @@ class _Header extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  displayName ?? 'Driver',
-                  style: AppTextStyles.titleMedium,
-                ),
+                Text(displayName ?? 'Driver', style: AppTextStyles.titleMedium),
                 if (email != null) ...[
                   const SizedBox(height: 2),
                   Text(
@@ -167,6 +159,71 @@ class _Header extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _MenuTile extends StatelessWidget {
+  const _MenuTile({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Material(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(16),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(16),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: AppColors.borderLight),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: AppColors.primarySurface,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(icon, color: AppColors.primary, size: 22),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(title, style: AppTextStyles.titleSmall),
+                      Text(
+                        subtitle,
+                        style: AppTextStyles.bodySmall.copyWith(
+                          color: AppColors.textTertiary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const Icon(Icons.chevron_right, color: AppColors.textTertiary),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

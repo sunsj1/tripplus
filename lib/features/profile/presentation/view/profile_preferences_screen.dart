@@ -8,10 +8,9 @@ import 'package:tripplus/features/profile/presentation/controller/profile_ui_sta
 import 'package:tripplus/features/profile/presentation/widget/preferences_chips.dart';
 import 'package:tripplus/features/profile/presentation/widget/vehicle_picker.dart';
 
-/// Edit-mode counterpart to [ProfileSetupScreen]. Pushed from the AppShell
-/// profile menu. Reuses [VehiclePicker] and [PreferencesChips].
-class ProfileEditScreen extends ConsumerWidget {
-  const ProfileEditScreen({super.key});
+/// Vehicle + preference editor (pushed from Profile hub).
+class ProfilePreferencesScreen extends ConsumerWidget {
+  const ProfilePreferencesScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -39,10 +38,17 @@ class ProfileEditScreen extends ConsumerWidget {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              Text(
+                'Defaults for every new trip. You can still override on the Plan screen.',
+                style: AppTextStyles.bodySmall.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
+              const SizedBox(height: 24),
               VehiclePicker(
                 selected: data.vehicle,
                 onChanged: controller.updateDraftVehicle,
@@ -66,19 +72,14 @@ class ProfileEditScreen extends ConsumerWidget {
                           final ok = await controller.save();
                           if (ok && context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Preferences saved')),
+                              const SnackBar(
+                                content: Text('Preferences saved'),
+                              ),
                             );
                             Navigator.of(context).pop();
                           }
                         }
                       : null,
-                  style: FilledButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    disabledBackgroundColor: AppColors.border,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                  ),
                   child: saving
                       ? const SizedBox(
                           width: 22,
@@ -88,12 +89,7 @@ class ProfileEditScreen extends ConsumerWidget {
                             color: AppColors.textOnDark,
                           ),
                         )
-                      : Text(
-                          'Save changes',
-                          style: AppTextStyles.button.copyWith(
-                            color: AppColors.textOnDark,
-                          ),
-                        ),
+                      : const Text('Save changes'),
                 ),
               ),
             ],

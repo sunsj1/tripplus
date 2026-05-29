@@ -4,11 +4,10 @@ import 'package:tripplus/core/domain/vehicle.dart';
 import 'package:tripplus/core/theme/app_colors.dart';
 import 'package:tripplus/core/theme/app_text_styles.dart';
 import 'package:tripplus/core/utils/trip_plan_copy.dart';
+import 'package:tripplus/core/widgets/fuel_brand_picker.dart';
 
-/// Compact "for this trip" controls shown above the from/to fields:
-/// a single-select vehicle row + a wrap of toggleable preference chips.
-/// State lives in the parent ([PlanScreen]) so overrides are scoped to the
-/// current trip and do **not** persist back to the saved profile.
+/// Vehicle row, optional fuel-brand grid (petrol/diesel), and preference chips.
+/// Changes sync to the saved profile + Firestore via [PlanScreen].
 class TripContextRow extends StatelessWidget {
   const TripContextRow({
     super.key,
@@ -25,6 +24,11 @@ class TripContextRow extends StatelessWidget {
 
   bool get _isEv => TripPlanCopy.isEv(vehicle?.type);
 
+  bool get _showsFuelBrands {
+    final t = vehicle?.type;
+    return t == VehicleType.petrol || t == VehicleType.diesel;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -38,6 +42,14 @@ class TripContextRow extends StatelessWidget {
             vehicle?.copyWith(type: t) ?? Vehicle(type: t),
           ),
         ),
+        if (_showsFuelBrands) ...[
+          const SizedBox(height: 16),
+          FuelBrandPicker(
+            preferences: preferences,
+            onChanged: onPreferencesChanged,
+            compact: true,
+          ),
+        ],
         const SizedBox(height: 16),
         _Label('PREFERENCES FOR THIS TRIP'),
         const SizedBox(height: 8),

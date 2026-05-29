@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:tripplus/core/domain/fuel_brand.dart';
 
 part 'user_preferences.freezed.dart';
 part 'user_preferences.g.dart';
@@ -38,13 +39,43 @@ abstract class UserPreferences with _$UserPreferences {
     @Default(false) bool petFriendly,
     @Default(false) bool nightSafe,
     @Default(false) bool scenicRoute,
-    String? preferredFuelBrand,
+    /// Selected fuel retailers for petrol/diesel trips (wire values from [FuelBrand]).
+    @Default(<String>[]) List<String> preferredFuelBrands,
     @Default(<String>[]) List<String> dietaryFlags,
   }) = _UserPreferences;
 
   factory UserPreferences.fromJson(Map<String, dynamic> json) =>
-      _$UserPreferencesFromJson(json);
+      _$UserPreferencesFromJson(migrateUserPreferencesJson(json));
+
+  /// Legacy Firestore/Hive docs may still carry singular [preferredFuelBrand].
+  static Map<String, dynamic> migrateUserPreferencesJson(
+    Map<String, dynamic> json,
+  ) {
+    final map = Map<String, dynamic>.from(json);
+    if (!map.containsKey('preferredFuelBrands') &&
+        map['preferredFuelBrand'] is String &&
+        (map['preferredFuelBrand'] as String).isNotEmpty) {
+      map['preferredFuelBrands'] = [map['preferredFuelBrand']];
+    }
+    return map;
+  }
 
   /// Convenience: returns true if any India-first safety mode is enabled.
   bool get hasSafetyOverlay => familyMode || womenSafe || nightSafe;
+}
+
+extension UserPreferencesFuelX on UserPreferences {
+  List<FuelBrand> get selectedFuelBrands =>
+      FuelBrandX.fromWireList(preferredFuelBrands);
+
+  UserPreferences toggleFuelBrand(FuelBrand brand) {
+    final wire = brand.wireValue;
+    final next = List<String>.from(preferredFuelBrands);
+    if (next.contains(wire)) {
+      next.remove(wire);
+    } else {
+      next.add(wire);
+    }
+    return copyWith(preferredFuelBrands: next);
+  }
 }

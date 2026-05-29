@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tripplus/core/domain/user_preferences.dart';
@@ -25,16 +27,42 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
   final _fromController = TextEditingController(text: '');
   final _toController = TextEditingController();
 
-  /// Per-trip overrides. Initialized from the saved profile on first build
-  /// and reset alongside [_onReset]. Not persisted.
+  /// Per-trip overrides; null falls back to saved profile defaults.
   Vehicle? _tripVehicle;
   UserPreferences? _tripPreferences;
+  Timer? _cloudSaveTimer;
 
   @override
   void dispose() {
+    _cloudSaveTimer?.cancel();
     _fromController.dispose();
     _toController.dispose();
     super.dispose();
+  }
+
+  void _syncVehicle(Vehicle vehicle) {
+    setState(() => _tripVehicle = vehicle);
+    ref.read(profileControllerProvider.notifier).updateDraftVehicle(vehicle);
+    _scheduleCloudSave();
+  }
+
+  void _syncPreferences(UserPreferences preferences) {
+    setState(() => _tripPreferences = preferences);
+    ref
+        .read(profileControllerProvider.notifier)
+        .updateDraftPreferences(preferences);
+    _scheduleCloudSave();
+  }
+
+  void _scheduleCloudSave() {
+    _cloudSaveTimer?.cancel();
+    _cloudSaveTimer = Timer(const Duration(milliseconds: 800), () async {
+      if (!mounted) return;
+      final profile = ref.read(profileControllerProvider).data;
+      if (profile.vehicle != null) {
+        await ref.read(profileControllerProvider.notifier).save();
+      }
+    });
   }
 
   void _onAnalyze() {
@@ -184,9 +212,8 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
                 onAnalyze: _onAnalyze,
                 vehicle: vehicle,
                 preferences: preferences,
-                onVehicleChanged: (v) => setState(() => _tripVehicle = v),
-                onPreferencesChanged: (p) =>
-                    setState(() => _tripPreferences = p),
+                onVehicleChanged: _syncVehicle,
+                onPreferencesChanged: _syncPreferences,
               );
             },
           ),

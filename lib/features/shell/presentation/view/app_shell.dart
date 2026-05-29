@@ -7,29 +7,25 @@ import 'package:tripplus/features/alerts/presentation/widget/trip_alert_banner.d
 import 'package:tripplus/features/discovery/presentation/view/discovery_screen.dart';
 import 'package:tripplus/features/plan/presentation/view/plan_screen.dart';
 import 'package:tripplus/features/profile/presentation/view/profile_tab_screen.dart';
+import 'package:tripplus/features/shell/presentation/controller/shell_providers.dart';
 import 'package:tripplus/features/trip/presentation/view/trip_tab_screen.dart';
 
-class AppShell extends ConsumerStatefulWidget {
+class AppShell extends ConsumerWidget {
   const AppShell({super.key});
 
   @override
-  ConsumerState<AppShell> createState() => _AppShellState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentIndex = ref.watch(shellTabIndexProvider);
 
-class _AppShellState extends ConsumerState<AppShell> {
-  int _currentIndex = 0;
+    final screens = [
+      const PlanScreen(),
+      TripTabScreen(
+        onPlanTrip: () => navigateToShellTab(ref, 0),
+      ),
+      const DiscoveryScreen(),
+      const ProfileTabScreen(),
+    ];
 
-  late final List<Widget> _screens = [
-    const PlanScreen(),
-    TripTabScreen(onPlanTrip: () => _switchTo(0)),   // P1-017
-    const DiscoveryScreen(),
-    const ProfileTabScreen(),
-  ];
-
-  void _switchTo(int i) => setState(() => _currentIndex = i);
-
-  @override
-  Widget build(BuildContext context) {
     // P1-028 — keep alert notifier subscribed for the shell lifetime.
     ref.watch(alertNotifierProvider);
 
@@ -41,15 +37,15 @@ class _AppShellState extends ConsumerState<AppShell> {
           const TripAlertBanner(),
           Expanded(
             child: IndexedStack(
-              index: _currentIndex,
-              children: _screens,
+              index: currentIndex,
+              children: screens,
             ),
           ),
         ],
       ),
       bottomNavigationBar: AppBottomNav(
-        currentIndex: _currentIndex,
-        onTap: _switchTo,
+        currentIndex: currentIndex,
+        onTap: (i) => navigateToShellTab(ref, i),
       ),
     );
   }

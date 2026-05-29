@@ -8,6 +8,7 @@ import 'package:tripplus/core/telemetry/app_telemetry.dart';
 import 'package:tripplus/features/alerts/domain/alert.dart';
 import 'package:tripplus/features/plan/presentation/controller/plan_state.dart';
 import 'package:tripplus/features/trip/data/local_db/corridor_cache_box.dart';
+import 'package:tripplus/features/trip/data/local_db/trip_history_box.dart';
 import 'package:tripplus/features/trip/data/local_db/trip_box.dart';
 import 'package:tripplus/features/trip/domain/models/corridor_cache.dart';
 import 'package:tripplus/features/trip/domain/models/trip.dart';
@@ -155,8 +156,10 @@ class ActiveTripController extends StateNotifier<ActiveTripState> {
       completedAt: DateTime.now(),
       elapsedPausedMs: pausedMs,
     );
+    await TripHistoryBox.append(updated);
     await _persist(updated);
-    await CorridorCacheBox.clear(); // evict cache when trip ends
+    await TripBox.clear(); // active slot cleared; summary lives in history
+    await CorridorCacheBox.clear();
     state = ActiveTripState.completed(trip: updated);
     AppTelemetry.tripEnded(
       tripId: updated.id,
@@ -183,7 +186,7 @@ class ActiveTripController extends StateNotifier<ActiveTripState> {
     };
   }
 
-  /// Clears a completed trip and returns to [idle].
+  /// Clears the completed-trip banner and returns to [idle].
   Future<void> dismissCompleted() async {
     await TripBox.clear();
     state = const ActiveTripState.idle();

@@ -36,6 +36,9 @@ class ProfileController extends StateNotifier<ProfileUiState> {
     if (!TripPlanCopy.isEv(vehicle.type) && prefs.fastChargersOnly) {
       prefs = prefs.copyWith(fastChargersOnly: false);
     }
+    if (vehicle.type == VehicleType.ev || vehicle.type == VehicleType.bike) {
+      prefs = prefs.copyWith(preferredFuelBrands: const []);
+    }
     state = ProfileUiState.idle(
       state.data.copyWith(vehicle: vehicle, preferences: prefs),
     );

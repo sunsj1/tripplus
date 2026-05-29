@@ -1,16 +1,16 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tripplus/core/theme/app_colors.dart';
 import 'package:tripplus/core/theme/app_text_styles.dart';
+import 'package:tripplus/features/alerts/presentation/view/alert_history_screen.dart';
 import 'package:tripplus/features/plan/presentation/widget/stat_card.dart';
 import 'package:tripplus/features/trip/domain/models/trip.dart';
 import 'package:tripplus/features/trip/domain/models/trip_status.dart';
-import 'package:tripplus/features/trip/presentation/controller/active_trip_controller.dart';
 import 'package:tripplus/features/trip/presentation/controller/active_trip_state.dart';
-import 'package:tripplus/features/alerts/presentation/view/alert_history_screen.dart';
 import 'package:tripplus/features/trip/presentation/controller/trip_providers.dart';
+import 'package:tripplus/features/trip/presentation/utils/trip_formatters.dart';
+import 'package:tripplus/features/trip/presentation/widget/trip_elapsed_panel.dart';
+import 'package:tripplus/features/trip/presentation/widget/trip_end_dialog.dart';
 
 class TripTabScreen extends ConsumerWidget {
   const TripTabScreen({super.key, required this.onPlanTrip});
@@ -162,40 +162,12 @@ class _ReadyView extends ConsumerWidget {
 // ---------------------------------------------------------------------------
 // Active Dashboard — running or paused
 // ---------------------------------------------------------------------------
-class _ActiveDashboard extends ConsumerStatefulWidget {
+class _ActiveDashboard extends ConsumerWidget {
   const _ActiveDashboard({required this.trip});
   final Trip trip;
 
   @override
-  ConsumerState<_ActiveDashboard> createState() => _ActiveDashboardState();
-}
-
-class _ActiveDashboardState extends ConsumerState<_ActiveDashboard> {
-  late Timer _ticker;
-  Duration _elapsed = Duration.zero;
-
-  @override
-  void initState() {
-    super.initState();
-    _elapsed = widget.trip.elapsed;
-    // Tick every second when running; when paused elapsed is frozen anyway.
-    _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
-      final trip = ref.read(activeTripControllerProvider).trip;
-      if (trip != null && trip.status == TripStatus.active) {
-        setState(() => _elapsed = trip.elapsed);
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _ticker.cancel();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final trip = widget.trip;
+  Widget build(BuildContext context, WidgetRef ref) {
     final isRunning = trip.status == TripStatus.active;
     final controller = ref.read(activeTripControllerProvider.notifier);
 
@@ -230,38 +202,9 @@ class _ActiveDashboardState extends ConsumerState<_ActiveDashboard> {
                       ),
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    isRunning ? 'ELAPSED TIME' : 'PAUSED',
-                    style: AppTextStyles.caption.copyWith(
-                      color: isRunning
-                          ? Colors.white70
-                          : AppColors.warning,
-                      letterSpacing: 1.5,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    _formatElapsed(_elapsed),
-                    style: AppTextStyles.h2.copyWith(
-                      color: isRunning ? Colors.white : AppColors.warning,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  if (trip.etaMinutes != null) ...[
-                    const SizedBox(height: 4),
-                    Text(
-                      'Total ETA: ${_fmtDuration(trip.etaMinutes!)}',
-                      style: AppTextStyles.bodySmall.copyWith(
-                        color:
-                            isRunning ? Colors.white70 : AppColors.textSecondary,
-                      ),
-                    ),
-                  ],
-                ],
+              child: TripElapsedPanel(
+                isRunning: isRunning,
+                etaMinutes: trip.etaMinutes,
               ),
             ),
           ),
@@ -315,7 +258,13 @@ class _ActiveDashboardState extends ConsumerState<_ActiveDashboard> {
                   child: SizedBox(
                     height: 52,
                     child: OutlinedButton.icon(
-                      onPressed: () => _confirmEnd(context, controller),
+                      onPressed: () => showTripEndDialog(
+                        context,
+                        onConfirm: () async {
+                          await controller.endTrip();
+                          ref.invalidate(tripHistoryProvider);
+                        },
+                      ),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: AppColors.error,
                         side: const BorderSide(color: AppColors.error),
@@ -332,41 +281,6 @@ class _ActiveDashboardState extends ConsumerState<_ActiveDashboard> {
         ],
       ),
     );
-  }
-
-  void _confirmEnd(BuildContext context, ActiveTripController controller) {
-    showDialog<void>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('End trip?'),
-        content: const Text(
-          'This will finalise your trip summary. You can\'t resume after ending.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () {
-              Navigator.pop(ctx);
-              controller.endTrip();
-            },
-            style: FilledButton.styleFrom(
-              backgroundColor: AppColors.error,
-            ),
-            child: const Text('End trip'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  String _formatElapsed(Duration d) {
-    final h = d.inHours;
-    final m = d.inMinutes.remainder(60).toString().padLeft(2, '0');
-    final s = d.inSeconds.remainder(60).toString().padLeft(2, '0');
-    return h > 0 ? '$h:$m:$s' : '$m:$s';
   }
 }
 
@@ -425,7 +339,7 @@ class _CompletedView extends ConsumerWidget {
                 icon: Icons.timer_outlined,
                 iconColor: AppColors.primary,
                 label: 'Duration',
-                value: _fmtDuration(elapsed.inMinutes),
+                value: formatElapsedMinutesOnly(elapsed),
               ),
               const SizedBox(width: 12),
               StatCard(
@@ -455,11 +369,23 @@ class _CompletedView extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 16),
+          Center(
+            child: Text(
+              'Saved to Trip history in Profile',
+              style: AppTextStyles.bodySmall.copyWith(
+                color: AppColors.textTertiary,
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
           SizedBox(
             width: double.infinity,
             height: 52,
             child: FilledButton(
-              onPressed: () => controller.dismissCompleted(),
+              onPressed: () {
+                ref.invalidate(tripHistoryProvider);
+                controller.dismissCompleted();
+              },
               style: FilledButton.styleFrom(
                 backgroundColor: AppColors.primary,
               ),

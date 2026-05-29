@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tripplus/core/theme/app_colors.dart';
 import 'package:tripplus/core/theme/app_text_styles.dart';
+import 'package:tripplus/core/widgets/fuel_brand_picker.dart';
 import 'package:tripplus/features/profile/presentation/controller/profile_providers.dart';
 import 'package:tripplus/features/profile/presentation/controller/profile_ui_state.dart';
 import 'package:tripplus/features/profile/presentation/widget/preferences_chips.dart';
@@ -49,7 +50,11 @@ class ProfileSetupScreen extends ConsumerWidget {
                 selected: data.vehicle,
                 onChanged: controller.updateDraftVehicle,
               ),
-              const SizedBox(height: 32),
+              FuelBrandSection(
+                vehicleType: data.vehicle?.type,
+                preferences: data.preferences,
+                onChanged: controller.updateDraftPreferences,
+              ),
               PreferencesChips(
                 value: data.preferences,
                 vehicleType: data.vehicle?.type,

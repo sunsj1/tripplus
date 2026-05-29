@@ -15,7 +15,9 @@ import 'package:tripplus/features/plan/presentation/widget/stat_card.dart';
 import 'package:tripplus/features/profile/presentation/controller/profile_providers.dart';
 import 'package:tripplus/features/stations/presentation/view/station_detail_screen.dart';
 import 'package:tripplus/features/stations/presentation/widget/station_list_tile.dart';
+import 'package:tripplus/features/shell/presentation/controller/shell_providers.dart';
 import 'package:tripplus/features/trip/presentation/controller/trip_providers.dart';
+import 'package:tripplus/features/trip/presentation/widget/route_trip_actions.dart';
 
 /// Converts the current widget's fields into a [PlanResult] for the trip
 /// controller. Helper kept outside the class to keep build() clean.
@@ -122,27 +124,17 @@ class PlanResultView extends ConsumerWidget {
               ),
               const SizedBox(height: 16),
 
-              // P1-017 — "Start trip" action
-              _StartTripButton(
-                onStartTrip: () {
+              RouteTripActions(
+                from: from,
+                to: to,
+                onPrepareTrip: () async {
                   final profile = ref.read(profileControllerProvider).data;
                   final vehicle = profile.vehicle ??
                       const Vehicle(type: VehicleType.petrol);
-                  ref
+                  await ref
                       .read(activeTripControllerProvider.notifier)
-                      .prepareTrip(plan: _toPlanResult(this), vehicle: vehicle);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: const Text(
-                        'Trip ready — go to the Trip tab to start!',
-                      ),
-                      behavior: SnackBarBehavior.floating,
-                      margin: const EdgeInsets.fromLTRB(20, 0, 20, 80),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                  );
+                      .prepareTrip(plan: plan, vehicle: vehicle);
+                  navigateToShellTab(ref, 1);
                 },
               ),
               const SizedBox(height: 24),
@@ -708,34 +700,6 @@ class _RouteRiskPanel extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-// ---------------------------------------------------------------------------
-// P1-017 — Start trip button
-// ---------------------------------------------------------------------------
-
-class _StartTripButton extends StatelessWidget {
-  const _StartTripButton({required this.onStartTrip});
-  final VoidCallback onStartTrip;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: SizedBox(
-        width: double.infinity,
-        height: 52,
-        child: FilledButton.icon(
-          onPressed: onStartTrip,
-          style: FilledButton.styleFrom(
-            backgroundColor: AppColors.primary,
-          ),
-          icon: const Icon(Icons.luggage_outlined),
-          label: const Text('Start this trip'),
-        ),
       ),
     );
   }

@@ -19,7 +19,11 @@ _$UserPreferencesImpl _$$UserPreferencesImplFromJson(
   petFriendly: json['petFriendly'] as bool? ?? false,
   nightSafe: json['nightSafe'] as bool? ?? false,
   scenicRoute: json['scenicRoute'] as bool? ?? false,
-  preferredFuelBrand: json['preferredFuelBrand'] as String?,
+  preferredFuelBrands:
+      (json['preferredFuelBrands'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList() ??
+      const <String>[],
   dietaryFlags:
       (json['dietaryFlags'] as List<dynamic>?)
           ?.map((e) => e as String)
@@ -38,7 +42,7 @@ Map<String, dynamic> _$$UserPreferencesImplToJson(
   'petFriendly': instance.petFriendly,
   'nightSafe': instance.nightSafe,
   'scenicRoute': instance.scenicRoute,
-  'preferredFuelBrand': instance.preferredFuelBrand,
+  'preferredFuelBrands': instance.preferredFuelBrands,
   'dietaryFlags': instance.dietaryFlags,
 };
 

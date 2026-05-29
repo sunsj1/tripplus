@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tripplus/core/domain/poi.dart';
 import 'package:tripplus/core/theme/app_colors.dart';
 import 'package:tripplus/core/theme/app_text_styles.dart';
+import 'package:tripplus/core/utils/google_places_photo.dart';
+import 'package:tripplus/core/widgets/poi_photo.dart';
 import 'package:tripplus/features/community/presentation/widgets/poi_community_reports_section.dart';
+import 'package:tripplus/features/pois/presentation/controller/pois_providers.dart';
 
 /// Modal bottom sheet shown when the user taps a POI tile. Wraps the POI
-/// summary + the POI-flavored community reports section (`P1-053`).
-///
-/// Phase 1 deliberately does not include a full POI detail screen — the
-/// sheet is the discoverable surface. If a future task introduces a routed
-/// detail screen, the same [PoiCommunityReportsSection] mounts there too.
+/// summary + Google photos (when available) + community reports section.
 Future<void> showPoiDetailSheet(BuildContext context, Poi poi) {
   return showModalBottomSheet<void>(
     context: context,
@@ -22,13 +22,53 @@ Future<void> showPoiDetailSheet(BuildContext context, Poi poi) {
   );
 }
 
-class _PoiDetailSheet extends StatelessWidget {
+class _PoiDetailSheet extends ConsumerStatefulWidget {
   const _PoiDetailSheet({required this.poi});
   final Poi poi;
 
   @override
+  ConsumerState<_PoiDetailSheet> createState() => _PoiDetailSheetState();
+}
+
+class _PoiDetailSheetState extends ConsumerState<_PoiDetailSheet> {
+  late Poi _poi;
+  var _loadingPhotos = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _poi = widget.poi;
+    _enrichFromPlaceDetails();
+  }
+
+  /// Place Details returns more photos than Nearby Search — fetch on open.
+  Future<void> _enrichFromPlaceDetails() async {
+    final placeId = widget.poi.googlePlaceId;
+    if (placeId == null) return;
+
+    setState(() => _loadingPhotos = true);
+    final result = await ref.read(poiRepositoryProvider).getById(placeId);
+    if (!mounted) return;
+
+    result.match(
+      (_) => setState(() => _loadingPhotos = false),
+      (enriched) {
+        setState(() {
+          _loadingPhotos = false;
+          _poi = enriched.copyWith(
+            category: widget.poi.category,
+            distanceAlongRouteKm: widget.poi.distanceAlongRouteKm,
+          );
+        });
+      },
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final dist = poi.distanceAlongRouteKm;
+    final dist = _poi.distanceAlongRouteKm;
+    final hasPhotos = _poi.photos.isNotEmpty;
+
     return DraggableScrollableSheet(
       expand: false,
       initialChildSize: 0.7,
@@ -38,7 +78,6 @@ class _PoiDetailSheet extends StatelessWidget {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Drag handle
             Container(
               margin: const EdgeInsets.only(top: 8, bottom: 4),
               width: 40,
@@ -53,31 +92,39 @@ class _PoiDetailSheet extends StatelessWidget {
                 controller: scrollController,
                 padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
                 children: [
+                  if (hasPhotos) ...[
+                    PoiPhotoGallery(poi: _poi),
+                    const SizedBox(height: 16),
+                  ] else if (_loadingPhotos) ...[
+                    Container(
+                      height: 140,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: AppColors.surface,
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(color: AppColors.borderLight),
+                      ),
+                      child: const SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        width: 48,
-                        height: 48,
-                        decoration: BoxDecoration(
-                          color: AppColors.primarySurface,
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        child: const Icon(
-                          Icons.place,
-                          size: 24,
-                          color: AppColors.primary,
-                        ),
-                      ),
+                      PoiPhotoThumbnail(poi: _poi, size: 48, borderRadius: 14),
                       const SizedBox(width: 14),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(poi.name, style: AppTextStyles.h4),
+                            Text(_poi.name, style: AppTextStyles.h4),
                             const SizedBox(height: 2),
                             Text(
-                              poi.category.label,
+                              _poi.category.label,
                               style: AppTextStyles.bodySmall.copyWith(
                                 color: AppColors.textTertiary,
                                 fontWeight: FontWeight.w600,
@@ -86,10 +133,10 @@ class _PoiDetailSheet extends StatelessWidget {
                           ],
                         ),
                       ),
-                      _SourceBadge(label: poi.source.label),
+                      _SourceBadge(label: _poi.source.label),
                     ],
                   ),
-                  if (poi.address != null) ...[
+                  if (_poi.address != null) ...[
                     const SizedBox(height: 14),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,7 +149,7 @@ class _PoiDetailSheet extends StatelessWidget {
                         const SizedBox(width: 6),
                         Expanded(
                           child: Text(
-                            poi.address!,
+                            _poi.address!,
                             style: AppTextStyles.bodyMedium.copyWith(
                               color: AppColors.textSecondary,
                             ),
@@ -121,21 +168,21 @@ class _PoiDetailSheet extends StatelessWidget {
                           icon: Icons.route,
                           label: '${dist.toStringAsFixed(1)} km on route',
                         ),
-                      if (poi.rating > 0)
+                      if (_poi.rating > 0)
                         _FactPill(
                           icon: Icons.star,
                           iconColor: AppColors.warning,
-                          label: poi.reviewCount > 0
-                              ? '${poi.rating.toStringAsFixed(1)} (${poi.reviewCount})'
-                              : poi.rating.toStringAsFixed(1),
+                          label: _poi.reviewCount > 0
+                              ? '${_poi.rating.toStringAsFixed(1)} (${_poi.reviewCount})'
+                              : _poi.rating.toStringAsFixed(1),
                         ),
-                      if (poi.openNow == true)
+                      if (_poi.openNow == true)
                         const _FactPill(
                           icon: Icons.check_circle_outline,
                           iconColor: AppColors.success,
                           label: 'Open now',
                         )
-                      else if (poi.openNow == false)
+                      else if (_poi.openNow == false)
                         const _FactPill(
                           icon: Icons.do_not_disturb_on_outlined,
                           iconColor: AppColors.error,
@@ -144,7 +191,7 @@ class _PoiDetailSheet extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 24),
-                  PoiCommunityReportsSection(poi: poi),
+                  PoiCommunityReportsSection(poi: _poi),
                 ],
               ),
             ),

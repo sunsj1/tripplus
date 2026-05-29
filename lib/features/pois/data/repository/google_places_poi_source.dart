@@ -119,11 +119,12 @@ class GooglePlacesPoiSource implements PoiRepository {
         'Google Maps API key is missing — set GOOGLE_MAPS_API_KEY in .env.',
       ));
     }
+    final placeId = id.startsWith('g_') ? id.substring(2) : id;
     try {
       final response = await _dio.get<Map<String, dynamic>>(
         _detailsEndpoint,
         queryParameters: {
-          'place_id': id,
+          'place_id': placeId,
           'fields':
               'place_id,name,formatted_address,geometry,rating,user_ratings_total,types,opening_hours,price_level,photos',
           'key': ApiConstants.googleMapsApiKey,
@@ -148,6 +149,78 @@ class GooglePlacesPoiSource implements PoiRepository {
       _logger.w('Place Details unexpected error: $e');
       return left(Failure.platform(e.toString()));
     }
+  }
+
+  @override
+  Future<Either<Failure, List<Poi>>> searchAlongRouteKeyword({
+    required List<LatLng> polyline,
+    required String keyword,
+    required PoiCategory displayCategory,
+    double corridorWidthKm = 10,
+  }) async {
+    if (!ApiConstants.isGoogleMapsKeyConfigured) {
+      return left(const Failure.permission(
+        'Google Maps API key is missing — set GOOGLE_MAPS_API_KEY in .env.',
+      ));
+    }
+    if (polyline.length < 2) {
+      return left(const Failure.platform(
+        'Polyline must have at least 2 points.',
+      ));
+    }
+
+    final radiusMeters = (corridorWidthKm * 1000).clamp(500, 50000).toInt();
+    final samples = _samplePolyline(polyline);
+    final spec = _NearbyQuerySpec(keyword: keyword);
+
+    final futures = samples.map(
+      (p) => _nearbySearchOnce(
+        point: p,
+        radiusMeters: radiusMeters,
+        spec: spec,
+        category: displayCategory,
+      ),
+    );
+
+    final results = await Future.wait(futures);
+    Failure? firstFailure;
+    final dedup = <String, Poi>{};
+    for (final r in results) {
+      r.match(
+        (f) => firstFailure ??= f,
+        (list) {
+          for (final p in list) {
+            dedup.putIfAbsent(p.id, () => p);
+          }
+        },
+      );
+    }
+
+    if (firstFailure != null && dedup.isEmpty) {
+      return left(firstFailure!);
+    }
+    return right(dedup.values.toList());
+  }
+
+  @override
+  Future<Either<Failure, List<Poi>>> searchNearbyKeyword({
+    required double latitude,
+    required double longitude,
+    required String keyword,
+    required PoiCategory displayCategory,
+    double radiusKm = 15,
+  }) {
+    if (!ApiConstants.isGoogleMapsKeyConfigured) {
+      return Future.value(left(const Failure.permission(
+        'Google Maps API key is missing — set GOOGLE_MAPS_API_KEY in .env.',
+      )));
+    }
+    return _nearbySearchOnce(
+      point: LatLng(latitude, longitude),
+      radiusMeters: (radiusKm * 1000).clamp(500, 50000).toInt(),
+      spec: _NearbyQuerySpec(keyword: keyword),
+      category: displayCategory,
+    );
   }
 
   // ---------------------------------------------------------------------------
@@ -248,12 +321,27 @@ class GooglePlacesPoiSource implements PoiRepository {
     final priceLevel = (data['price_level'] as num?)?.toInt();
     final types = (data['types'] as List?)?.cast<String>() ?? const <String>[];
 
-    final photos = (data['photos'] as List?)
+    const maxPhotos = 5;
+    final photoEntries = (data['photos'] as List?)
             ?.whereType<Map<String, dynamic>>()
-            .map((p) => p['photo_reference'] as String?)
-            .whereType<String>()
+            .take(maxPhotos)
             .toList() ??
-        const <String>[];
+        const <Map<String, dynamic>>[];
+
+    final photos = photoEntries
+        .map((p) => p['photo_reference'] as String?)
+        .whereType<String>()
+        .toList();
+
+    final attributions = photoEntries
+        .expand(
+          (p) =>
+              (p['html_attributions'] as List?)?.whereType<String>() ??
+              const <String>[],
+        )
+        .where((s) => s.isNotEmpty)
+        .toSet()
+        .toList();
 
     return Poi(
       id: placeId.isNotEmpty ? 'g_$placeId' : 'g_${name}_${lat}_$lng',
@@ -270,6 +358,7 @@ class GooglePlacesPoiSource implements PoiRepository {
       photos: photos,
       attributes: {
         if (types.isNotEmpty) 'google_types': types,
+        if (attributions.isNotEmpty) 'photo_attributions': attributions,
       },
     );
   }

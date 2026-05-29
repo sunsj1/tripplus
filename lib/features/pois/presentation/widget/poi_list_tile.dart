@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tripplus/core/domain/poi.dart';
 import 'package:tripplus/core/theme/app_colors.dart';
 import 'package:tripplus/core/theme/app_text_styles.dart';
+import 'package:tripplus/core/widgets/poi_photo.dart';
 
 /// One row in the POI list. Community pulse chip is added in `P1-054`; this
 /// tile leaves a `pulseSlot` placeholder so the future widget can drop in
@@ -34,19 +35,7 @@ class PoiListTile extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                color: AppColors.primarySurface,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(
-                _iconFor(poi.category),
-                size: 22,
-                color: AppColors.primary,
-              ),
-            ),
+            PoiPhotoThumbnail(poi: poi),
             const SizedBox(width: 14),
             Expanded(
               child: Column(
@@ -120,43 +109,6 @@ class PoiListTile extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  IconData _iconFor(PoiCategory c) {
-    switch (c) {
-      case PoiCategory.fuel:
-        return Icons.local_gas_station;
-      case PoiCategory.ev:
-        return Icons.electric_car;
-      case PoiCategory.restaurant:
-        return Icons.restaurant;
-      case PoiCategory.pureVeg:
-        return Icons.eco;
-      case PoiCategory.washroom:
-        return Icons.wc;
-      case PoiCategory.atm:
-        return Icons.local_atm;
-      case PoiCategory.hotel:
-        return Icons.hotel;
-      case PoiCategory.medical:
-        return Icons.local_hospital;
-      case PoiCategory.scenic:
-        return Icons.landscape;
-      case PoiCategory.temple:
-        return Icons.temple_hindu;
-      case PoiCategory.kidsStop:
-        return Icons.child_friendly;
-      case PoiCategory.mechanic:
-        return Icons.build;
-      case PoiCategory.parking:
-        return Icons.local_parking;
-      case PoiCategory.cafe:
-        return Icons.local_cafe;
-      case PoiCategory.tourist:
-        return Icons.attractions;
-      case PoiCategory.police:
-        return Icons.local_police;
-    }
   }
 }
 

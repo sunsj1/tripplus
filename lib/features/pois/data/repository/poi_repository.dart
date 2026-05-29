@@ -44,6 +44,23 @@ abstract class PoiRepository {
     double radiusKm = 5,
   });
 
+  /// Keyword corridor search — used for emergency services (RSA, crane, etc.).
+  Future<Either<Failure, List<Poi>>> searchAlongRouteKeyword({
+    required List<LatLng> polyline,
+    required String keyword,
+    required PoiCategory displayCategory,
+    double corridorWidthKm = 10,
+  });
+
+  /// Keyword radial fallback when there is no active route.
+  Future<Either<Failure, List<Poi>>> searchNearbyKeyword({
+    required double latitude,
+    required double longitude,
+    required String keyword,
+    required PoiCategory displayCategory,
+    double radiusKm = 15,
+  });
+
   /// One-shot lookup by stable id (used by deep links + detail screens).
   ///
   /// Expected failures: `network`, `firestore`, `platform`.

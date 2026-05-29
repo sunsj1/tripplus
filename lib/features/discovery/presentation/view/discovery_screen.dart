@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:tripplus/core/domain/poi.dart';
 import 'package:tripplus/core/theme/app_colors.dart';
 import 'package:tripplus/core/theme/app_text_styles.dart';
+import 'package:tripplus/features/discovery/presentation/view/emergency_screen.dart';
+import 'package:tripplus/features/discovery/presentation/widget/emergency_pinned_tile.dart';
 import 'package:tripplus/features/pois/presentation/view/poi_category_screen.dart';
 
 /// The iconic 3-column "Smart Intelligence Grid" from the PDF (`P1-011`).
 /// Each tile pushes [PoiCategoryScreen] for the tapped category (`P1-013`).
+/// A pinned red [EmergencyPinnedTile] sits above the grid for SOS access.
 class DiscoveryScreen extends StatelessWidget {
   const DiscoveryScreen({super.key});
 
@@ -39,7 +42,19 @@ class DiscoveryScreen extends StatelessWidget {
               ),
             ),
             SliverPadding(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 28),
+              padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
+              sliver: SliverToBoxAdapter(
+                child: EmergencyPinnedTile(
+                  onTap: () => Navigator.of(context).push<void>(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const EmergencyScreen(),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 28),
               sliver: SliverGrid(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,

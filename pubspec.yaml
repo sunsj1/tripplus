@@ -56,6 +56,9 @@ dependencies:
   # Unique ID generation (Trip IDs)
   uuid: ^4.5.1
 
+  # Deep links (emergency dial, external maps)
+  url_launcher: ^6.3.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

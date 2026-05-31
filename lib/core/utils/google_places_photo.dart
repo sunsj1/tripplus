@@ -19,6 +19,11 @@ class GooglePlacesPhoto {
         '&photo_reference=${Uri.encodeComponent(reference)}'
         '&key=${ApiConstants.googleMapsApiKey}';
   }
+
+  /// Strips HTML tags from Places photo attribution strings.
+  static String plainAttribution(String html) {
+    return html.replaceAll(RegExp(r'<[^>]*>'), '').trim();
+  }
 }
 
 extension PoiPhotoX on Poi {
@@ -45,6 +50,10 @@ extension PoiPhotoX on Poi {
         .toList();
   }
 
+  /// Higher-res URLs for the fullscreen gallery viewer.
+  List<String> fullscreenPhotoUrls({int limit = 5}) =>
+      photoUrls(maxWidth: 1200, limit: limit);
+
   List<String> get photoAttributions {
     final raw = attributes['photo_attributions'];
     if (raw is List) {
@@ -52,4 +61,8 @@ extension PoiPhotoX on Poi {
     }
     return const [];
   }
+
+  /// Google returns HTML anchor tags — strip to readable plain text for UI.
+  List<String> get plainPhotoAttributions =>
+      photoAttributions.map(GooglePlacesPhoto.plainAttribution).toList();
 }

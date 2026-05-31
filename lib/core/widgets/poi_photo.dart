@@ -140,10 +140,25 @@ class PoiPhotoGallery extends StatelessWidget {
   final Poi poi;
   final int maxPhotos;
 
+  void _openFullscreen(BuildContext context, int index) {
+    final urls = poi.fullscreenPhotoUrls(limit: maxPhotos);
+    if (urls.isEmpty) return;
+    showPoiPhotoViewer(
+      context,
+      photoUrls: urls,
+      initialIndex: index.clamp(0, urls.length - 1),
+      attributions: poi.plainPhotoAttributions,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final urls = poi.photoUrls(limit: maxPhotos);
     if (urls.isEmpty) return const SizedBox.shrink();
+
+    final attributionText = poi.plainPhotoAttributions.isNotEmpty
+        ? poi.plainPhotoAttributions.join(' · ')
+        : 'Photos via Google';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -155,18 +170,48 @@ class PoiPhotoGallery extends StatelessWidget {
             itemCount: urls.length,
             separatorBuilder: (context, index) => const SizedBox(width: 10),
             itemBuilder: (context, index) {
-              return ClipRRect(
-                borderRadius: BorderRadius.circular(14),
-                child: SizedBox(
-                  width: 200,
-                  child: Image.network(
-                    urls[index],
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Container(
-                      color: AppColors.primarySurface,
-                      child: const Icon(
-                        Icons.broken_image_outlined,
-                        color: AppColors.textTertiary,
+              return Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () => _openFullscreen(context, index),
+                  borderRadius: BorderRadius.circular(14),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(14),
+                    child: SizedBox(
+                      width: 200,
+                      height: 140,
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          Image.network(
+                            urls[index],
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) =>
+                                Container(
+                              color: AppColors.primarySurface,
+                              child: const Icon(
+                                Icons.broken_image_outlined,
+                                color: AppColors.textTertiary,
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            right: 8,
+                            bottom: 8,
+                            child: Container(
+                              padding: const EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                color: Colors.black.withValues(alpha: 0.45),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Icon(
+                                Icons.fullscreen,
+                                size: 16,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -177,9 +222,7 @@ class PoiPhotoGallery extends StatelessWidget {
         ),
         const SizedBox(height: 6),
         Text(
-          poi.photoAttributions.isNotEmpty
-              ? poi.photoAttributions.join(' · ')
-              : 'Photos via Google',
+          attributionText,
           style: Theme.of(context).textTheme.labelSmall?.copyWith(
                 color: AppColors.textTertiary,
                 fontSize: 10,
@@ -188,6 +231,164 @@ class PoiPhotoGallery extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
         ),
       ],
+    );
+  }
+}
+
+/// Full-screen swipeable photo viewer opened from [PoiPhotoGallery].
+Future<void> showPoiPhotoViewer(
+  BuildContext context, {
+  required List<String> photoUrls,
+  required int initialIndex,
+  List<String> attributions = const [],
+}) {
+  if (photoUrls.isEmpty) return Future<void>.value();
+
+  return Navigator.of(context).push<void>(
+    PageRouteBuilder<void>(
+      opaque: false,
+      barrierColor: Colors.black,
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return _PoiPhotoFullscreenPage(
+          photoUrls: photoUrls,
+          initialIndex: initialIndex,
+          attributions: attributions,
+        );
+      },
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(opacity: animation, child: child);
+      },
+    ),
+  );
+}
+
+class _PoiPhotoFullscreenPage extends StatefulWidget {
+  const _PoiPhotoFullscreenPage({
+    required this.photoUrls,
+    required this.initialIndex,
+    required this.attributions,
+  });
+
+  final List<String> photoUrls;
+  final int initialIndex;
+  final List<String> attributions;
+
+  @override
+  State<_PoiPhotoFullscreenPage> createState() => _PoiPhotoFullscreenPageState();
+}
+
+class _PoiPhotoFullscreenPageState extends State<_PoiPhotoFullscreenPage> {
+  late final PageController _pageController;
+  late int _currentIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentIndex = widget.initialIndex;
+    _pageController = PageController(initialPage: widget.initialIndex);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final total = widget.photoUrls.length;
+    final attribution = widget.attributions.isNotEmpty
+        ? widget.attributions.join(' · ')
+        : 'Photos via Google';
+
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Stack(
+        children: [
+          PageView.builder(
+            controller: _pageController,
+            itemCount: total,
+            onPageChanged: (index) => setState(() => _currentIndex = index),
+            itemBuilder: (context, index) {
+              return InteractiveViewer(
+                minScale: 0.8,
+                maxScale: 4,
+                child: Center(
+                  child: Image.network(
+                    widget.photoUrls[index],
+                    fit: BoxFit.contain,
+                    width: double.infinity,
+                    height: double.infinity,
+                    loadingBuilder: (context, child, progress) {
+                      if (progress == null) return child;
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      );
+                    },
+                    errorBuilder: (context, error, stackTrace) => const Icon(
+                      Icons.broken_image_outlined,
+                      color: Colors.white54,
+                      size: 48,
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.close, color: Colors.white),
+                    tooltip: 'Close',
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                  const Spacer(),
+                  if (total > 1)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.5),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        '${_currentIndex + 1} / $total',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+          Positioned(
+            left: 16,
+            right: 16,
+            bottom: MediaQuery.paddingOf(context).bottom + 16,
+            child: Text(
+              attribution,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.white.withValues(alpha: 0.7),
+                fontSize: 11,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

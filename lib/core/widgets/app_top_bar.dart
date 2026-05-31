@@ -18,7 +18,7 @@ class AppTopBar extends ConsumerWidget implements PreferredSizeWidget {
   const AppTopBar({
     super.key,
     this.title = 'TripPlus',
-    this.showMenu = true,
+    @Deprecated('No drawer is wired — parameter is ignored') this.showMenu = false,
     this.showBack = false,
     this.showProfileMenu = true,
     this.onBack,
@@ -37,14 +37,13 @@ class AppTopBar extends ConsumerWidget implements PreferredSizeWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       child: Row(
         children: [
-          if (showBack)
+          if (showBack) ...[
             GestureDetector(
               onTap: onBack ?? () => Navigator.maybePop(context),
               child: const Icon(Icons.arrow_back_ios, size: 20),
-            )
-          else if (showMenu)
-            const Icon(Icons.menu, size: 24, color: AppColors.textPrimary),
-          const SizedBox(width: 12),
+            ),
+            const SizedBox(width: 12),
+          ],
           Text(
             title,
             style: const TextStyle(

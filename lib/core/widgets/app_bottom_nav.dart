@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:tripplus/core/theme/app_colors.dart';
 
-/// Bottom nav for the [AppShell]. Four tabs as of `P1-016`:
-/// Plan · Trip · Discover · Profile.
+/// Bottom navigation bar for [AppShell].
+///
+/// Design goals: always shows icon + label for every tab so users know
+/// what each item is. Active state uses a top accent line + filled icon +
+/// primary-colored label. Inactive uses outlined icon + muted label.
+/// All transitions are animated for a premium feel.
 class AppBottomNav extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTap;
@@ -16,23 +20,23 @@ class AppBottomNav extends StatelessWidget {
   static const _items = <_NavSpec>[
     _NavSpec(
       icon: Icons.route_outlined,
-      activeIcon: Icons.route,
-      label: 'PLAN',
+      activeIcon: Icons.route_rounded,
+      label: 'Plan',
     ),
     _NavSpec(
       icon: Icons.luggage_outlined,
-      activeIcon: Icons.luggage,
-      label: 'TRIP',
+      activeIcon: Icons.luggage_rounded,
+      label: 'Trip',
     ),
     _NavSpec(
       icon: Icons.grid_view_outlined,
       activeIcon: Icons.grid_view_rounded,
-      label: 'DISCOVER',
+      label: 'Discover',
     ),
     _NavSpec(
       icon: Icons.person_outline_rounded,
       activeIcon: Icons.person_rounded,
-      label: 'PROFILE',
+      label: 'Profile',
     ),
   ];
 
@@ -41,20 +45,25 @@ class AppBottomNav extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.surface,
+        border: Border(
+          top: BorderSide(
+            color: AppColors.borderLight,
+            width: 0.8,
+          ),
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 20,
-            offset: const Offset(0, -4),
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 16,
+            offset: const Offset(0, -2),
           ),
         ],
       ),
       child: SafeArea(
         top: false,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        child: SizedBox(
+          height: 60,
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               for (var i = 0; i < _items.length; i++)
                 _NavItem(
@@ -70,6 +79,9 @@ class AppBottomNav extends StatelessWidget {
   }
 }
 
+// ---------------------------------------------------------------------------
+// Data
+// ---------------------------------------------------------------------------
 class _NavSpec {
   const _NavSpec({
     required this.icon,
@@ -81,52 +93,78 @@ class _NavSpec {
   final String label;
 }
 
+// ---------------------------------------------------------------------------
+// Single tab item
+// ---------------------------------------------------------------------------
 class _NavItem extends StatelessWidget {
-  final _NavSpec spec;
-  final bool isActive;
-  final VoidCallback onTap;
-
   const _NavItem({
     required this.spec,
     required this.isActive,
     required this.onTap,
   });
 
+  final _NavSpec spec;
+  final bool isActive;
+  final VoidCallback onTap;
+
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      behavior: HitTestBehavior.opaque,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: EdgeInsets.symmetric(
-          horizontal: isActive ? 16 : 12,
-          vertical: 8,
-        ),
-        decoration: BoxDecoration(
-          color: isActive ? AppColors.primary : Colors.transparent,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Row(
+    const duration = Duration(milliseconds: 220);
+    final fg = isActive ? AppColors.primary : AppColors.navInactive;
+
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        behavior: HitTestBehavior.opaque,
+        child: Column(
           mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              isActive ? spec.activeIcon : spec.icon,
-              size: 20,
-              color: isActive ? AppColors.textOnDark : AppColors.navInactive,
+            // ── Top accent indicator ──────────────────────────────────────
+            AnimatedContainer(
+              duration: duration,
+              curve: Curves.easeOut,
+              height: 2.5,
+              width: isActive ? 24 : 0,
+              margin: const EdgeInsets.only(bottom: 8),
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+                borderRadius: BorderRadius.circular(99),
+              ),
             ),
-            if (isActive) ...[
-              const SizedBox(width: 6),
-              Text(
-                spec.label,
-                style: const TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 0.7,
-                  color: AppColors.textOnDark,
+
+            // ── Icon ─────────────────────────────────────────────────────
+            AnimatedScale(
+              scale: isActive ? 1.12 : 1.0,
+              duration: duration,
+              curve: Curves.easeOutBack,
+              child: AnimatedSwitcher(
+                duration: duration,
+                child: Icon(
+                  isActive ? spec.activeIcon : spec.icon,
+                  key: ValueKey(isActive),
+                  size: 22,
+                  color: fg,
                 ),
               ),
-            ],
+            ),
+
+            const SizedBox(height: 4),
+
+            // ── Label — always visible ────────────────────────────────────
+            AnimatedDefaultTextStyle(
+              duration: duration,
+              curve: Curves.easeOut,
+              style: TextStyle(
+                fontSize: 10.5,
+                fontWeight:
+                    isActive ? FontWeight.w700 : FontWeight.w500,
+                color: fg,
+                letterSpacing: isActive ? 0.2 : 0,
+                height: 1,
+              ),
+              child: Text(spec.label),
+            ),
           ],
         ),
       ),

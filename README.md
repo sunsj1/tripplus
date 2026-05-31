@@ -91,6 +91,22 @@ dart run build_runner build --delete-conflicting-outputs
 flutter run
 ```
 
+### Deploy Firestore indexes (required once per Firebase project)
+
+Two composite indexes power the community feed. Without them, POI and station
+pulses fall back to full-collection scans and will hit quota limits fast.
+
+```bash
+firebase deploy --only firestore:indexes
+```
+
+Indexes defined in `firebase/firestore.indexes.json`:
+- `stationCommunityReports` — `stationKey ASC + createdAt DESC`
+- `stationCommunityReports` — `targetKey ASC + createdAt DESC` (POI pulses)
+
+Run this once when setting up a new Firebase project, and again whenever
+`firebase/firestore.indexes.json` changes.
+
 ### After any Freezed model change
 
 ```bash

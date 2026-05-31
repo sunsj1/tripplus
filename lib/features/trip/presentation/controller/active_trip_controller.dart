@@ -25,7 +25,14 @@ import 'package:uuid/uuid.dart';
 /// P1-043 — builds and persists a [CorridorCache] on [prepareTrip].
 class ActiveTripController extends StateNotifier<ActiveTripState> {
   ActiveTripController({required this.locationService})
-      : super(_loadFromHive());
+      : super(_loadFromHive()) {
+    // P1-042 fix: if the app was killed while a trip was active and Hive
+    // restored it as [ActiveTripRunning], the location stream must be
+    // restarted immediately so [lastPosition] is populated and the alert
+    // engine can fire. Without this, every _evaluateNow() call bails at
+    // `position == null` for the entire restored session.
+    if (state is ActiveTripRunning) _startLocationTracking();
+  }
 
   final LocationService locationService;
 

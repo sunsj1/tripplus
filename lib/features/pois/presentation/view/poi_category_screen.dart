@@ -371,61 +371,115 @@ class _ListState extends State<_List> {
           ),
         ),
         // Sort chips
-        SizedBox(
-          height: 36,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            itemCount: _SortMode.values.length,
-            separatorBuilder: (_, _) => const SizedBox(width: 8),
-            itemBuilder: (_, i) {
-              final mode = _SortMode.values[i];
-              final active = _sort == mode;
-              return GestureDetector(
-                onTap: () => setState(() => _sort = mode),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 180),
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: active
-                        ? AppColors.primarySurface
-                        : AppColors.surface,
-                    borderRadius: BorderRadius.circular(999),
-                    border: Border.all(
-                      color: active
-                          ? AppColors.primary.withValues(alpha: 0.4)
-                          : AppColors.borderLight,
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        mode.icon,
-                        size: 13,
-                        color: active
-                            ? AppColors.primary
-                            : AppColors.textTertiary,
+        //
+        // "Open now" is only meaningful when POIs have openNow populated.
+        // Google Nearby Search omits it; Place Details (loaded per tap) adds it.
+        // We keep the chip available but show an honest tooltip and a contextual
+        // hint row when selected with no data — rather than silently doing nothing.
+        Builder(builder: (context) {
+          final hasOpenNowData =
+              widget.pois.any((p) => p.openNow != null);
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 36,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  itemCount: _SortMode.values.length,
+                  separatorBuilder: (_, _) => const SizedBox(width: 8),
+                  itemBuilder: (_, i) {
+                    final mode = _SortMode.values[i];
+                    final active = _sort == mode;
+                    final isOpenNow = mode == _SortMode.openNow;
+                    // Dim "Open now" chip when no live-hours data exists yet.
+                    final dataAbsent = isOpenNow && !hasOpenNowData;
+
+                    return Tooltip(
+                      message: dataAbsent
+                          ? 'Tap a place to load live hours'
+                          : '',
+                      preferBelow: true,
+                      child: GestureDetector(
+                        onTap: () => setState(() => _sort = mode),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 180),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: active
+                                ? AppColors.primarySurface
+                                : AppColors.surface,
+                            borderRadius: BorderRadius.circular(999),
+                            border: Border.all(
+                              color: active
+                                  ? AppColors.primary.withValues(alpha: 0.4)
+                                  : AppColors.borderLight,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                mode.icon,
+                                size: 13,
+                                color: dataAbsent
+                                    ? AppColors.textTertiary
+                                        .withValues(alpha: 0.4)
+                                    : active
+                                        ? AppColors.primary
+                                        : AppColors.textTertiary,
+                              ),
+                              const SizedBox(width: 5),
+                              Text(
+                                mode.label,
+                                style: AppTextStyles.bodySmall.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 12,
+                                  color: dataAbsent
+                                      ? AppColors.textTertiary
+                                          .withValues(alpha: 0.4)
+                                      : active
+                                          ? AppColors.primary
+                                          : AppColors.textTertiary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
+                    );
+                  },
+                ),
+              ),
+              // Contextual hint when "Open now" is selected but no data loaded yet.
+              if (_sort == _SortMode.openNow && !hasOpenNowData)
+                Padding(
+                  padding:
+                      const EdgeInsets.fromLTRB(20, 6, 20, 0),
+                  child: Row(
+                    children: [
+                      Icon(Icons.info_outline,
+                          size: 12,
+                          color: AppColors.textTertiary
+                              .withValues(alpha: 0.7)),
                       const SizedBox(width: 5),
                       Text(
-                        mode.label,
+                        'Tap a place to load live hours, then re-sort.',
                         style: AppTextStyles.bodySmall.copyWith(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 12,
-                          color: active
-                              ? AppColors.primary
-                              : AppColors.textTertiary,
+                          fontSize: 10,
+                          color: AppColors.textTertiary
+                              .withValues(alpha: 0.7),
                         ),
                       ),
                     ],
                   ),
                 ),
-              );
-            },
-          ),
-        ),
+            ],
+          );
+        }),
         const SizedBox(height: 10),
         // POI list
         Expanded(

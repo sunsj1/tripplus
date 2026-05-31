@@ -24,7 +24,8 @@ class PlanScreen extends ConsumerStatefulWidget {
 }
 
 class _PlanScreenState extends ConsumerState<PlanScreen> {
-  final _fromController = TextEditingController(text: '');
+  // Pre-fill "Current location" so the backend's _resolveLocation() picks up GPS.
+  final _fromController = TextEditingController(text: 'Current location');
   final _toController = TextEditingController();
 
   /// Per-trip overrides; null falls back to saved profile defaults.
@@ -103,10 +104,15 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
     ref.read(planControllerProvider.notifier).reset();
   }
 
-  void _quickRoute(String from, String to) {
-    _fromController.text = from;
-    _toController.text = to;
-    _onAnalyze();
+  /// Pre-fills From/To fields from a popular route suggestion.
+  /// The user sees the fields populated and taps "Analyze Route" themselves —
+  /// this avoids firing an immediate API call without giving them a chance
+  /// to edit (e.g. change vehicle type or destination).
+  void _prefillRoute(String from, String to) {
+    setState(() {
+      _fromController.text = from;
+      _toController.text = to;
+    });
   }
 
   @override
@@ -247,7 +253,7 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
             ),
           ),
           const SizedBox(height: 12),
-          _PopularRoutes(onTap: _quickRoute),
+          _PopularRoutes(onTap: _prefillRoute),
           const SizedBox(height: 28),
 
           if (isEv) const _EvTipCard(),

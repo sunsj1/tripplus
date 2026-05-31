@@ -7,6 +7,7 @@ import 'package:tripplus/core/utils/google_places_photo.dart';
 import 'package:tripplus/core/widgets/poi_photo.dart';
 import 'package:tripplus/features/community/presentation/widgets/poi_community_reports_section.dart';
 import 'package:tripplus/features/pois/presentation/controller/pois_providers.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /// Modal bottom sheet shown when the user taps a POI tile. Wraps the POI
 /// summary + Google photos (when available) + community reports section.
@@ -190,7 +191,9 @@ class _PoiDetailSheetState extends ConsumerState<_PoiDetailSheet> {
                         ),
                     ],
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 16),
+                  _OpenInMapsButton(poi: _poi),
+                  const SizedBox(height: 20),
                   PoiCommunityReportsSection(poi: _poi),
                 ],
               ),
@@ -202,6 +205,49 @@ class _PoiDetailSheetState extends ConsumerState<_PoiDetailSheet> {
   }
 }
 
+// ---------------------------------------------------------------------------
+// "Open in Maps" button
+// ---------------------------------------------------------------------------
+class _OpenInMapsButton extends StatelessWidget {
+  const _OpenInMapsButton({required this.poi});
+  final Poi poi;
+
+  Future<void> _launch() async {
+    final query = poi.googlePlaceId != null
+        ? 'https://www.google.com/maps/search/?api=1'
+            '&query=${poi.latitude},${poi.longitude}'
+            '&query_place_id=${poi.googlePlaceId}'
+        : 'https://www.google.com/maps/search/?api=1'
+            '&query=${poi.latitude},${poi.longitude}';
+    final uri = Uri.parse(query);
+    if (await canLaunchUrl(uri)) await launchUrl(uri);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: 44,
+      child: OutlinedButton.icon(
+        onPressed: _launch,
+        style: OutlinedButton.styleFrom(
+          foregroundColor: AppColors.primary,
+          side: const BorderSide(color: AppColors.borderLight),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        icon: const Icon(Icons.map_outlined, size: 18),
+        label: const Text(
+          'Open in Maps',
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
 class _SourceBadge extends StatelessWidget {
   const _SourceBadge({required this.label});
   final String label;

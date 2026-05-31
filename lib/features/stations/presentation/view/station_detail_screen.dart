@@ -4,6 +4,7 @@ import 'package:tripplus/core/theme/app_text_styles.dart';
 import 'package:tripplus/core/widgets/app_top_bar.dart';
 import 'package:tripplus/features/charging/domain/models/charging_station.dart';
 import 'package:tripplus/features/community/presentation/widgets/community_reports_section.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class StationDetailScreen extends StatefulWidget {
   final ChargingStation station;
@@ -187,7 +188,17 @@ class _StationDetailScreenState extends State<StationDetailScreen>
                         width: double.infinity,
                         height: 52,
                         child: OutlinedButton.icon(
-                          onPressed: () {},
+                          onPressed: () async {
+                            final uri = Uri.parse(
+                              'https://www.google.com/maps/dir/?api=1'
+                              '&destination=${station.latitude},${station.longitude}'
+                              '&travelmode=driving',
+                            );
+                            if (await canLaunchUrl(uri)) {
+                              await launchUrl(uri,
+                                  mode: LaunchMode.externalApplication);
+                            }
+                          },
                           style: OutlinedButton.styleFrom(
                             foregroundColor: AppColors.primary,
                             side: const BorderSide(color: AppColors.primary),
@@ -197,7 +208,7 @@ class _StationDetailScreenState extends State<StationDetailScreen>
                           ),
                           icon: const Icon(Icons.navigation, size: 18),
                           label: const Text(
-                            'Start Navigation',
+                            'Navigate in Maps',
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w600,

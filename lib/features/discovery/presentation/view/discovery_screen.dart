@@ -1,19 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tripplus/core/domain/poi.dart';
 import 'package:tripplus/core/theme/app_colors.dart';
 import 'package:tripplus/core/theme/app_text_styles.dart';
 import 'package:tripplus/features/discovery/presentation/view/emergency_screen.dart';
 import 'package:tripplus/features/discovery/presentation/widget/emergency_pinned_tile.dart';
+import 'package:tripplus/features/plan/presentation/controller/plan_providers.dart';
+import 'package:tripplus/features/plan/presentation/controller/plan_state.dart';
 import 'package:tripplus/features/pois/presentation/view/poi_category_screen.dart';
+import 'package:tripplus/features/shell/presentation/controller/shell_providers.dart';
 
-/// The iconic 3-column "Smart Intelligence Grid" from the PDF (`P1-011`).
+/// The iconic 3-column "Smart Intelligence Grid" (`P1-011`).
 /// Each tile pushes [PoiCategoryScreen] for the tapped category (`P1-013`).
 /// A pinned red [EmergencyPinnedTile] sits above the grid for SOS access.
-class DiscoveryScreen extends StatelessWidget {
+/// When no route has been planned yet, a CTA banner guides users to Plan tab.
+class DiscoveryScreen extends ConsumerWidget {
   const DiscoveryScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final planState = ref.watch(planControllerProvider);
+    final hasPlan = planState is PlanResult;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -25,14 +33,13 @@ class DiscoveryScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Discover',
-                      style: AppTextStyles.h2,
-                    ),
+                    Text('Discover', style: AppTextStyles.h2),
                     const SizedBox(height: 4),
                     Text(
-                      'Find anything along your route — chosen by '
-                      'category, ranked by community trust.',
+                      hasPlan
+                          ? 'Showing stops along your planned route.'
+                          : 'Find anything along your route — chosen by '
+                              'category, ranked by community trust.',
                       style: AppTextStyles.bodyMedium.copyWith(
                         color: AppColors.textSecondary,
                       ),
@@ -41,6 +48,18 @@ class DiscoveryScreen extends StatelessWidget {
                 ),
               ),
             ),
+
+            // "Plan first" CTA — shown when no route has been analyzed yet.
+            if (!hasPlan)
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(20, 4, 20, 4),
+                sliver: SliverToBoxAdapter(
+                  child: _NoPlanBanner(
+                    onPlanTap: () => navigateToShellTab(ref, 0),
+                  ),
+                ),
+              ),
+
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
               sliver: SliverToBoxAdapter(
@@ -89,6 +108,79 @@ class DiscoveryScreen extends StatelessWidget {
   }
 }
 
+// ---------------------------------------------------------------------------
+// "No plan" CTA banner
+// ---------------------------------------------------------------------------
+class _NoPlanBanner extends StatelessWidget {
+  const _NoPlanBanner({required this.onPlanTap});
+  final VoidCallback onPlanTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AppColors.primarySurface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.15)),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: AppColors.primary.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Icon(
+              Icons.route_outlined,
+              size: 20,
+              color: AppColors.primary,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Plan a route to unlock corridor search',
+                  style: AppTextStyles.titleSmall.copyWith(fontSize: 13),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  'Categories will filter to stops along your drive.',
+                  style: AppTextStyles.bodySmall.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 8),
+          TextButton(
+            onPressed: onPlanTap,
+            style: TextButton.styleFrom(
+              foregroundColor: AppColors.primary,
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              minimumSize: Size.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+            child: const Text(
+              'Plan',
+              style: TextStyle(fontWeight: FontWeight.w700),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Category grid tile
+// ---------------------------------------------------------------------------
 class _CategoryTile extends StatelessWidget {
   const _CategoryTile({required this.category, required this.onTap});
   final PoiCategory category;

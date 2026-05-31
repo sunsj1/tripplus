@@ -11,6 +11,9 @@ import 'package:tripplus/features/plan/presentation/controller/plan_providers.da
 import 'package:tripplus/features/plan/presentation/controller/plan_state.dart';
 import 'package:tripplus/features/stations/presentation/view/station_detail_screen.dart';
 
+// TODO(phase2-cleanup): InsightsScreen is orphan code — not mounted in AppShell
+// nav since Session 6 (P1-016). The Insights tab was replaced by Discover + Profile.
+// Safe to delete once Phase 2 confirms no deep-link or test reference exists.
 class InsightsScreen extends ConsumerWidget {
   const InsightsScreen({super.key});
 

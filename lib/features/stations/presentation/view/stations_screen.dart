@@ -12,6 +12,9 @@ import 'package:tripplus/features/stations/presentation/view/station_detail_scre
 import 'package:tripplus/features/stations/presentation/view/station_map_screen.dart';
 import 'package:tripplus/features/stations/presentation/widget/station_list_tile.dart';
 
+// TODO(phase2-cleanup): StationsScreen is orphan code — not mounted in AppShell nav
+// since Session 6 (P1-016). The Stations tab was replaced by Discovery + Trip.
+// Safe to delete once Phase 2 confirms no deep-link or test reference exists.
 class StationsScreen extends ConsumerStatefulWidget {
   const StationsScreen({super.key});
 

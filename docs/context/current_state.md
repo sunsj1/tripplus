@@ -3,7 +3,7 @@
 > **Update this file** whenever a task materially changes the user-visible surface or the architecture.
 > AI agents read this first to avoid re-discovering what's already built.
 
-**Last updated:** 2026-05-30 (Phase 1 **code-complete** — Session 11 verification docs + `phase_2_batches.md` planning added).
+**Last updated:** 2026-05-31 (Phase 1 code-complete + **UX improvement sub-sessions 1–3** landed — flow fixes, community loop closed, richer trip summary, station navigation wired).
 
 ---
 
@@ -17,6 +17,31 @@
 
 ---
 
+## UX Improvement sub-sessions (post Phase 1 code-complete)
+
+### Sub-session 1 — Flow + Signal fixes
+- Default "From" = "Current location" — GPS resolved by `RouteStationService._resolveLocation()`.
+- Popular route cards pre-fill fields only (no auto-analyze).
+- Discover tab shows "Plan a route to unlock corridor search" CTA when no active plan.
+- Trip Overview stat cards labelled "estimates only" + "~" prefix on ETA/Tolls/Fuel values.
+- Pin/unpin toggle hidden in Smart Timeline until Phase 2 re-routing lands.
+
+### Sub-session 2 — Discovery + Community
+- Plan Result: "Fast only" `FilterChip` on EV charger list — live filters to fast-charge stations.
+- POI category list: Nearest / Top rated / Open now sort chips (client-side, no API call).
+- POI detail sheet: "Open in Maps" button via `url_launcher` Google Maps deep link.
+- `PoiCommunityReportsSection`: "coming soon" banner replaced with real `showPoiReportSheet` — star rating + optional comment, submits via `StationCommunitySubmitInput` with `targetType: poi`.
+- Fuel category: preferred brands (from profile) boosted to top of Nearest sort; "★ Your brands first" badge shown.
+
+### Sub-session 3 — Polish + Docs (this session)
+- Post-trip summary richer: Stations count card, Cost estimate card, Tolls card, ETA vs actual comparison banner (on-time / faster / delayed).
+- Trip idle view: location permission hint below "Plan a trip" button.
+- Station detail: "Navigate in Maps" button wired to Google Maps driving directions URL (previously no-op).
+- `current_state.md` TL;DR + App shell section updated (stale "Plan · Insights · Stations" corrected).
+- Orphan code noted: `InsightsScreen` and `StationsScreen` — not in nav, safe to delete in Phase 2.
+
+---
+
 ## Implemented surface (today)
 
 ### Auth & onboarding
@@ -25,7 +50,10 @@
 - Profile uses Firestore `users/{uid}`.
 
 ### App shell
-- Bottom navigation: **Plan · Insights · Stations**.
+- Bottom navigation: **Plan · Trip · Discover · Profile** (revised in Session 6, P1-016).
+- `AppShell` is a `ConsumerWidget` driven by `shellTabIndexProvider` — programmatic tab switching via `navigateToShellTab(ref, index)`.
+- `OfflineBanner` + `TripAlertBanner` sit above the `IndexedStack` for global visibility.
+- ⚠️ `InsightsScreen` and old `StationsScreen` still exist in the codebase but are **orphan code** — not in the nav, not deep-linked. Safe to delete in Phase 2 cleanup.
 - Theme: `lib/core/theme/` (AppColors, AppTextStyles, AppTheme).
 
 ### Stations

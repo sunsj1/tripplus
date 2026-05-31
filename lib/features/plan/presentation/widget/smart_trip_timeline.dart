@@ -38,7 +38,8 @@ class _SmartTripTimelineState extends ConsumerState<SmartTripTimeline> {
       preferences: widget.preferences,
     );
     final stops = ref.watch(tripTimelineControllerProvider(key));
-    final controller = ref.read(tripTimelineControllerProvider(key).notifier);
+    // controller retained for Phase 2 pin/unpin — not yet used in UI.
+    ref.read(tripTimelineControllerProvider(key).notifier);
 
     if (stops.isEmpty) return const SizedBox.shrink();
 
@@ -125,13 +126,11 @@ class _SmartTripTimelineState extends ConsumerState<SmartTripTimeline> {
             ),
             if (stationsExpanded) ...[
               const SizedBox(height: 8),
-              ...stationStops.map((stop) {
-                final index = stops.indexOf(stop);
-                return _StationStopCard(
-                  stop: stop,
-                  onTogglePin: () => controller.togglePin(index),
-                );
-              }),
+              ...stationStops.map((stop) => _StationStopCard(
+                    stop: stop,
+                    // Pin/unpin hidden until Phase 2 re-routing is wired.
+                    onTogglePin: null,
+                  )),
             ],
           ],
           const SizedBox(height: 12),

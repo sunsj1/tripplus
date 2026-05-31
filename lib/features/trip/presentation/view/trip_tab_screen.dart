@@ -89,6 +89,38 @@ class _IdleView extends StatelessWidget {
               icon: const Icon(Icons.route),
               label: const Text('Plan a trip'),
             ),
+            const SizedBox(height: 20),
+            // Location permission hint — sets expectations before the trip starts.
+            Container(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              decoration: BoxDecoration(
+                color: AppColors.surface,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.borderLight),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    Icons.location_on_outlined,
+                    size: 15,
+                    color: AppColors.textTertiary,
+                  ),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Text(
+                      'Allow location when driving for ahead-of-you alerts.',
+                      style: AppTextStyles.bodySmall.copyWith(
+                        color: AppColors.textTertiary,
+                        fontSize: 11,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -333,6 +365,7 @@ class _CompletedView extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 28),
+          // Row 1 — Duration + Distance
           Row(
             children: [
               StatCard(
@@ -351,7 +384,52 @@ class _CompletedView extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 10),
+          // Row 2 — Stations + Cost (when available)
+          Row(
+            children: [
+              if (trip.stationCount > 0) ...[
+                StatCard(
+                  icon: trip.isCostCharging
+                      ? Icons.ev_station_outlined
+                      : Icons.local_gas_station_outlined,
+                  iconColor: trip.isCostCharging
+                      ? AppColors.success
+                      : AppColors.primary,
+                  label: trip.isCostCharging ? 'Chargers' : 'Fuel stops',
+                  value: '${trip.stationCount}',
+                ),
+                const SizedBox(width: 12),
+              ],
+              if (trip.tripCostEstimate != null)
+                StatCard(
+                  icon: Icons.receipt_long_outlined,
+                  iconColor: AppColors.accentAmber,
+                  label: trip.isCostCharging ? 'Charging~' : 'Fuel~',
+                  value: '₹${trip.tripCostEstimate!.round()}',
+                ),
+              if (trip.tollsEstimate != null) ...[
+                if (trip.tripCostEstimate != null ||
+                    trip.stationCount > 0)
+                  const SizedBox(width: 12),
+                StatCard(
+                  icon: Icons.toll_outlined,
+                  iconColor: AppColors.accentAmber,
+                  label: 'Tolls~',
+                  value: '₹${trip.tollsEstimate!.round()}',
+                ),
+              ],
+            ],
+          ),
+          const SizedBox(height: 16),
+          // ETA vs actual comparison (when we have both)
+          if (trip.etaMinutes != null && trip.startedAt != null) ...[
+            _EtaComparisonBanner(
+              plannedMinutes: trip.etaMinutes!,
+              actualMinutes: elapsed.inMinutes,
+            ),
+            const SizedBox(height: 16),
+          ],
           SizedBox(
             width: double.infinity,
             child: OutlinedButton.icon(
@@ -368,7 +446,7 @@ class _CompletedView extends ConsumerWidget {
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
           Center(
             child: Text(
               'Saved to Trip history in Profile',
@@ -513,6 +591,69 @@ class _TripEstimateCards extends StatelessWidget {
               label: trip.isCostCharging ? 'Charging' : 'Fuel',
               value: '₹${cost.round()}',
             ),
+        ],
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// ETA vs actual comparison banner
+// ---------------------------------------------------------------------------
+class _EtaComparisonBanner extends StatelessWidget {
+  const _EtaComparisonBanner({
+    required this.plannedMinutes,
+    required this.actualMinutes,
+  });
+
+  final int plannedMinutes;
+  final int actualMinutes;
+
+  @override
+  Widget build(BuildContext context) {
+    final diff = actualMinutes - plannedMinutes;
+    final onTime = diff.abs() <= 10;
+    final faster = diff < -10;
+
+    final (icon, color, message) = onTime
+        ? (Icons.check_circle_outline, AppColors.success, 'On time vs. estimate')
+        : faster
+            ? (
+                Icons.rocket_launch_outlined,
+                AppColors.success,
+                '${(-diff)} min faster than planned'
+              )
+            : (
+                Icons.schedule_outlined,
+                AppColors.warning,
+                '$diff min longer than planned'
+              );
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withValues(alpha: 0.2)),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, size: 16, color: color),
+          const SizedBox(width: 8),
+          Text(
+            message,
+            style: AppTextStyles.bodySmall.copyWith(
+              color: color,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const Spacer(),
+          Text(
+            'Est. ${_fmtDuration(plannedMinutes)}',
+            style: AppTextStyles.bodySmall.copyWith(
+              color: AppColors.textTertiary,
+            ),
+          ),
         ],
       ),
     );

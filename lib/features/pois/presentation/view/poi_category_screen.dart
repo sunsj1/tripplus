@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tripplus/core/domain/fuel_brand.dart';
 import 'package:tripplus/core/domain/poi.dart';
 import 'package:tripplus/core/theme/app_colors.dart';
 import 'package:tripplus/core/theme/app_text_styles.dart';
@@ -12,6 +13,8 @@ import 'package:tripplus/features/pois/presentation/widget/poi_detail_sheet.dart
 import 'package:tripplus/core/telemetry/app_telemetry.dart';
 import 'package:tripplus/core/widgets/poi_list_skeleton.dart';
 import 'package:tripplus/features/pois/presentation/widget/poi_list_tile.dart';
+import 'package:tripplus/core/domain/user_preferences.dart';
+import 'package:tripplus/features/profile/presentation/controller/profile_providers.dart';
 
 /// Reusable category screen (`P1-012`). Decides between route-aware and nearby
 /// query in the controller; this widget just renders the result with a
@@ -77,7 +80,19 @@ class _PoiCategoryScreenState extends ConsumerState<PoiCategoryScreen> {
             ),
           PoiCategoryData(:final pois, :final source) =>
             _mode == _ViewMode.list
-                ? _List(pois: pois, source: source)
+                ? _List(
+                    pois: pois,
+                    source: source,
+                    // Pass preferred fuel brands so Fuel category can boost
+                    // matching stations to the top of the list.
+                    preferredFuelBrands: widget.category == PoiCategory.fuel
+                        ? ref
+                            .read(profileControllerProvider)
+                            .data
+                            .preferences
+                            .selectedFuelBrands
+                        : const [],
+                  )
                 : PoiCategoryMapView(pois: pois),
         },
       ),
@@ -203,18 +218,98 @@ class _Errored extends StatelessWidget {
   }
 }
 
-class _List extends StatelessWidget {
-  const _List({required this.pois, required this.source});
+// ---------------------------------------------------------------------------
+// Sort modes for the POI list
+// ---------------------------------------------------------------------------
+enum _SortMode { nearest, topRated, openNow }
+
+extension _SortModeX on _SortMode {
+  String get label {
+    switch (this) {
+      case _SortMode.nearest:
+        return 'Nearest';
+      case _SortMode.topRated:
+        return 'Top rated';
+      case _SortMode.openNow:
+        return 'Open now';
+    }
+  }
+
+  IconData get icon {
+    switch (this) {
+      case _SortMode.nearest:
+        return Icons.near_me_outlined;
+      case _SortMode.topRated:
+        return Icons.star_outline_rounded;
+      case _SortMode.openNow:
+        return Icons.schedule_outlined;
+    }
+  }
+}
+
+class _List extends StatefulWidget {
+  const _List({
+    required this.pois,
+    required this.source,
+    this.preferredFuelBrands = const [],
+  });
   final List<Poi> pois;
   final PoiQuerySource source;
 
+  /// For [PoiCategory.fuel]: brands the user prefers (from profile).
+  /// Matching POIs are promoted to the top of "Nearest" sort.
+  final List<FuelBrand> preferredFuelBrands;
+
+  @override
+  State<_List> createState() => _ListState();
+}
+
+class _ListState extends State<_List> {
+  _SortMode _sort = _SortMode.nearest;
+
+  bool _isBrandMatch(Poi poi) {
+    if (widget.preferredFuelBrands.isEmpty) return false;
+    final lower = poi.name.toLowerCase();
+    return widget.preferredFuelBrands
+        .any((b) => lower.contains(b.label.toLowerCase()));
+  }
+
+  List<Poi> get _sorted {
+    final list = [...widget.pois];
+    switch (_sort) {
+      case _SortMode.nearest:
+        list.sort((a, b) {
+          // Preferred fuel brands bubble to the top.
+          final ab = _isBrandMatch(a) ? 0 : 1;
+          final bb = _isBrandMatch(b) ? 0 : 1;
+          if (ab != bb) return ab.compareTo(bb);
+          final da = a.distanceAlongRouteKm ?? double.infinity;
+          final db = b.distanceAlongRouteKm ?? double.infinity;
+          return da.compareTo(db);
+        });
+      case _SortMode.topRated:
+        list.sort((a, b) => b.rating.compareTo(a.rating));
+      case _SortMode.openNow:
+        list.sort((a, b) {
+          final ao = a.openNow == true ? 0 : 1;
+          final bo = b.openNow == true ? 0 : 1;
+          if (ao != bo) return ao.compareTo(bo);
+          return b.rating.compareTo(a.rating);
+        });
+    }
+    return list;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final sorted = _sorted;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        // Source badge + place count
         Padding(
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 10),
           child: Row(
             children: [
               Container(
@@ -228,7 +323,7 @@ class _List extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
-                      source == PoiQuerySource.alongRoute
+                      widget.source == PoiQuerySource.alongRoute
                           ? Icons.route
                           : Icons.location_on,
                       size: 14,
@@ -236,7 +331,7 @@ class _List extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      source.label,
+                      widget.source.label,
                       style: AppTextStyles.bodySmall.copyWith(
                         color: AppColors.primary,
                         fontWeight: FontWeight.w600,
@@ -246,8 +341,28 @@ class _List extends StatelessWidget {
                 ),
               ),
               const Spacer(),
+              if (widget.preferredFuelBrands.isNotEmpty)
+                Container(
+                  margin: const EdgeInsets.only(right: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: AppColors.warningSurface,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                        color: AppColors.warning.withValues(alpha: 0.3)),
+                  ),
+                  child: Text(
+                    '★ Your brands first',
+                    style: AppTextStyles.bodySmall.copyWith(
+                      color: AppColors.warning,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 10,
+                    ),
+                  ),
+                ),
               Text(
-                '${pois.length} places',
+                '${sorted.length} places',
                 style: AppTextStyles.bodySmall.copyWith(
                   color: AppColors.textTertiary,
                 ),
@@ -255,15 +370,73 @@ class _List extends StatelessWidget {
             ],
           ),
         ),
+        // Sort chips
+        SizedBox(
+          height: 36,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            itemCount: _SortMode.values.length,
+            separatorBuilder: (_, _) => const SizedBox(width: 8),
+            itemBuilder: (_, i) {
+              final mode = _SortMode.values[i];
+              final active = _sort == mode;
+              return GestureDetector(
+                onTap: () => setState(() => _sort = mode),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 180),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: active
+                        ? AppColors.primarySurface
+                        : AppColors.surface,
+                    borderRadius: BorderRadius.circular(999),
+                    border: Border.all(
+                      color: active
+                          ? AppColors.primary.withValues(alpha: 0.4)
+                          : AppColors.borderLight,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        mode.icon,
+                        size: 13,
+                        color: active
+                            ? AppColors.primary
+                            : AppColors.textTertiary,
+                      ),
+                      const SizedBox(width: 5),
+                      Text(
+                        mode.label,
+                        style: AppTextStyles.bodySmall.copyWith(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 12,
+                          color: active
+                              ? AppColors.primary
+                              : AppColors.textTertiary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+        const SizedBox(height: 10),
+        // POI list
         Expanded(
           child: ListView.separated(
             padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
-            itemCount: pois.length,
+            itemCount: sorted.length,
             separatorBuilder: (_, _) => const SizedBox(height: 12),
             itemBuilder: (_, i) => PoiListTile(
-              poi: pois[i],
-              pulseSlot: PoiCommunityRatingPulse(poi: pois[i]),
-              onTap: () => showPoiDetailSheet(context, pois[i]),
+              poi: sorted[i],
+              pulseSlot: PoiCommunityRatingPulse(poi: sorted[i]),
+              onTap: () => showPoiDetailSheet(context, sorted[i]),
             ),
           ),
         ),

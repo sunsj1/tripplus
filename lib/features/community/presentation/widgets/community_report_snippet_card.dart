@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:tripplus/core/theme/app_colors.dart';
 import 'package:tripplus/core/theme/app_text_styles.dart';
+import 'package:tripplus/features/community/domain/community_target_type.dart';
 import 'package:tripplus/features/community/domain/models/station_community_report.dart';
 class CommunityReportSnippetCard extends StatelessWidget {
   final StationCommunityReport report;
@@ -17,7 +18,7 @@ class CommunityReportSnippetCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tone = _toneForCondition(report.condition);
+    final tone = _toneForReport(report);
     Uint8List? thumb;
     final raw = report.photoBase64;
     if (raw != null && raw.isNotEmpty) {
@@ -210,7 +211,46 @@ class _Tone {
   final String headline;
 }
 
-_Tone _toneForCondition(String condition) {
+/// Returns display tone that is **context-aware**: EV station reports use
+/// charging-specific language; POI reports use neutral place language.
+_Tone _toneForReport(StationCommunityReport report) {
+  final isPoi = report.targetType == CommunityTargetType.poi;
+  final condition = report.condition;
+
+  if (isPoi) {
+    // POI-specific tones keyed on the values sent by [showPoiReportSheet]:
+    // 'good' | 'fair' | 'poor', and rating for extra signal.
+    switch (condition) {
+      case 'poor':
+      case 'down':
+        return _Tone(
+          bg: AppColors.errorSurface,
+          border: AppColors.error.withValues(alpha: 0.12),
+          fg: AppColors.error,
+          icon: Icons.sentiment_dissatisfied_outlined,
+          headline: 'Disappointing experience',
+        );
+      case 'fair':
+      case 'issues':
+        return _Tone(
+          bg: AppColors.warningSurface,
+          border: AppColors.warning.withValues(alpha: 0.15),
+          fg: AppColors.warning,
+          icon: Icons.sentiment_neutral_outlined,
+          headline: 'Worth checking yourself',
+        );
+      default: // 'good', 'working', anything positive
+        return _Tone(
+          bg: AppColors.successSurface,
+          border: AppColors.success.withValues(alpha: 0.12),
+          fg: AppColors.success,
+          icon: Icons.sentiment_satisfied_alt_outlined,
+          headline: 'Visited — all good',
+        );
+    }
+  }
+
+  // EV / fuel station — original language preserved.
   switch (condition) {
     case 'down':
       return _Tone(

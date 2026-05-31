@@ -171,36 +171,14 @@ class PlanResultView extends ConsumerWidget {
                   stationCount: stations.length,
                   totalDistanceKm: totalDistanceKm,
                 ),
-                const SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Text(
-                    'Chargers on route (${stations.length})',
-                    style: AppTextStyles.titleMedium,
-                  ),
-                ),
-                const SizedBox(height: 8),
               ],
             ],
           ),
         ),
+        // EV charger list with fast-charge filter chip
         if (_isEv)
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) => AnimatedListItem(
-                index: index,
-                child: StationListTile(
-                  station: stations[index],
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) =>
-                          StationDetailScreen(station: stations[index]),
-                    ),
-                  ),
-                ),
-              ),
-              childCount: stations.length,
-            ),
+          SliverToBoxAdapter(
+            child: _EvStationListSection(stations: stations),
           ),
         const SliverToBoxAdapter(child: SizedBox(height: 24)),
       ],
@@ -755,13 +733,26 @@ class _TripDashboardStatRow extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'TRIP OVERVIEW',
-            style: AppTextStyles.caption.copyWith(
-              color: AppColors.textTertiary,
-              letterSpacing: 1.5,
-              fontWeight: FontWeight.w700,
-            ),
+          Row(
+            children: [
+              Text(
+                'TRIP OVERVIEW',
+                style: AppTextStyles.caption.copyWith(
+                  color: AppColors.textTertiary,
+                  letterSpacing: 1.5,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(width: 6),
+              Text(
+                '· estimates only',
+                style: AppTextStyles.caption.copyWith(
+                  color: AppColors.textTertiary.withValues(alpha: 0.65),
+                  fontSize: 10,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 10),
           LayoutBuilder(
@@ -796,7 +787,7 @@ class _TripDashboardStatRow extends StatelessWidget {
           icon: Icons.schedule_outlined,
           iconColor: AppColors.accentBlue,
           label: 'ETA',
-          value: _fmtDuration(etaMinutes!),
+          value: '~${_fmtDuration(etaMinutes!)}',
         ),
       );
     }
@@ -807,7 +798,7 @@ class _TripDashboardStatRow extends StatelessWidget {
           icon: Icons.toll_outlined,
           iconColor: AppColors.accentAmber,
           label: 'Tolls',
-          value: _fmtRupees(tollsEstimate!),
+          value: '~${_fmtRupees(tollsEstimate!)}',
         ),
       );
     }
@@ -820,7 +811,7 @@ class _TripDashboardStatRow extends StatelessWidget {
               : Icons.local_gas_station_outlined,
           iconColor: isCharging ? AppColors.accentTeal : AppColors.primary,
           label: isCharging ? 'Charging' : 'Fuel',
-          value: _fmtRupees(costEstimate!),
+          value: '~${_fmtRupees(costEstimate!)}',
         ),
       );
     }
@@ -839,6 +830,99 @@ class _TripDashboardStatRow extends StatelessWidget {
   }
 }
 
+// ---------------------------------------------------------------------------
+// EV charger list with fast-charge filter chip
+// ---------------------------------------------------------------------------
+class _EvStationListSection extends StatefulWidget {
+  const _EvStationListSection({required this.stations});
+  final List<ChargingStation> stations;
+
+  @override
+  State<_EvStationListSection> createState() => _EvStationListSectionState();
+}
+
+class _EvStationListSectionState extends State<_EvStationListSection> {
+  bool _fastChargeOnly = false;
+
+  bool _isFast(ChargingStation s) =>
+      s.connections.any((c) => c.isFastCharge == true);
+
+  @override
+  Widget build(BuildContext context) {
+    final hasFastChargers = widget.stations.any(_isFast);
+    final displayed = _fastChargeOnly
+        ? widget.stations.where(_isFast).toList()
+        : widget.stations;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
+          child: Row(
+            children: [
+              Text(
+                'Chargers on route (${displayed.length})',
+                style: AppTextStyles.titleMedium,
+              ),
+              const Spacer(),
+              if (hasFastChargers)
+                FilterChip(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  label: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.bolt,
+                          size: 14,
+                          color: _fastChargeOnly
+                              ? AppColors.success
+                              : AppColors.textTertiary),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Fast only',
+                        style: AppTextStyles.bodySmall.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: _fastChargeOnly
+                              ? AppColors.success
+                              : AppColors.textTertiary,
+                        ),
+                      ),
+                    ],
+                  ),
+                  selected: _fastChargeOnly,
+                  showCheckmark: false,
+                  selectedColor: AppColors.successSurface,
+                  backgroundColor: AppColors.surface,
+                  side: BorderSide(
+                    color: _fastChargeOnly
+                        ? AppColors.success.withValues(alpha: 0.4)
+                        : AppColors.borderLight,
+                  ),
+                  onSelected: (v) => setState(() => _fastChargeOnly = v),
+                ),
+            ],
+          ),
+        ),
+        ...displayed.asMap().entries.map(
+              (e) => AnimatedListItem(
+                index: e.key,
+                child: StationListTile(
+                  station: e.value,
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => StationDetailScreen(station: e.value),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        const SizedBox(height: 24),
+      ],
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
 class _ActionChip extends StatelessWidget {
   const _ActionChip({required this.icon, required this.text});
 

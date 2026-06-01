@@ -55,14 +55,36 @@ class AlertRouteUtils {
 
   /// POIs strictly ahead of [currentKm] on the route, sorted by distance.
   static List<Poi> poisAhead(List<Poi> pois, double currentKm) {
-    final ahead = pois
+    return pois
         .where((p) => (p.distanceAlongRouteKm ?? -1) > currentKm)
         .toList()
       ..sort(
         (a, b) => (a.distanceAlongRouteKm ?? 0)
             .compareTo(b.distanceAlongRouteKm ?? 0),
       );
-    return ahead;
+  }
+
+  /// P2-001 — POIs within [windowKm] ahead of [currentKm], sorted by distance.
+  ///
+  /// Used by [AlertEngine] to restrict evaluation to the immediate upcoming
+  /// corridor rather than the full remaining route, so alerts are always
+  /// timely and actionable.
+  static List<Poi> poisInWindow(
+    List<Poi> pois,
+    double currentKm,
+    double windowKm,
+  ) {
+    final cutoff = currentKm + windowKm;
+    return pois
+        .where((p) {
+          final km = p.distanceAlongRouteKm;
+          return km != null && km > currentKm && km <= cutoff;
+        })
+        .toList()
+      ..sort(
+        (a, b) => (a.distanceAlongRouteKm ?? 0)
+            .compareTo(b.distanceAlongRouteKm ?? 0),
+      );
   }
 
   /// Largest gap (km) between consecutive POIs from [currentKm] to route end.

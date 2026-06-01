@@ -19,9 +19,17 @@ import 'package:tripplus/features/trip/presentation/controller/active_trip_state
 import 'package:tripplus/features/trip/presentation/controller/trip_providers.dart';
 
 /// Polls location + [AlertEngine] while a trip is active; fires local
-/// notifications and drives the in-app banner (`P1-028`).
+/// notifications and drives the in-app banner.
+///
+/// P2-006 — Per-type cooldown replaces the Phase 1 "fire once per trip"
+/// permanent deduplication. The same alert type can re-fire after
+/// [_cooldown] has elapsed, allowing e.g. a second fuel-low warning if the
+/// driver ignored the first one and is now in a worse situation.
 class AlertNotifierController extends StateNotifier<AlertNotifierState> {
   AlertNotifierController(this._ref) : super(const AlertNotifierState());
+
+  /// P2-006 — Minimum gap between two firings of the same alert type.
+  static const _cooldown = Duration(minutes: 20);
 
   final Ref _ref;
   Timer? _pollTimer;
@@ -29,10 +37,14 @@ class AlertNotifierController extends StateNotifier<AlertNotifierState> {
   Map<PoiCategory, List<Poi>>? _pois;
   bool _evaluating = false;
 
+  /// P2-006 — Tracks when each [AlertType] last fired in this session.
+  final Map<AlertType, DateTime> _lastFiredAt = {};
+
   void onTripStateChanged(ActiveTripState tripState) {
     if (tripState is ActiveTripIdle || tripState is ActiveTripCompleted) {
       _route = null;
       _pois = null;
+      _lastFiredAt.clear(); // P2-006 — reset cooldowns for next trip
       state = const AlertNotifierState();
     }
 
@@ -95,8 +107,13 @@ class AlertNotifierController extends StateNotifier<AlertNotifierState> {
         ),
       );
 
+      final now = DateTime.now();
       for (final alert in alerts) {
-        if (trip.firedAlerts.any((a) => a.type == alert.type)) continue;
+        // P2-006 — Cooldown: skip if the same type fired within [_cooldown].
+        final lastFired = _lastFiredAt[alert.type];
+        if (lastFired != null && now.difference(lastFired) < _cooldown) {
+          continue;
+        }
         await _deliver(alert, trip);
       }
     } finally {
@@ -105,6 +122,10 @@ class AlertNotifierController extends StateNotifier<AlertNotifierState> {
   }
 
   Future<void> _deliver(Alert alert, Trip trip) async {
+    // P2-006 — Record cooldown timestamp before any async work so a rapid
+    // second evaluation can't slip through before the await resolves.
+    _lastFiredAt[alert.type] = DateTime.now();
+
     await _ref.read(activeTripControllerProvider.notifier).recordFiredAlert(alert);
 
     final notifications = _ref.read(localNotificationServiceProvider);

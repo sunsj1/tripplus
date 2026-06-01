@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:tripplus/core/domain/poi.dart';
 import 'package:tripplus/core/utils/failure.dart';
@@ -12,6 +13,11 @@ enum PoiQuerySource {
 
   /// Radial search from the user's current location (no active trip).
   nearby,
+
+  /// P2 edge-case — active trip is running; list filtered to POIs strictly
+  /// ahead of the driver's current GPS position. Only shows stops you can
+  /// still reach, not ones you've already driven past.
+  aheadOnRoute,
 }
 
 extension PoiQuerySourceX on PoiQuerySource {
@@ -21,6 +27,19 @@ extension PoiQuerySourceX on PoiQuerySource {
         return 'Along your route';
       case PoiQuerySource.nearby:
         return 'Near you';
+      case PoiQuerySource.aheadOnRoute:
+        return 'Ahead on your route';
+    }
+  }
+
+  IconData get icon {
+    switch (this) {
+      case PoiQuerySource.alongRoute:
+        return Icons.route;
+      case PoiQuerySource.nearby:
+        return Icons.location_on;
+      case PoiQuerySource.aheadOnRoute:
+        return Icons.navigation_outlined;
     }
   }
 }

@@ -323,9 +323,7 @@ class _ListState extends State<_List> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
-                      widget.source == PoiQuerySource.alongRoute
-                          ? Icons.route
-                          : Icons.location_on,
+                      widget.source.icon,
                       size: 14,
                       color: AppColors.primary,
                     ),

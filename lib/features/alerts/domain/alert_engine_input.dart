@@ -18,7 +18,16 @@ class AlertEngineInput {
     required this.upcomingPois,
     this.currentDistanceAlongRouteKm,
     this.evaluatedAt,
+    this.upcomingWindowKm = defaultWindowKm,
   });
+
+  /// P2-001 — Default upcoming evaluation window (km).
+  ///
+  /// The engine pre-filters POIs to those within this distance ahead before
+  /// passing them to individual rules.  100 km is enough lookahead for any
+  /// practical Indian highway drive while avoiding false positives at the
+  /// start of a long route.
+  static const double defaultWindowKm = 100.0;
 
   final RouteInfo activeRoute;
   final LatLng currentLocation;
@@ -32,6 +41,11 @@ class AlertEngineInput {
   final double? currentDistanceAlongRouteKm;
 
   final DateTime? evaluatedAt;
+
+  /// P2-001 — Only evaluate POIs within this many km ahead of the current
+  /// position. Prevents alerts about stops that are irrelevant (e.g. a
+  /// charger 250 km away when you just started a 400 km trip).
+  final double upcomingWindowKm;
 
   List<Poi> poisFor(PoiCategory category) =>
       upcomingPois[category] ?? const <Poi>[];

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'alert.freezed.dart';
@@ -39,6 +40,27 @@ extension AlertTypeX on AlertType {
         return 'Fatigue';
       case AlertType.weather:
         return 'Weather';
+    }
+  }
+
+  /// Type-specific glyph for banners/notifications. Falls back to severity
+  /// styling for colour; this drives the leading icon only.
+  IconData get icon {
+    switch (this) {
+      case AlertType.fuelLow:
+        return Icons.local_gas_station_outlined;
+      case AlertType.evGap:
+        return Icons.ev_station_outlined;
+      case AlertType.foodWindow:
+        return Icons.restaurant_outlined;
+      case AlertType.ghat:
+        return Icons.terrain_outlined;
+      case AlertType.night:
+        return Icons.nightlight_outlined;
+      case AlertType.fatigue:
+        return Icons.bedtime_outlined;
+      case AlertType.weather:
+        return Icons.cloud_outlined;
     }
   }
 }

@@ -6,6 +6,7 @@ import 'package:tripplus/core/theme/app_text_styles.dart';
 import 'package:tripplus/features/community/domain/models/station_community_ui_state.dart';
 import 'package:tripplus/features/community/presentation/controller/community_providers.dart';
 import 'package:tripplus/features/community/presentation/widgets/community_average_rating_row.dart';
+import 'package:tripplus/features/community/presentation/widgets/community_conflict_timeline.dart';
 import 'package:tripplus/features/community/presentation/widgets/community_empty_state.dart';
 import 'package:tripplus/features/community/presentation/widgets/community_recent_reports_carousel.dart';
 import 'package:tripplus/features/community/presentation/widgets/community_report_cta_button.dart';
@@ -65,7 +66,12 @@ class PoiCommunityReportsSection extends ConsumerWidget {
             )
           else if (state.reports.isEmpty)
             const CommunityEmptyState()
-          else
+          else if (state.hasConflictInRecent) ...[
+            // P2-031 — surface a conflict timeline when reports disagree.
+            CommunityConflictTimeline(reports: state.reports),
+            const SizedBox(height: 12),
+            CommunityRecentReportsCarousel(reports: state.reports),
+          ] else
             CommunityRecentReportsCarousel(reports: state.reports),
           const SizedBox(height: 14),
           CommunityReportCtaButton(

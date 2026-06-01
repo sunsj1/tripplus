@@ -3,7 +3,7 @@
 > **Update this file** whenever a task materially changes the user-visible surface or the architecture.
 > AI agents read this first to avoid re-discovering what's already built.
 
-**Last updated:** 2026-05-31 (Phase 1 code-complete + **UX improvement sub-sessions 1–3** landed — flow fixes, community loop closed, richer trip summary, station navigation wired).
+**Last updated:** 2026-06-01 (**Phase 2 Sessions 1–4** landed — alert engine v2, safety rules, personalized ranking, trust v2 for all POIs).
 
 ---
 
@@ -14,6 +14,34 @@
 **Before Phase 2 implementation:** finish manual E2E on device — [`docs/PHASE_1_E2E_VERIFICATION.md`](../PHASE_1_E2E_VERIFICATION.md).
 
 **Next (planning only):** Phase 2 sessions in [`docs/batches/phase_2_batches.md`](../batches/phase_2_batches.md) — **not started**.
+
+---
+
+## Phase 2 progress (12/36 = 33%)
+
+### Session 4 — Trust v2 for all POIs (2026-06-01)
+- ✅ `P2-030` — Reliability scoring generalized to handle POI condition vocab (`good`/`fair`/`poor`) alongside EV (`working`/`issues`/`down`) — fixed a bug where POI conditions all scored neutral-high. New `conditionQuality()`, `TrustLevel`.
+- ✅ `P2-031` — `CommunityConflictTimeline` widget surfaces a newest-first history when recent reports disagree; mounted on POI + station sections.
+- ✅ `P2-032` — Reusable colour-coded `SourceBadge` (Official/Community/Curated/Unverified) on POI tiles + detail sheets.
+
+### Session 3 — Personalization core (2026-06-01)
+- ✅ `P2-010` — `UserPreferenceVector.fromPreferences()` translates profile toggles into ranking weights.
+- ✅ `P2-011` — `PoiRanker` pure scoring: quality × confidence + proximity decay + openness + preference matches (veg/family/women-safe/pet/scenic/budget/brand).
+- ✅ `P2-012` — POI category lists default to "Best match" sort (✨) using the ranker; Nearest/Top rated/Open now retained. New `personalization/` feature slice + providers.
+
+### Session 2 — Predictive alert rules: safety (2026-06-01)
+- ✅ `P2-002` — Ghat rule + static `kGhatSections` dataset (14 ghats). Warns when route enters a known mountain pass ahead. `AlertRouteUtils.nearestApproachKm()`.
+- ✅ `P2-003` — Night rule (22:00–05:00): suggests nearest hotel/fuel stop ahead within 45 km; silent when none nearby. Notifier now fetches hotels.
+- ✅ `P2-004` — Fatigue rule: 3-hour continuous-driving break reminder via `AlertEngineInput.drivingDuration` (= `trip.elapsed`).
+- ✅ `AlertType.icon` getter — type-specific banner glyphs (terrain/nightlight/bedtime/etc.).
+
+### Session 1 — Alert engine v2 foundation (2026-06-01)
+- ✅ `P2-001` — `AlertEngine` pre-filters POIs to a 100 km upcoming window before any rule evaluates. New `AlertRouteUtils.poisInWindow()`. `AlertEngineInput.upcomingWindowKm` field.
+- ✅ `P2-006` — 20-minute per-type cooldown in `AlertNotifierController` (`_lastFiredAt` map) replaces Phase 1's fire-once-per-trip dedup. Resets on trip end.
+- ✅ `P2-007` — `TripAlertBanner` severity tiers: critical (manual dismiss), warning (auto 8s), info (slim pill auto 5s).
+- ✅ Edge case — active-trip POI category lists filter to stops **ahead** of the driver's GPS position (`PoiQuerySource.aheadOnRoute`); falls back to full corridor near destination.
+
+See `docs/batches/phase_2_batches.md` for the full Phase 2 plan.
 
 ---
 

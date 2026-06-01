@@ -104,6 +104,8 @@ class AlertNotifierController extends StateNotifier<AlertNotifierState> {
           vehicle: trip.vehicle,
           preferences: profile.preferences,
           upcomingPois: pois,
+          // P2-004 — continuous driving time (paused time already excluded).
+          drivingDuration: trip.elapsed,
         ),
       );
 
@@ -187,6 +189,7 @@ class AlertNotifierController extends StateNotifier<AlertNotifierState> {
       if (trip.vehicle.isElectric) PoiCategory.ev,
       PoiCategory.restaurant,
       PoiCategory.pureVeg,
+      PoiCategory.hotel, // P2-003 — night rule suggests hotels as safe stops
     ];
 
     for (final category in categories) {

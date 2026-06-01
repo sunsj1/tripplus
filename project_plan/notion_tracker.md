@@ -96,18 +96,18 @@
 ## Phase 2 — Predictive & Personalized Intelligence
 
 ### 2.1 Predictive Alerts v2
-- [ ] `P2-001` Upcoming-window rules
-- [ ] `P2-002` Ghat / Risk alert
-- [ ] `P2-003` Night alert
-- [ ] `P2-004` Fatigue alert
+- [x] `P2-001` Upcoming-window rules
+- [x] `P2-002` Ghat / Risk alert
+- [x] `P2-003` Night alert
+- [x] `P2-004` Fatigue alert
 - [ ] `P2-005` Weather alerts
-- [ ] `P2-006` Alert deduplication + cooldown
-- [ ] `P2-007` Alert priorities + presentation
+- [x] `P2-006` Alert deduplication + cooldown
+- [x] `P2-007` Alert priorities + presentation
 
 ### 2.2 Personalization & ranking
-- [ ] `P2-010` `UserPreferenceVector`
-- [ ] `P2-011` `PoiRanker` scoring
-- [ ] `P2-012` Apply ranker to all POI lists
+- [x] `P2-010` `UserPreferenceVector`
+- [x] `P2-011` `PoiRanker` scoring
+- [x] `P2-012` Apply ranker to all POI lists
 - [ ] `P2-013` Brand affinity learning
 
 ### 2.3 Mode-aware filters
@@ -117,9 +117,9 @@
 - [ ] `P2-023` Community pulse tags for mode attributes
 
 ### 2.4 Trust v2
-- [ ] `P2-030` Generalize reliability score to POIs
-- [ ] `P2-031` Conflict-aware timeline on POIs
-- [ ] `P2-032` Source badges on every POI
+- [x] `P2-030` Generalize reliability score to POIs
+- [x] `P2-031` Conflict-aware timeline on POIs
+- [x] `P2-032` Source badges on every POI
 - [ ] `P2-033` "Why we recommend this" explainer
 
 ### 2.5 Environmental integrations
@@ -234,7 +234,7 @@
 | Phase | Total Tasks | Done | % |
 |---|---|---|---|
 | Phase 1 — MVP | 50 | 50 | 100% |
-| Phase 2 — Intelligence | 36 | 0 | 0% |
+| Phase 2 — Intelligence | 36 | 12 | 33% |
 | Phase 3 — AI Copilot | 30 | 0 | 0% |
 | Phase 4 — Scale | 18 | 0 | 0% |
 | **Total** | **134** | **0** | **0%** |

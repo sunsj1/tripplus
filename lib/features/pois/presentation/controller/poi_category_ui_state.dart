@@ -51,6 +51,9 @@ sealed class PoiCategoryUiState with _$PoiCategoryUiState {
   const factory PoiCategoryUiState.data({
     required List<Poi> pois,
     required PoiQuerySource source,
+    /// P2-012 — driver's distance along the route when an active trip is
+    /// running; null otherwise. Passed to [PoiRanker] for proximity scoring.
+    double? currentPositionKm,
   }) = PoiCategoryData;
 
   /// Empty result. `reason` carries copy that's specific enough to be useful

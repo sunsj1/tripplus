@@ -3,6 +3,7 @@ import 'package:tripplus/core/domain/poi.dart';
 import 'package:tripplus/core/theme/app_colors.dart';
 import 'package:tripplus/core/theme/app_text_styles.dart';
 import 'package:tripplus/core/widgets/poi_photo.dart';
+import 'package:tripplus/core/widgets/source_badge.dart';
 
 /// One row in the POI list. Community pulse chip is added in `P1-054`; this
 /// tile leaves a `pulseSlot` placeholder so the future widget can drop in
@@ -41,11 +42,20 @@ class PoiListTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    poi.name,
-                    style: AppTextStyles.titleSmall,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          poi.name,
+                          style: AppTextStyles.titleSmall,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      // P2-032 — provenance badge.
+                      SourceBadge(source: poi.source, compact: true),
+                    ],
                   ),
                   if (poi.address != null) ...[
                     const SizedBox(height: 2),

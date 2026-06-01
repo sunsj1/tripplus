@@ -20,21 +20,36 @@ mixin _$PoiCategoryUiState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() loading,
-    required TResult Function(List<Poi> pois, PoiQuerySource source) data,
+    required TResult Function(
+      List<Poi> pois,
+      PoiQuerySource source,
+      double? currentPositionKm,
+    )
+    data,
     required TResult Function(String reason) empty,
     required TResult Function(Failure failure) errored,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? loading,
-    TResult? Function(List<Poi> pois, PoiQuerySource source)? data,
+    TResult? Function(
+      List<Poi> pois,
+      PoiQuerySource source,
+      double? currentPositionKm,
+    )?
+    data,
     TResult? Function(String reason)? empty,
     TResult? Function(Failure failure)? errored,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? loading,
-    TResult Function(List<Poi> pois, PoiQuerySource source)? data,
+    TResult Function(
+      List<Poi> pois,
+      PoiQuerySource source,
+      double? currentPositionKm,
+    )?
+    data,
     TResult Function(String reason)? empty,
     TResult Function(Failure failure)? errored,
     required TResult orElse(),
@@ -129,7 +144,12 @@ class _$PoiCategoryLoadingImpl implements PoiCategoryLoading {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() loading,
-    required TResult Function(List<Poi> pois, PoiQuerySource source) data,
+    required TResult Function(
+      List<Poi> pois,
+      PoiQuerySource source,
+      double? currentPositionKm,
+    )
+    data,
     required TResult Function(String reason) empty,
     required TResult Function(Failure failure) errored,
   }) {
@@ -140,7 +160,12 @@ class _$PoiCategoryLoadingImpl implements PoiCategoryLoading {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? loading,
-    TResult? Function(List<Poi> pois, PoiQuerySource source)? data,
+    TResult? Function(
+      List<Poi> pois,
+      PoiQuerySource source,
+      double? currentPositionKm,
+    )?
+    data,
     TResult? Function(String reason)? empty,
     TResult? Function(Failure failure)? errored,
   }) {
@@ -151,7 +176,12 @@ class _$PoiCategoryLoadingImpl implements PoiCategoryLoading {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? loading,
-    TResult Function(List<Poi> pois, PoiQuerySource source)? data,
+    TResult Function(
+      List<Poi> pois,
+      PoiQuerySource source,
+      double? currentPositionKm,
+    )?
+    data,
     TResult Function(String reason)? empty,
     TResult Function(Failure failure)? errored,
     required TResult orElse(),
@@ -211,7 +241,7 @@ abstract class _$$PoiCategoryDataImplCopyWith<$Res> {
     $Res Function(_$PoiCategoryDataImpl) then,
   ) = __$$PoiCategoryDataImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({List<Poi> pois, PoiQuerySource source});
+  $Res call({List<Poi> pois, PoiQuerySource source, double? currentPositionKm});
 }
 
 /// @nodoc
@@ -227,7 +257,11 @@ class __$$PoiCategoryDataImplCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? pois = null, Object? source = null}) {
+  $Res call({
+    Object? pois = null,
+    Object? source = null,
+    Object? currentPositionKm = freezed,
+  }) {
     return _then(
       _$PoiCategoryDataImpl(
         pois: null == pois
@@ -238,6 +272,10 @@ class __$$PoiCategoryDataImplCopyWithImpl<$Res>
             ? _value.source
             : source // ignore: cast_nullable_to_non_nullable
                   as PoiQuerySource,
+        currentPositionKm: freezed == currentPositionKm
+            ? _value.currentPositionKm
+            : currentPositionKm // ignore: cast_nullable_to_non_nullable
+                  as double?,
       ),
     );
   }
@@ -249,6 +287,7 @@ class _$PoiCategoryDataImpl implements PoiCategoryData {
   const _$PoiCategoryDataImpl({
     required final List<Poi> pois,
     required this.source,
+    this.currentPositionKm,
   }) : _pois = pois;
 
   final List<Poi> _pois;
@@ -262,9 +301,14 @@ class _$PoiCategoryDataImpl implements PoiCategoryData {
   @override
   final PoiQuerySource source;
 
+  /// P2-012 — driver's distance along the route when an active trip is
+  /// running; null otherwise. Passed to [PoiRanker] for proximity scoring.
+  @override
+  final double? currentPositionKm;
+
   @override
   String toString() {
-    return 'PoiCategoryUiState.data(pois: $pois, source: $source)';
+    return 'PoiCategoryUiState.data(pois: $pois, source: $source, currentPositionKm: $currentPositionKm)';
   }
 
   @override
@@ -273,7 +317,9 @@ class _$PoiCategoryDataImpl implements PoiCategoryData {
         (other.runtimeType == runtimeType &&
             other is _$PoiCategoryDataImpl &&
             const DeepCollectionEquality().equals(other._pois, _pois) &&
-            (identical(other.source, source) || other.source == source));
+            (identical(other.source, source) || other.source == source) &&
+            (identical(other.currentPositionKm, currentPositionKm) ||
+                other.currentPositionKm == currentPositionKm));
   }
 
   @override
@@ -281,6 +327,7 @@ class _$PoiCategoryDataImpl implements PoiCategoryData {
     runtimeType,
     const DeepCollectionEquality().hash(_pois),
     source,
+    currentPositionKm,
   );
 
   /// Create a copy of PoiCategoryUiState
@@ -298,35 +345,50 @@ class _$PoiCategoryDataImpl implements PoiCategoryData {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() loading,
-    required TResult Function(List<Poi> pois, PoiQuerySource source) data,
+    required TResult Function(
+      List<Poi> pois,
+      PoiQuerySource source,
+      double? currentPositionKm,
+    )
+    data,
     required TResult Function(String reason) empty,
     required TResult Function(Failure failure) errored,
   }) {
-    return data(pois, source);
+    return data(pois, source, currentPositionKm);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? loading,
-    TResult? Function(List<Poi> pois, PoiQuerySource source)? data,
+    TResult? Function(
+      List<Poi> pois,
+      PoiQuerySource source,
+      double? currentPositionKm,
+    )?
+    data,
     TResult? Function(String reason)? empty,
     TResult? Function(Failure failure)? errored,
   }) {
-    return data?.call(pois, source);
+    return data?.call(pois, source, currentPositionKm);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? loading,
-    TResult Function(List<Poi> pois, PoiQuerySource source)? data,
+    TResult Function(
+      List<Poi> pois,
+      PoiQuerySource source,
+      double? currentPositionKm,
+    )?
+    data,
     TResult Function(String reason)? empty,
     TResult Function(Failure failure)? errored,
     required TResult orElse(),
   }) {
     if (data != null) {
-      return data(pois, source);
+      return data(pois, source, currentPositionKm);
     }
     return orElse();
   }
@@ -373,10 +435,15 @@ abstract class PoiCategoryData implements PoiCategoryUiState {
   const factory PoiCategoryData({
     required final List<Poi> pois,
     required final PoiQuerySource source,
+    final double? currentPositionKm,
   }) = _$PoiCategoryDataImpl;
 
   List<Poi> get pois;
   PoiQuerySource get source;
+
+  /// P2-012 — driver's distance along the route when an active trip is
+  /// running; null otherwise. Passed to [PoiRanker] for proximity scoring.
+  double? get currentPositionKm;
 
   /// Create a copy of PoiCategoryUiState
   /// with the given fields replaced by the non-null parameter values.
@@ -459,7 +526,12 @@ class _$PoiCategoryEmptyImpl implements PoiCategoryEmpty {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() loading,
-    required TResult Function(List<Poi> pois, PoiQuerySource source) data,
+    required TResult Function(
+      List<Poi> pois,
+      PoiQuerySource source,
+      double? currentPositionKm,
+    )
+    data,
     required TResult Function(String reason) empty,
     required TResult Function(Failure failure) errored,
   }) {
@@ -470,7 +542,12 @@ class _$PoiCategoryEmptyImpl implements PoiCategoryEmpty {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? loading,
-    TResult? Function(List<Poi> pois, PoiQuerySource source)? data,
+    TResult? Function(
+      List<Poi> pois,
+      PoiQuerySource source,
+      double? currentPositionKm,
+    )?
+    data,
     TResult? Function(String reason)? empty,
     TResult? Function(Failure failure)? errored,
   }) {
@@ -481,7 +558,12 @@ class _$PoiCategoryEmptyImpl implements PoiCategoryEmpty {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? loading,
-    TResult Function(List<Poi> pois, PoiQuerySource source)? data,
+    TResult Function(
+      List<Poi> pois,
+      PoiQuerySource source,
+      double? currentPositionKm,
+    )?
+    data,
     TResult Function(String reason)? empty,
     TResult Function(Failure failure)? errored,
     required TResult orElse(),
@@ -629,7 +711,12 @@ class _$PoiCategoryErroredImpl implements PoiCategoryErrored {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() loading,
-    required TResult Function(List<Poi> pois, PoiQuerySource source) data,
+    required TResult Function(
+      List<Poi> pois,
+      PoiQuerySource source,
+      double? currentPositionKm,
+    )
+    data,
     required TResult Function(String reason) empty,
     required TResult Function(Failure failure) errored,
   }) {
@@ -640,7 +727,12 @@ class _$PoiCategoryErroredImpl implements PoiCategoryErrored {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? loading,
-    TResult? Function(List<Poi> pois, PoiQuerySource source)? data,
+    TResult? Function(
+      List<Poi> pois,
+      PoiQuerySource source,
+      double? currentPositionKm,
+    )?
+    data,
     TResult? Function(String reason)? empty,
     TResult? Function(Failure failure)? errored,
   }) {
@@ -651,7 +743,12 @@ class _$PoiCategoryErroredImpl implements PoiCategoryErrored {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? loading,
-    TResult Function(List<Poi> pois, PoiQuerySource source)? data,
+    TResult Function(
+      List<Poi> pois,
+      PoiQuerySource source,
+      double? currentPositionKm,
+    )?
+    data,
     TResult Function(String reason)? empty,
     TResult Function(Failure failure)? errored,
     required TResult orElse(),

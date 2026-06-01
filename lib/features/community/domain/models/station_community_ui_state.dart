@@ -1,5 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:tripplus/features/community/domain/community_condition.dart';
 import 'package:tripplus/features/community/domain/models/station_community_report.dart';
+import 'package:tripplus/features/community/domain/trust_level.dart';
 
 part 'station_community_ui_state.freezed.dart';
 
@@ -54,11 +56,9 @@ extension StationCommunityUiStateX on StationCommunityUiState {
               : ageH <= 72
                   ? 0.65
                   : 0.45;
-      final conditionScore = switch (r.condition) {
-        'down' => 0.2,
-        'issues' => 0.55,
-        _ => 0.9,
-      };
+      // P2-030 — generalized: handles EV (working/issues/down) AND
+      // POI (good/fair/poor) condition vocabularies.
+      final conditionScore = conditionQuality(r.condition);
       final successBoost = r.chargeSuccessful == true
           ? 0.08
           : r.chargeSuccessful == false
@@ -77,12 +77,17 @@ extension StationCommunityUiStateX on StationCommunityUiState {
   bool get hasConflictInRecent {
     final recent = reports.take(6).toList();
     if (recent.isEmpty) return false;
-    final hasDown = recent.any((r) => r.condition == 'down');
-    final hasWorking = recent.any(
-      (r) => r.condition == 'working' || r.chargeSuccessful == true,
+    // P2-030 — recognise both vocabularies.
+    final hasNegative = recent.any((r) => isNegativeCondition(r.condition));
+    final hasPositive = recent.any(
+      (r) => isPositiveCondition(r.condition) || r.chargeSuccessful == true,
     );
-    return hasDown && hasWorking;
+    return hasNegative && hasPositive;
   }
+
+  /// P2-030 — Coarse trust tier from score + report count.
+  TrustLevel get trustLevel =>
+      TrustLevel.fromScore(reliabilityScore, reports.length);
 
   DateTime? get latestSuccessfulChargeAt {
     for (final r in reports) {

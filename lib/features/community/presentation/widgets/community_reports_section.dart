@@ -10,6 +10,7 @@ import 'package:tripplus/features/community/domain/models/station_community_ui_s
 import 'package:tripplus/features/community/presentation/controller/community_providers.dart';
 import 'package:tripplus/features/community/presentation/widgets/community_average_rating_row.dart';
 import 'package:tripplus/features/community/presentation/widgets/community_empty_state.dart';
+import 'package:tripplus/features/community/presentation/widgets/community_conflict_timeline.dart';
 import 'package:tripplus/features/community/presentation/widgets/community_recent_reports_carousel.dart';
 import 'package:tripplus/features/community/presentation/widgets/community_report_cta_button.dart';
 import 'package:tripplus/features/community/presentation/widgets/community_report_list_screen.dart';
@@ -67,6 +68,11 @@ class CommunityReportsSection extends ConsumerWidget {
           else ...[
             _CommunityAmenitiesSummary(reports: state.reports),
             const SizedBox(height: 12),
+            // P2-031 — conflict timeline when recent reports disagree.
+            if (state.hasConflictInRecent) ...[
+              CommunityConflictTimeline(reports: state.reports),
+              const SizedBox(height: 12),
+            ],
             CommunityRecentReportsCarousel(reports: state.reports),
           ],
           if (state.reports.isNotEmpty)

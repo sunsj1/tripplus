@@ -6,6 +6,178 @@
 
 ---
 
+## Phase 2 · Session 4 — Trust v2 for all POIs
+
+- **Started:** 2026-06-01
+- **Finished:** 2026-06-01
+- **Tasks completed (3/3):** `P2-030`, `P2-031`, `P2-032`.
+- **Theme:** community trust signals work correctly for every POI type (not just EV stations), disagreements surface as a timeline, and provenance is shown consistently.
+
+### Per-task notes
+
+- `P2-030` — Generalized reliability:
+  - **Bug fixed:** `reliabilityScore` / `hasConflictInRecent` only understood EV condition vocab (`working`/`issues`/`down`), so POI conditions (`good`/`fair`/`poor`) all scored as neutral-high and conflicts were never detected.
+  - `lib/features/community/domain/community_condition.dart` — `conditionQuality()`, `isNegativeCondition()`, `isPositiveCondition()` handle both vocabularies.
+  - `lib/features/community/domain/trust_level.dart` — `TrustLevel { high, medium, low, unknown }` + `fromScore(score, count)`.
+  - `StationCommunityUiStateX` now uses the generalized helpers and exposes `trustLevel`.
+
+- `P2-031` — Conflict-aware timeline:
+  - `lib/features/community/presentation/widgets/community_conflict_timeline.dart` — vertical newest-first timeline with colour-coded condition dots (green/amber/red), rating, time-ago, comment. Header "Reports disagree — recent history".
+  - Mounted in **both** `PoiCommunityReportsSection` and `CommunityReportsSection`, gated on `hasConflictInRecent`.
+
+- `P2-032` — Source badges:
+  - `lib/core/widgets/source_badge.dart` — reusable colour-coded `SourceBadge` (Official=blue/verified, Community=teal/groups, Curated=amber/sparkle, Unverified=grey/?). `compact` variant for tiles.
+  - Replaces the private plain badge in `poi_detail_sheet.dart`; added (compact) to `poi_list_tile.dart` name row.
+
+### Files changed (new)
+- `lib/features/community/domain/community_condition.dart`
+- `lib/features/community/domain/trust_level.dart`
+- `lib/features/community/presentation/widgets/community_conflict_timeline.dart`
+- `lib/core/widgets/source_badge.dart`
+
+### Files changed (modified)
+- `lib/features/community/domain/models/station_community_ui_state.dart` (generalized scoring + `trustLevel`)
+- `lib/features/community/presentation/widgets/poi_community_reports_section.dart` (conflict timeline)
+- `lib/features/community/presentation/widgets/community_reports_section.dart` (conflict timeline)
+- `lib/features/pois/presentation/widget/poi_detail_sheet.dart` (SourceBadge)
+- `lib/features/pois/presentation/widget/poi_list_tile.dart` (SourceBadge compact)
+
+### Notes / follow-ups
+- `TrustLevel` is now available for the "why we recommend" chip (`P2-033`, Session 11) and mode badges (Session 5).
+- Road-condition tags (`P2-043`, Session 7) will build on the same generalized condition helpers.
+
+---
+
+## Phase 2 · Session 3 — Personalization core
+
+- **Started:** 2026-06-01
+- **Finished:** 2026-06-01
+- **Tasks completed (3/3):** `P2-010`, `P2-011`, `P2-012`.
+- **Theme:** POI category lists now rank by a personalized "Best match" score derived from the user's saved preferences, not just raw distance.
+
+### Per-task notes
+
+- `P2-010` — `UserPreferenceVector`:
+  - `lib/features/personalization/domain/user_preference_vector.dart` — plain Dart class. `fromPreferences(UserPreferences)` maps toggles → weights: base quality(1.0)/proximity(1.0)/openness(0.5) always on; dietary(2.0 if pureVeg), family(1.5), womenSafe(2.0), pet(1.5), scenic(1.0), budget(0.8), `brandWeights` from selected fuel brands. `hasActivePreferences` getter. `behavioral*`/`brandWeights` left open for P2-013.
+
+- `P2-011` — `PoiRanker`:
+  - `lib/features/personalization/domain/poi_ranker.dart` — pure scoring. `rank(pois, vector, currentPositionKm)` returns sorted copy; `score()` = Σ(signal × weight). Quality = ratingNorm × review-confidence (saturating at /20). Proximity = `1/(1+ahead/25km)`. Openness flat. Preference matches: veg (category/name/attrs), family/womenSafe/pet (attrs), scenic/tourist (category), budget (priceLevel vs tier ±1), fuel-brand (name contains). Tie-break: distance then rating.
+
+- `P2-012` — Applied to category screen:
+  - `PoiCategoryData` gains `currentPositionKm` (set by controller when active trip running).
+  - `lib/features/personalization/presentation/controller/personalization_providers.dart` — `userPreferenceVectorProvider` (watches profile) + `poiRankerProvider`.
+  - `poi_category_screen.dart` `_List` → `ConsumerStatefulWidget`; new `_SortMode.bestMatch` (default, ✨ icon) runs the ranker. Nearest / Top rated / Open now retained.
+
+### Files changed (new)
+- `lib/features/personalization/domain/user_preference_vector.dart`
+- `lib/features/personalization/domain/poi_ranker.dart`
+- `lib/features/personalization/presentation/controller/personalization_providers.dart`
+
+### Files changed (modified)
+- `lib/features/pois/presentation/controller/poi_category_ui_state.dart` (`currentPositionKm` on data)
+- `lib/features/pois/presentation/controller/poi_category_controller.dart` (set currentPositionKm)
+- `lib/features/pois/presentation/view/poi_category_screen.dart` (bestMatch sort + ranker wiring)
+
+### Notes / follow-ups
+- Family/women-safe/pet matching reads `poi.attributes[...]` flags that Google Places doesn't populate yet — these signals activate fully once community pulse tags land (`P2-023`, Session 5). Until then they're harmless no-ops.
+- Brand affinity is explicit-only; learned weights come in `P2-013` (Session 9).
+- `PoiRanker` is the shared engine that Session 5 mode overlays and Session 11's "why we recommend" chip will build on.
+
+---
+
+## Phase 2 · Session 2 — Predictive alert rules (safety)
+
+- **Started:** 2026-06-01
+- **Finished:** 2026-06-01
+- **Tasks completed (3/3):** `P2-002`, `P2-003`, `P2-004`.
+- **Theme:** the engine gains three safety rules — ghat warning, night safe-stop, fatigue break reminder. All plug into the v2 window + cooldown infrastructure from Session 1.
+
+### Per-task notes
+
+- `P2-002` — Ghat / risk alert:
+  - `lib/features/alerts/domain/ghat_dataset.dart` — `GhatSection` (name, lat, lng, radiusKm, lengthKm) + `kGhatSections` curated list (14 ghats, Maharashtra-heavy: Bhor, Khandala, Kasara/Thal, Malshej, Tamhini, Varandha, Amba, Kumbharli, Amboli + Karnataka + Nilgiri).
+  - `lib/features/alerts/domain/rules/ghat_rule.dart` — fires when the route passes within a ghat's `radiusKm` (via new `AlertRouteUtils.nearestApproachKm`) AND the ghat is ahead within the upcoming window. Warning severity.
+  - `AlertRouteUtils.nearestApproachKm(polyline, point)` — perpendicular distance from a point to the polyline.
+
+- `P2-003` — Night alert:
+  - `lib/features/alerts/domain/rules/night_rule.dart` — active 22:00–05:00 (from `evaluatedAt`). Suggests nearest hotel (fallback: fuel) ahead within 45 km. Stays silent when no actionable stop is near, so it doesn't spam across dark stretches. Warning severity.
+  - Notifier now fetches `PoiCategory.hotel` in `_ensurePois` so the rule has stops to recommend.
+
+- `P2-004` — Fatigue alert:
+  - `lib/features/alerts/domain/rules/fatigue_rule.dart` — fires every 3 h of continuous driving via a 5-minute band after each 180-min boundary; the 20-min cooldown collapses the band to one delivery. Time-based (no `distanceKm`). Warning severity.
+  - `AlertEngineInput.drivingDuration` added; notifier passes `trip.elapsed` (paused time already excluded → pausing the trip naturally defers the next reminder).
+
+- **Presentation polish (P2-007 follow-through):**
+  - `AlertType.icon` getter added (fuel/ev/food/ghat=terrain/night=nightlight/fatigue=bedtime/weather=cloud). `TripAlertBanner` now uses type-specific glyphs (colour still from severity).
+
+### Files changed (new)
+- `lib/features/alerts/domain/ghat_dataset.dart`
+- `lib/features/alerts/domain/rules/ghat_rule.dart`
+- `lib/features/alerts/domain/rules/night_rule.dart`
+- `lib/features/alerts/domain/rules/fatigue_rule.dart`
+
+### Files changed (modified)
+- `lib/features/alerts/domain/alert.dart` (`AlertType.icon`)
+- `lib/features/alerts/domain/alert_engine.dart` (register 3 rules)
+- `lib/features/alerts/domain/alert_engine_input.dart` (`drivingDuration`)
+- `lib/features/alerts/domain/alert_route_utils.dart` (`nearestApproachKm`)
+- `lib/features/alerts/presentation/controller/alert_notifier_controller.dart` (drivingDuration + hotel fetch)
+- `lib/features/alerts/presentation/widget/trip_alert_banner.dart` (type icons)
+
+### Notes / follow-ups
+- Ghat dataset is static and India-focused; a live elevation API (Open-Elevation / Mapbox Terrain) could replace it in a future session for global coverage.
+- `weather` AlertType already exists in the enum; its rule lands in Phase 2 Session 6 (`P2-005`).
+
+---
+
+## Phase 2 · Session 1 — Alert engine v2 foundation
+
+- **Started:** 2026-06-01
+- **Finished:** 2026-06-01
+- **Tasks completed (3/3):** `P2-001`, `P2-006`, `P2-007` + active-trip "ahead-on-route" POI filter (edge case requested by user).
+- **Theme:** the alert engine becomes timely and non-repetitive; POI lists during a live trip stop showing places you've already passed.
+
+### Per-task notes
+
+- `P2-001` — Upcoming-window evaluation:
+  - `AlertEngineInput` gains `upcomingWindowKm` (default `100.0`, exposed as `AlertEngineInput.defaultWindowKm`).
+  - `AlertEngine.evaluate()` resolves `currentKm` once, then pre-filters every category in `upcomingPois` through `AlertRouteUtils.poisInWindow(pois, currentKm, windowKm)` before constructing the windowed input passed to rules. Every rule (present + future) is automatically window-aware.
+  - `AlertRouteUtils.poisInWindow()` — new helper returning POIs in `(currentKm, currentKm + windowKm]`, sorted.
+
+- `P2-006` — Cooldown dedup:
+  - `AlertNotifierController` replaces Phase 1's permanent `trip.firedAlerts.any(...)` dedup with `Map<AlertType, DateTime> _lastFiredAt` + `static const _cooldown = Duration(minutes: 20)`.
+  - Cooldown timestamp stamped at the start of `_deliver()` (before async work) to prevent a rapid double-fire.
+  - `_lastFiredAt.clear()` on trip idle/completed so the next trip starts fresh.
+
+- `P2-007` — Severity-tiered presentation:
+  - `TripAlertBanner` → stateful `_SeverityBanner` owns a `Timer` keyed to severity-derived `autoDismissSeconds`.
+  - `critical` → full red banner, manual × only. `warning` → full amber banner + "Dismisses in 8s" hint, auto 8 s. `info` → slim green pill, auto 5 s, no ×.
+
+- **Edge case (user-requested)** — "Ahead on route" POI filtering:
+  - `PoiQuerySource.aheadOnRoute` enum value + `label` ("Ahead on your route") + `icon` getter.
+  - `PoiCategoryController` accepts `currentPositionKm`; when set and ≥ 5 km it trims the route-aware list to POIs with `distanceAlongRouteKm > currentPositionKm`. Falls back to full `alongRoute` list if trimming empties it (near destination).
+  - `pois_providers.dart` synchronously derives `currentPositionKm`: reads `ActiveTripController.lastPosition` → decodes corridor-cache polyline → `AlertRouteUtils.distanceAlongRoute()`.
+
+### Files changed (new)
+- _(none — all edits to existing files)_
+
+### Files changed (modified)
+- `lib/features/alerts/domain/alert_engine_input.dart` (window field)
+- `lib/features/alerts/domain/alert_engine.dart` (pre-filter to window)
+- `lib/features/alerts/domain/alert_route_utils.dart` (`poisInWindow`)
+- `lib/features/alerts/presentation/controller/alert_notifier_controller.dart` (cooldown)
+- `lib/features/alerts/presentation/widget/trip_alert_banner.dart` (severity tiers)
+- `lib/features/pois/presentation/controller/poi_category_ui_state.dart` (aheadOnRoute source)
+- `lib/features/pois/presentation/controller/poi_category_controller.dart` (ahead filter)
+- `lib/features/pois/presentation/controller/pois_providers.dart` (compute currentPositionKm)
+- `lib/features/pois/presentation/view/poi_category_screen.dart` (source.icon)
+
+### Notes / follow-ups
+- `upcomingWindowKm` is fixed at 100 km — could become a user/profile setting in a later session.
+- "Ahead" filter relies on the corridor cache polyline; if `encodedPolyline` is empty (legacy trip) it silently shows the full corridor — acceptable degradation.
+
+---
+
 ## Session 11 — Phase 1 verification + Phase 2 plan
 
 - **Started:** 2026-05-30

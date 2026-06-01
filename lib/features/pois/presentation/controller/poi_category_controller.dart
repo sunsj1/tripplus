@@ -103,6 +103,7 @@ class PoiCategoryController extends StateNotifier<PoiCategoryUiState> {
             return PoiCategoryUiState.data(
               pois: ahead,
               source: PoiQuerySource.aheadOnRoute,
+              currentPositionKm: currentPositionKm,
             );
           }
         }
@@ -110,6 +111,7 @@ class PoiCategoryController extends StateNotifier<PoiCategoryUiState> {
         return PoiCategoryUiState.data(
           pois: sorted,
           source: PoiQuerySource.alongRoute,
+          currentPositionKm: currentPositionKm,
         );
       },
     );

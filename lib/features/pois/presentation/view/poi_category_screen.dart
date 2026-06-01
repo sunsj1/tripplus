@@ -6,6 +6,7 @@ import 'package:tripplus/core/theme/app_colors.dart';
 import 'package:tripplus/core/theme/app_text_styles.dart';
 import 'package:tripplus/core/utils/failure.dart';
 import 'package:tripplus/features/community/presentation/widgets/poi_community_rating_pulse.dart';
+import 'package:tripplus/features/personalization/presentation/controller/personalization_providers.dart';
 import 'package:tripplus/features/pois/presentation/controller/poi_category_ui_state.dart';
 import 'package:tripplus/features/pois/presentation/controller/pois_providers.dart';
 import 'package:tripplus/features/pois/presentation/widget/poi_category_map_view.dart';
@@ -78,11 +79,16 @@ class _PoiCategoryScreenState extends ConsumerState<PoiCategoryScreen> {
               failure: failure,
               onRetry: controller.refresh,
             ),
-          PoiCategoryData(:final pois, :final source) =>
+          PoiCategoryData(
+            :final pois,
+            :final source,
+            :final currentPositionKm,
+          ) =>
             _mode == _ViewMode.list
                 ? _List(
                     pois: pois,
                     source: source,
+                    currentPositionKm: currentPositionKm,
                     // Pass preferred fuel brands so Fuel category can boost
                     // matching stations to the top of the list.
                     preferredFuelBrands: widget.category == PoiCategory.fuel
@@ -221,11 +227,13 @@ class _Errored extends StatelessWidget {
 // ---------------------------------------------------------------------------
 // Sort modes for the POI list
 // ---------------------------------------------------------------------------
-enum _SortMode { nearest, topRated, openNow }
+enum _SortMode { bestMatch, nearest, topRated, openNow }
 
 extension _SortModeX on _SortMode {
   String get label {
     switch (this) {
+      case _SortMode.bestMatch:
+        return 'Best match';
       case _SortMode.nearest:
         return 'Nearest';
       case _SortMode.topRated:
@@ -237,6 +245,8 @@ extension _SortModeX on _SortMode {
 
   IconData get icon {
     switch (this) {
+      case _SortMode.bestMatch:
+        return Icons.auto_awesome_outlined;
       case _SortMode.nearest:
         return Icons.near_me_outlined;
       case _SortMode.topRated:
@@ -247,25 +257,30 @@ extension _SortModeX on _SortMode {
   }
 }
 
-class _List extends StatefulWidget {
+class _List extends ConsumerStatefulWidget {
   const _List({
     required this.pois,
     required this.source,
+    this.currentPositionKm,
     this.preferredFuelBrands = const [],
   });
   final List<Poi> pois;
   final PoiQuerySource source;
+
+  /// Driver position along the route (active trip) for proximity scoring.
+  final double? currentPositionKm;
 
   /// For [PoiCategory.fuel]: brands the user prefers (from profile).
   /// Matching POIs are promoted to the top of "Nearest" sort.
   final List<FuelBrand> preferredFuelBrands;
 
   @override
-  State<_List> createState() => _ListState();
+  ConsumerState<_List> createState() => _ListState();
 }
 
-class _ListState extends State<_List> {
-  _SortMode _sort = _SortMode.nearest;
+class _ListState extends ConsumerState<_List> {
+  // P2-012 — default to personalized "Best match" ranking.
+  _SortMode _sort = _SortMode.bestMatch;
 
   bool _isBrandMatch(Poi poi) {
     if (widget.preferredFuelBrands.isEmpty) return false;
@@ -277,6 +292,15 @@ class _ListState extends State<_List> {
   List<Poi> get _sorted {
     final list = [...widget.pois];
     switch (_sort) {
+      case _SortMode.bestMatch:
+        // P2-012 — PoiRanker blends quality, proximity, openness + preferences.
+        final ranker = ref.read(poiRankerProvider);
+        final vector = ref.read(userPreferenceVectorProvider);
+        return ranker.rank(
+          list,
+          vector,
+          currentPositionKm: widget.currentPositionKm,
+        );
       case _SortMode.nearest:
         list.sort((a, b) {
           // Preferred fuel brands bubble to the top.

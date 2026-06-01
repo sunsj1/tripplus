@@ -23,55 +23,58 @@
 
 ---
 
-## ⬜ Session 1 — Alert engine v2 foundation
+## ✅ Session 1 — Alert engine v2 foundation
 
 **Theme.** Upcoming-window evaluation, deduplication, and presentation tiers.
 
 | ID | Task | Est | Depends on |
 |---|---|---|---|
-| `P2-001` | Upgrade `AlertEngine` to upcoming-window rules | 1 d | `P1-023` ✅ |
-| `P2-006` | Alert deduplication & cooldown | 4 h | `P2-001` |
-| `P2-007` | Alert priorities + non-blocking vs critical UI | 6 h | `P2-001` |
+| `P2-001` ✅ | Upgrade `AlertEngine` to upcoming-window rules | 1 d | `P1-023` ✅ |
+| `P2-006` ✅ | Alert deduplication & cooldown | 4 h | `P2-001` |
+| `P2-007` ✅ | Alert priorities + non-blocking vs critical UI | 6 h | `P2-001` |
+
+**Plus edge-case:** active-trip POI lists now filter to stops *ahead* of the
+driver's GPS position (`PoiQuerySource.aheadOnRoute`).
 
 **Unblocks:** Sessions 2–3 (new alert rules).
 
 ---
 
-## ⬜ Session 2 — Predictive alert rules (safety)
+## ✅ Session 2 — Predictive alert rules (safety)
 
 **Theme.** Ghat, night, and fatigue rules on top of the v2 engine.
 
 | ID | Task | Est | Depends on |
 |---|---|---|---|
-| `P2-002` | Ghat / risk alert (elevation or static ghat dataset) | 2 d | `P2-001` |
-| `P2-003` | Night alert — safe stop suggestion | 1.5 d | `P2-001` |
-| `P2-004` | Fatigue alert — 3 h driving timer | 6 h | `P2-001` |
+| `P2-002` ✅ | Ghat / risk alert (static ghat dataset) | 2 d | `P2-001` |
+| `P2-003` ✅ | Night alert — safe stop suggestion | 1.5 d | `P2-001` |
+| `P2-004` ✅ | Fatigue alert — 3 h driving timer | 6 h | `P2-001` |
 
 ---
 
-## ⬜ Session 3 — Personalization core
+## ✅ Session 3 — Personalization core
 
 **Theme.** Preference vector + POI ranker wired into category lists.
 
 | ID | Task | Est | Depends on |
 |---|---|---|---|
-| `P2-010` | `UserPreferenceVector` — explicit + behavioral weights | 1 d | `P1-031` ✅ |
-| `P2-011` | `PoiRanker` score function | 1 d | `P2-010`, `P1-008` ✅ |
-| `P2-012` | Apply `PoiRanker` to all `PoiCategoryScreen` lists | 4 h | `P2-011` |
+| `P2-010` ✅ | `UserPreferenceVector` — explicit + behavioral weights | 1 d | `P1-031` ✅ |
+| `P2-011` ✅ | `PoiRanker` score function | 1 d | `P2-010`, `P1-008` ✅ |
+| `P2-012` ✅ | Apply `PoiRanker` to all `PoiCategoryScreen` lists | 4 h | `P2-011` |
 
 **Unblocks:** Mode filters, trust explainers, environment UX that reads ranked lists.
 
 ---
 
-## ⬜ Session 4 — Trust v2 for all POIs
+## ✅ Session 4 — Trust v2 for all POIs
 
 **Theme.** Reliability, conflict timeline, and source badges everywhere.
 
 | ID | Task | Est | Depends on |
 |---|---|---|---|
-| `P2-030` | Generalize reliability score to all POIs | 1 d | `P1-052` ✅ |
-| `P2-031` | Conflict-aware timeline on POIs | 6 h | `P2-030` |
-| `P2-032` | Source badges: Official · Community · Unverified | 4 h | `P2-030` |
+| `P2-030` ✅ | Generalize reliability score to all POIs | 1 d | `P1-052` ✅ |
+| `P2-031` ✅ | Conflict-aware timeline on POIs | 6 h | `P2-030` |
+| `P2-032` ✅ | Source badges: Official · Community · Unverified | 4 h | `P2-030` |
 
 ---
 
@@ -191,10 +194,10 @@ completion checklist.
 
 | Session | Tasks | Status |
 |---|---|---|
-| 1 | 3 | ⬜ |
-| 2 | 3 | ⬜ |
-| 3 | 3 | ⬜ |
-| 4 | 3 | ⬜ |
+| 1 | 3 | ✅ |
+| 2 | 3 | ✅ |
+| 3 | 3 | ✅ |
+| 4 | 3 | ✅ |
 | 5 | 4 | ⬜ |
 | 6 | 3 | ⬜ |
 | 7 | 2 | ⬜ |
@@ -204,7 +207,7 @@ completion checklist.
 | 11 | 3 | ⬜ |
 | 12 | 3 | ⬜ |
 | 13 | verify | ⬜ |
-| **Total** | **36** | **0 / 36 = 0 %** |
+| **Total** | **36** | **12 / 36 = 33 %** |
 
 ---
 

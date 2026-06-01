@@ -53,6 +53,34 @@ class AlertRouteUtils {
     return bestProjection;
   }
 
+  /// P2-002 — Shortest perpendicular distance (km) from [point] to the route
+  /// polyline. Used by the ghat rule to decide whether the route actually
+  /// passes through a known ghat section (vs. one merely near the corridor).
+  static double nearestApproachKm(List<LatLng> polyline, LatLng point) {
+    if (polyline.length < 2) {
+      return _haversine(polyline.first, point);
+    }
+
+    double best = double.infinity;
+    for (var i = 0; i < polyline.length - 1; i++) {
+      final segLen = _haversine(polyline[i], polyline[i + 1]);
+      final dStart = _haversine(polyline[i], point);
+      final dEnd = _haversine(point, polyline[i + 1]);
+
+      double perp;
+      if (segLen <= 0) {
+        perp = dStart;
+      } else {
+        final t = ((dStart * dStart - dEnd * dEnd + segLen * segLen) /
+                (2 * segLen))
+            .clamp(0.0, segLen);
+        perp = sqrt(max(0, dStart * dStart - t * t));
+      }
+      if (perp < best) best = perp;
+    }
+    return best;
+  }
+
   /// POIs strictly ahead of [currentKm] on the route, sorted by distance.
   static List<Poi> poisAhead(List<Poi> pois, double currentKm) {
     return pois

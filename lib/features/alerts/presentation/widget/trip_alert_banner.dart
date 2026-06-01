@@ -109,23 +109,13 @@ class _FullBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (Color bg, Color fg, IconData icon) = switch (alert.severity) {
-      AlertSeverity.critical => (
-          AppColors.error,
-          Colors.white,
-          Icons.warning_amber_rounded,
-        ),
-      AlertSeverity.warning => (
-          AppColors.warning,
-          Colors.white,
-          Icons.info_outline_rounded,
-        ),
-      AlertSeverity.info => (
-          AppColors.primary,
-          Colors.white,
-          Icons.restaurant_outlined,
-        ),
+    // Colour from severity; glyph from alert type (P2-007).
+    final (Color bg, Color fg) = switch (alert.severity) {
+      AlertSeverity.critical => (AppColors.error, Colors.white),
+      AlertSeverity.warning => (AppColors.warning, Colors.white),
+      AlertSeverity.info => (AppColors.primary, Colors.white),
     };
+    final icon = alert.type.icon;
 
     return Material(
       color: bg,
@@ -203,7 +193,7 @@ class _InfoPill extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 7),
         child: Row(
           children: [
-            const Icon(Icons.restaurant_outlined, size: 15, color: Colors.white),
+            Icon(alert.type.icon, size: 15, color: Colors.white),
             const SizedBox(width: 8),
             Expanded(
               child: Text(

@@ -19,6 +19,7 @@ class AlertEngineInput {
     this.currentDistanceAlongRouteKm,
     this.evaluatedAt,
     this.upcomingWindowKm = defaultWindowKm,
+    this.drivingDuration,
   });
 
   /// P2-001 — Default upcoming evaluation window (km).
@@ -46,6 +47,11 @@ class AlertEngineInput {
   /// position. Prevents alerts about stops that are irrelevant (e.g. a
   /// charger 250 km away when you just started a 400 km trip).
   final double upcomingWindowKm;
+
+  /// P2-004 — Continuous driving time since the trip started (paused time
+  /// already excluded). Null when not tracking a live trip. Consumed by the
+  /// fatigue rule.
+  final Duration? drivingDuration;
 
   List<Poi> poisFor(PoiCategory category) =>
       upcomingPois[category] ?? const <Poi>[];

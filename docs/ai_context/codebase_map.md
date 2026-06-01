@@ -32,20 +32,27 @@
   - `presentation/controller/station_community_controller.dart` — internal field renamed to `_targetKey`; new optional `queryByTargetKey` constructor flag toggles which stream to subscribe to.
   - `presentation/controller/community_providers.dart` — `stationCommunityControllerProvider` (legacy) + **`poiCommunityControllerProvider`** family keyed by `targetKey` (`P1-052`).
   - `presentation/widgets/poi_community_rating_pulse.dart` — POI counterpart of `CommunityRatingPulse` (`P1-054`).
-  - `presentation/widgets/poi_community_reports_section.dart` — POI counterpart of `CommunityReportsSection`; read-only (POI submit deferred) (`P1-053`).
+  - `presentation/widgets/poi_community_reports_section.dart` — POI reports + real submit CTA (`showPoiReportSheet`) + conflict timeline when reports disagree (`P1-053`, `P2-031`).
+  - `presentation/widgets/poi_report_sheet.dart` — lightweight POI pulse sheet (star + comment), submits as `targetType: poi`.
+  - `presentation/widgets/community_conflict_timeline.dart` — vertical newest-first timeline shown on conflict (`P2-031`).
+  - `domain/community_condition.dart` — `conditionQuality()` + `isNegative/PositiveCondition()` handling EV + POI vocab (`P2-030`).
+  - `domain/trust_level.dart` — `TrustLevel` enum + `fromScore()` (`P2-030`).
+  - `domain/models/station_community_ui_state.dart` — `reliabilityScore`, `hasConflictInRecent`, `trustLevel` (generalized for all POIs) (`P2-030`).
+- `core/widgets/source_badge.dart` — reusable colour-coded `SourceBadge(source, compact)` (`P2-032`).
 - `firebase/firestore.indexes.json` — composite indexes for `stationKey + createdAt desc` AND `targetKey + createdAt desc` (`P1-055`). Run `firebase deploy --only firestore:indexes` after editing.
 - `charging/`
 - `insights/`
 - `alerts/`
   - `domain/alert.dart` — `Alert`, `AlertType` (Phase 1+2 values), `AlertSeverity` (`P1-022`).
-  - `domain/alert_engine.dart` — pure-Dart evaluator; dedupes by type (`P1-023`).
-  - `domain/alert_engine_input.dart` — `(route, location, vehicle, prefs, upcomingPois)` (`P1-023`).
-  - `domain/alert_route_utils.dart` — polyline projection + gap helpers (`P1-023`).
-  - `domain/rules/` — `fuel_low_rule.dart` (`P1-024`), `ev_gap_rule.dart` (`P1-025`), `food_window_rule.dart` (`P1-026`).
+  - `domain/alert_engine.dart` — pure-Dart evaluator; **P2-001** pre-filters `upcomingPois` to `upcomingWindowKm` (100 km) ahead before rules run; dedupes by type (`P1-023`, `P2-001`).
+  - `domain/alert_engine_input.dart` — `(route, location, vehicle, prefs, upcomingPois, upcomingWindowKm)` (`P1-023`, `P2-001`).
+  - `domain/alert_route_utils.dart` — polyline projection + gap helpers; **`poisInWindow(pois, currentKm, windowKm)`** (`P1-023`, `P2-001`).
+  - `domain/rules/` — `fuel_low_rule.dart` (`P1-024`), `ev_gap_rule.dart` (`P1-025`), `food_window_rule.dart` (`P1-026`), **`ghat_rule.dart`** (`P2-002`), **`night_rule.dart`** (`P2-003`), **`fatigue_rule.dart`** (`P2-004`). Rules see pre-windowed POIs — no per-rule window logic needed.
+  - `domain/ghat_dataset.dart` — `GhatSection` + `kGhatSections` (14 curated Indian ghats) (`P2-002`).
   - `presentation/controller/alerts_providers.dart` — `alertEngineProvider`, `localNotificationServiceProvider`, `alertNotifierProvider` (`P1-028`).
-  - `presentation/controller/alert_notifier_controller.dart` — polls every 30s while trip active; fires notifications + banner (`P1-028`).
+  - `presentation/controller/alert_notifier_controller.dart` — polls every 30s while trip active; **P2-006** per-type 20-min cooldown via `_lastFiredAt` map (replaces permanent dedup) (`P1-028`, `P2-006`).
   - `domain/alert_notifier_state.dart` — `activeBanner`, `bannerDismissed` (`P1-028`).
-  - `presentation/widget/trip_alert_banner.dart` — in-app alert strip in `AppShell` (`P1-028`).
+  - `presentation/widget/trip_alert_banner.dart` — **P2-007** severity-tiered: critical=manual×, warning=auto 8s, info=slim pill auto 5s (`P1-028`, `P2-007`).
   - `presentation/view/alert_history_screen.dart` — per-trip fired alert log (`P1-034`).
   - `presentation/view/gap_alert_screen.dart` — legacy EV gap UI (orphan).
 - `lib/core/telemetry/app_telemetry.dart` — structured logs for trip + alert + POI flows (`P1-060`).
@@ -62,8 +69,12 @@
   - `data/repository/poi_repository.dart` — abstract `PoiRepository` interface (uses `LatLng` from `polyline_decoder.dart`).
   - `data/repository/google_places_poi_source.dart` — concrete impl using Google Places Nearby Search + Place Details (`P1-008`). 15 categories supported; EV refused (delegated).
   - `domain/community_poi_key.dart` — `communityPoiKey(Poi)` → `poi_<sanitized id>` (`P1-010`).
-  - `presentation/controller/pois_providers.dart` — `poiRepositoryProvider` bound to `GooglePlacesPoiSource`; `routePoiServiceProvider`; `poiCategoryControllerProvider.family.autoDispose<PoiCategory>` (`P1-012`).
-  - `presentation/controller/poi_category_ui_state.dart` — Freezed sealed `PoiCategoryUiState { loading, data, empty, errored }`, with `PoiQuerySource { alongRoute, nearby }`.
+  - `presentation/controller/pois_providers.dart` — `poiRepositoryProvider` bound to `GooglePlacesPoiSource`; `routePoiServiceProvider`; `poiCategoryControllerProvider.family.autoDispose<PoiCategory>`. Computes `currentPositionKm` from active trip + corridor cache for ahead-filtering (`P1-012`, `P2`).
+  - `presentation/controller/poi_category_ui_state.dart` — Freezed sealed `PoiCategoryUiState { loading, data(+currentPositionKm), empty, errored }`, with `PoiQuerySource { alongRoute, nearby, aheadOnRoute }` (each has `label` + `icon`) (`P1-012`, `P2`).
+- `personalization/` (P2 Session 3)
+  - `domain/user_preference_vector.dart` — `UserPreferenceVector.fromPreferences()` maps toggles → ranking weights (`P2-010`).
+  - `domain/poi_ranker.dart` — pure `PoiRanker.rank()/score()`; quality + proximity + openness + preference signals (`P2-011`).
+  - `presentation/controller/personalization_providers.dart` — `userPreferenceVectorProvider`, `poiRankerProvider` (`P2-012`).
   - `presentation/controller/poi_category_controller.dart` — decides between route-aware and nearby strategies based on `PlanController` snapshot at construction; EV without a plan → explicit empty state.
   - `presentation/view/poi_category_screen.dart` — reusable category screen with list/map toggle in app bar (`P1-012` + `P1-015`).
   - `presentation/widget/poi_list_tile.dart` — list tile; `pulseSlot` now filled by `PoiCommunityRatingPulse` (`P1-054`).

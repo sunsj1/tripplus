@@ -5,6 +5,7 @@ import 'package:tripplus/core/theme/app_colors.dart';
 import 'package:tripplus/core/theme/app_text_styles.dart';
 import 'package:tripplus/core/utils/google_places_photo.dart';
 import 'package:tripplus/core/widgets/poi_photo.dart';
+import 'package:tripplus/core/widgets/source_badge.dart';
 import 'package:tripplus/features/community/presentation/widgets/poi_community_reports_section.dart';
 import 'package:tripplus/features/pois/presentation/controller/pois_providers.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -134,7 +135,7 @@ class _PoiDetailSheetState extends ConsumerState<_PoiDetailSheet> {
                           ],
                         ),
                       ),
-                      _SourceBadge(label: _poi.source.label),
+                      SourceBadge(source: _poi.source),
                     ],
                   ),
                   if (_poi.address != null) ...[
@@ -248,31 +249,6 @@ class _OpenInMapsButton extends StatelessWidget {
 }
 
 // ---------------------------------------------------------------------------
-class _SourceBadge extends StatelessWidget {
-  const _SourceBadge({required this.label});
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: AppColors.surfaceElevated,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: AppColors.borderLight),
-      ),
-      child: Text(
-        label,
-        style: AppTextStyles.bodySmall.copyWith(
-          fontSize: 10,
-          fontWeight: FontWeight.w700,
-          color: AppColors.textSecondary,
-        ),
-      ),
-    );
-  }
-}
-
 class _FactPill extends StatelessWidget {
   const _FactPill({
     required this.icon,

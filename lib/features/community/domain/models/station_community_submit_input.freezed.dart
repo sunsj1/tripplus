@@ -33,7 +33,13 @@ mixin _$StationCommunitySubmitInput {
   bool get fastChargerAvailable => throw _privateConstructorUsedError;
   bool? get chargeSuccessful => throw _privateConstructorUsedError;
   CommunityTargetType get targetType => throw _privateConstructorUsedError;
-  String? get targetKey => throw _privateConstructorUsedError;
+  String? get targetKey =>
+      throw _privateConstructorUsedError; // P2-023 — Mode-relevant tags. Null = unanswered (don't surface),
+  // true = positive signal, false = negative. Used by aggregation +
+  // Family/Women-Safe mode filters.
+  bool? get babyFriendly => throw _privateConstructorUsedError;
+  bool? get womenSafe => throw _privateConstructorUsedError;
+  bool? get hygienic => throw _privateConstructorUsedError;
 
   /// Create a copy of StationCommunitySubmitInput
   /// with the given fields replaced by the non-null parameter values.
@@ -71,6 +77,9 @@ abstract class $StationCommunitySubmitInputCopyWith<$Res> {
     bool? chargeSuccessful,
     CommunityTargetType targetType,
     String? targetKey,
+    bool? babyFriendly,
+    bool? womenSafe,
+    bool? hygienic,
   });
 }
 
@@ -109,6 +118,9 @@ class _$StationCommunitySubmitInputCopyWithImpl<
     Object? chargeSuccessful = freezed,
     Object? targetType = null,
     Object? targetKey = freezed,
+    Object? babyFriendly = freezed,
+    Object? womenSafe = freezed,
+    Object? hygienic = freezed,
   }) {
     return _then(
       _value.copyWith(
@@ -180,6 +192,18 @@ class _$StationCommunitySubmitInputCopyWithImpl<
                 ? _value.targetKey
                 : targetKey // ignore: cast_nullable_to_non_nullable
                       as String?,
+            babyFriendly: freezed == babyFriendly
+                ? _value.babyFriendly
+                : babyFriendly // ignore: cast_nullable_to_non_nullable
+                      as bool?,
+            womenSafe: freezed == womenSafe
+                ? _value.womenSafe
+                : womenSafe // ignore: cast_nullable_to_non_nullable
+                      as bool?,
+            hygienic: freezed == hygienic
+                ? _value.hygienic
+                : hygienic // ignore: cast_nullable_to_non_nullable
+                      as bool?,
           )
           as $Val,
     );
@@ -213,6 +237,9 @@ abstract class _$$StationCommunitySubmitInputImplCopyWith<$Res>
     bool? chargeSuccessful,
     CommunityTargetType targetType,
     String? targetKey,
+    bool? babyFriendly,
+    bool? womenSafe,
+    bool? hygienic,
   });
 }
 
@@ -251,6 +278,9 @@ class __$$StationCommunitySubmitInputImplCopyWithImpl<$Res>
     Object? chargeSuccessful = freezed,
     Object? targetType = null,
     Object? targetKey = freezed,
+    Object? babyFriendly = freezed,
+    Object? womenSafe = freezed,
+    Object? hygienic = freezed,
   }) {
     return _then(
       _$StationCommunitySubmitInputImpl(
@@ -322,6 +352,18 @@ class __$$StationCommunitySubmitInputImplCopyWithImpl<$Res>
             ? _value.targetKey
             : targetKey // ignore: cast_nullable_to_non_nullable
                   as String?,
+        babyFriendly: freezed == babyFriendly
+            ? _value.babyFriendly
+            : babyFriendly // ignore: cast_nullable_to_non_nullable
+                  as bool?,
+        womenSafe: freezed == womenSafe
+            ? _value.womenSafe
+            : womenSafe // ignore: cast_nullable_to_non_nullable
+                  as bool?,
+        hygienic: freezed == hygienic
+            ? _value.hygienic
+            : hygienic // ignore: cast_nullable_to_non_nullable
+                  as bool?,
       ),
     );
   }
@@ -349,6 +391,9 @@ class _$StationCommunitySubmitInputImpl
     this.chargeSuccessful,
     this.targetType = CommunityTargetType.station,
     this.targetKey,
+    this.babyFriendly,
+    this.womenSafe,
+    this.hygienic,
   }) : _availableAmenityLabels = availableAmenityLabels;
 
   @override
@@ -395,10 +440,19 @@ class _$StationCommunitySubmitInputImpl
   final CommunityTargetType targetType;
   @override
   final String? targetKey;
+  // P2-023 — Mode-relevant tags. Null = unanswered (don't surface),
+  // true = positive signal, false = negative. Used by aggregation +
+  // Family/Women-Safe mode filters.
+  @override
+  final bool? babyFriendly;
+  @override
+  final bool? womenSafe;
+  @override
+  final bool? hygienic;
 
   @override
   String toString() {
-    return 'StationCommunitySubmitInput(stationKey: $stationKey, stationNameSnapshot: $stationNameSnapshot, reporterUserId: $reporterUserId, reporterDisplayName: $reporterDisplayName, rating: $rating, condition: $condition, availableAmenityLabels: $availableAmenityLabels, washroomAvailable: $washroomAvailable, washroomClean: $washroomClean, womenFriendlyWashroom: $womenFriendlyWashroom, photoBase64: $photoBase64, comment: $comment, costPerKwh: $costPerKwh, fastChargerAvailable: $fastChargerAvailable, chargeSuccessful: $chargeSuccessful, targetType: $targetType, targetKey: $targetKey)';
+    return 'StationCommunitySubmitInput(stationKey: $stationKey, stationNameSnapshot: $stationNameSnapshot, reporterUserId: $reporterUserId, reporterDisplayName: $reporterDisplayName, rating: $rating, condition: $condition, availableAmenityLabels: $availableAmenityLabels, washroomAvailable: $washroomAvailable, washroomClean: $washroomClean, womenFriendlyWashroom: $womenFriendlyWashroom, photoBase64: $photoBase64, comment: $comment, costPerKwh: $costPerKwh, fastChargerAvailable: $fastChargerAvailable, chargeSuccessful: $chargeSuccessful, targetType: $targetType, targetKey: $targetKey, babyFriendly: $babyFriendly, womenSafe: $womenSafe, hygienic: $hygienic)';
   }
 
   @override
@@ -439,11 +493,17 @@ class _$StationCommunitySubmitInputImpl
             (identical(other.targetType, targetType) ||
                 other.targetType == targetType) &&
             (identical(other.targetKey, targetKey) ||
-                other.targetKey == targetKey));
+                other.targetKey == targetKey) &&
+            (identical(other.babyFriendly, babyFriendly) ||
+                other.babyFriendly == babyFriendly) &&
+            (identical(other.womenSafe, womenSafe) ||
+                other.womenSafe == womenSafe) &&
+            (identical(other.hygienic, hygienic) ||
+                other.hygienic == hygienic));
   }
 
   @override
-  int get hashCode => Object.hash(
+  int get hashCode => Object.hashAll([
     runtimeType,
     stationKey,
     stationNameSnapshot,
@@ -462,7 +522,10 @@ class _$StationCommunitySubmitInputImpl
     chargeSuccessful,
     targetType,
     targetKey,
-  );
+    babyFriendly,
+    womenSafe,
+    hygienic,
+  ]);
 
   /// Create a copy of StationCommunitySubmitInput
   /// with the given fields replaced by the non-null parameter values.
@@ -496,6 +559,9 @@ abstract class _StationCommunitySubmitInput
     final bool? chargeSuccessful,
     final CommunityTargetType targetType,
     final String? targetKey,
+    final bool? babyFriendly,
+    final bool? womenSafe,
+    final bool? hygienic,
   }) = _$StationCommunitySubmitInputImpl;
 
   @override
@@ -531,7 +597,15 @@ abstract class _StationCommunitySubmitInput
   @override
   CommunityTargetType get targetType;
   @override
-  String? get targetKey;
+  String? get targetKey; // P2-023 — Mode-relevant tags. Null = unanswered (don't surface),
+  // true = positive signal, false = negative. Used by aggregation +
+  // Family/Women-Safe mode filters.
+  @override
+  bool? get babyFriendly;
+  @override
+  bool? get womenSafe;
+  @override
+  bool? get hygienic;
 
   /// Create a copy of StationCommunitySubmitInput
   /// with the given fields replaced by the non-null parameter values.

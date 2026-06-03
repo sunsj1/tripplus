@@ -78,16 +78,16 @@ driver's GPS position (`PoiQuerySource.aheadOnRoute`).
 
 ---
 
-## ⬜ Session 5 — Mode-aware filters
+## ✅ Session 5 — Mode-aware filters
 
 **Theme.** Family, women-safe, bike overlays + community tags for modes.
 
 | ID | Task | Est | Depends on |
 |---|---|---|---|
-| `P2-023` | Community pulse tags (baby-friendly, women-safe, hygienic) | 6 h | `P1-052` ✅ |
-| `P2-020` | Family Mode toggle + filter overlay | 1 d | `P2-012` |
-| `P2-021` | Women-Safe Mode + badge | 1 d | `P2-012` |
-| `P2-022` | Bike Rider Mode + bike categories | 1 d | `P2-012` |
+| `P2-023` ✅ | Community pulse tags (baby-friendly, women-safe, hygienic) | 6 h | `P1-052` ✅ |
+| `P2-020` ✅ | Family Mode toggle + filter overlay | 1 d | `P2-012` |
+| `P2-021` ✅ | Women-Safe Mode + badge | 1 d | `P2-012` |
+| `P2-022` ✅ | Bike Rider Mode + bike categories | 1 d | `P2-012` |
 
 ---
 
@@ -198,7 +198,7 @@ completion checklist.
 | 2 | 3 | ✅ |
 | 3 | 3 | ✅ |
 | 4 | 3 | ✅ |
-| 5 | 4 | ⬜ |
+| 5 | 4 | ✅ |
 | 6 | 3 | ⬜ |
 | 7 | 2 | ⬜ |
 | 8 | 3 | ⬜ |
@@ -207,7 +207,7 @@ completion checklist.
 | 11 | 3 | ⬜ |
 | 12 | 3 | ⬜ |
 | 13 | verify | ⬜ |
-| **Total** | **36** | **12 / 36 = 33 %** |
+| **Total** | **36** | **16 / 36 = 44 %** |
 
 ---
 

@@ -6,7 +6,12 @@ import 'package:tripplus/core/theme/app_colors.dart';
 import 'package:tripplus/core/theme/app_text_styles.dart';
 import 'package:tripplus/core/utils/failure.dart';
 import 'package:tripplus/features/community/presentation/widgets/poi_community_rating_pulse.dart';
+import 'package:tripplus/features/personalization/domain/mode_filter.dart';
+import 'package:tripplus/features/personalization/domain/route_mode.dart';
 import 'package:tripplus/features/personalization/presentation/controller/personalization_providers.dart';
+import 'package:tripplus/features/personalization/presentation/controller/route_mode_provider.dart';
+import 'package:tripplus/features/personalization/presentation/widget/mode_badges.dart';
+import 'package:tripplus/features/personalization/presentation/widget/route_mode_bar.dart';
 import 'package:tripplus/features/pois/presentation/controller/poi_category_ui_state.dart';
 import 'package:tripplus/features/pois/presentation/controller/pois_providers.dart';
 import 'package:tripplus/features/pois/presentation/widget/poi_category_map_view.dart';
@@ -151,6 +156,57 @@ class _Empty extends StatelessWidget {
                 backgroundColor: AppColors.primary,
               ),
               child: const Text('Try again'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// P2 Session 5 — Shown when an active [RouteMode] filters every result out.
+class _ModeFilteredEmpty extends ConsumerWidget {
+  const _ModeFilteredEmpty({required this.mode});
+  final RouteMode mode;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 72,
+              height: 72,
+              decoration: BoxDecoration(
+                color: mode.accent.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Icon(mode.icon, size: 32, color: mode.accent),
+            ),
+            const SizedBox(height: 18),
+            Text(
+              'Nothing matches ${mode.label} Mode here',
+              style: AppTextStyles.h4,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Switch back to Standard to see every result.',
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: AppColors.textSecondary,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 20),
+            FilledButton.icon(
+              onPressed: () =>
+                  ref.read(routeModeProvider.notifier).state = RouteMode.off,
+              style: FilledButton.styleFrom(backgroundColor: mode.accent),
+              icon: const Icon(Icons.tune_outlined, size: 16),
+              label: const Text('Clear mode'),
             ),
           ],
         ),
@@ -326,14 +382,20 @@ class _ListState extends ConsumerState<_List> {
 
   @override
   Widget build(BuildContext context) {
-    final sorted = _sorted;
+    // P2-020/021/022 — Apply RouteMode filter on top of the sorted list.
+    final mode = ref.watch(routeModeProvider);
+    final sorted = applyRouteModeFilter(_sorted, mode);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        // P2 Session 5 — mode selector above everything else.
+        const SizedBox(height: 12),
+        const RouteModeBar(),
+        const SizedBox(height: 4),
         // Source badge + place count
         Padding(
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 10),
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 10),
           child: Row(
             children: [
               Container(
@@ -384,7 +446,9 @@ class _ListState extends ConsumerState<_List> {
                   ),
                 ),
               Text(
-                '${sorted.length} places',
+                mode == RouteMode.off || sorted.length == widget.pois.length
+                    ? '${sorted.length} places'
+                    : '${sorted.length} of ${widget.pois.length}',
                 style: AppTextStyles.bodySmall.copyWith(
                   color: AppColors.textTertiary,
                 ),
@@ -503,19 +567,33 @@ class _ListState extends ConsumerState<_List> {
           );
         }),
         const SizedBox(height: 10),
-        // POI list
-        Expanded(
-          child: ListView.separated(
-            padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
-            itemCount: sorted.length,
-            separatorBuilder: (_, _) => const SizedBox(height: 12),
-            itemBuilder: (_, i) => PoiListTile(
-              poi: sorted[i],
-              pulseSlot: PoiCommunityRatingPulse(poi: sorted[i]),
-              onTap: () => showPoiDetailSheet(context, sorted[i]),
+        // POI list — or a mode-specific empty state if the filter left nothing.
+        if (sorted.isEmpty && mode != RouteMode.off)
+          Expanded(child: _ModeFilteredEmpty(mode: mode))
+        else
+          Expanded(
+            child: ListView.separated(
+              padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
+              itemCount: sorted.length,
+              separatorBuilder: (_, _) => const SizedBox(height: 12),
+              itemBuilder: (_, i) {
+                final poi = sorted[i];
+                // P2-020/021 — stack rating pulse over mode badges so trust
+                // signals and mode signals both surface on the tile.
+                return PoiListTile(
+                  poi: poi,
+                  pulseSlot: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      PoiCommunityRatingPulse(poi: poi),
+                      PoiModeBadges(poi: poi),
+                    ],
+                  ),
+                  onTap: () => showPoiDetailSheet(context, poi),
+                );
+              },
             ),
           ),
-        ),
       ],
     );
   }

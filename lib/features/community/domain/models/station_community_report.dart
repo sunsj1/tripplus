@@ -39,6 +39,10 @@ class StationCommunityReport with _$StationCommunityReport {
     required DateTime createdAt,
     @Default(CommunityTargetType.station) CommunityTargetType targetType,
     String? targetKey,
+    // P2-023 — Mode tags. Null = unanswered (legacy reports + skips).
+    bool? babyFriendly,
+    bool? womenSafe,
+    bool? hygienic,
   }) = _StationCommunityReport;
 
   /// Generic identity. Old reports written before `P1-050` only have

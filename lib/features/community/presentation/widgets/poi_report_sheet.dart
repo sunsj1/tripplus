@@ -41,6 +41,10 @@ class _PoiReportSheetState extends ConsumerState<_PoiReportSheet> {
   int _rating = 0;
   final _commentCtrl = TextEditingController();
   bool _submitting = false;
+  // P2-023 — mode-relevant tags. null = unanswered (default), bool = explicit.
+  bool? _babyFriendly;
+  bool? _womenSafe;
+  bool? _hygienic;
 
   @override
   void dispose() {
@@ -87,6 +91,10 @@ class _PoiReportSheetState extends ConsumerState<_PoiReportSheet> {
       comment: _commentCtrl.text.trim().isEmpty ? null : _commentCtrl.text.trim(),
       targetType: CommunityTargetType.poi,
       targetKey: targetKey,
+      // P2-023 — only attach tags the user explicitly answered.
+      babyFriendly: _babyFriendly,
+      womenSafe: _womenSafe,
+      hygienic: _hygienic,
     );
 
     final result = await controller.submit(input);
@@ -216,6 +224,37 @@ class _PoiReportSheetState extends ConsumerState<_PoiReportSheet> {
               ),
               const SizedBox(height: 20),
 
+              // P2-023 — Mode-relevant tags (optional). Tri-state chips so
+              // unanswered tags don't bias the aggregation.
+              Text(
+                'OPTIONAL — for other travellers',
+                style: AppTextStyles.caption.copyWith(
+                  color: AppColors.textTertiary,
+                  letterSpacing: 1.0,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 10,
+                ),
+              ),
+              const SizedBox(height: 8),
+              _TriStateTag(
+                label: 'Baby/kids friendly',
+                value: _babyFriendly,
+                onChanged: (v) => setState(() => _babyFriendly = v),
+              ),
+              const SizedBox(height: 6),
+              _TriStateTag(
+                label: 'Felt safe for women',
+                value: _womenSafe,
+                onChanged: (v) => setState(() => _womenSafe = v),
+              ),
+              const SizedBox(height: 6),
+              _TriStateTag(
+                label: 'Clean / hygienic',
+                value: _hygienic,
+                onChanged: (v) => setState(() => _hygienic = v),
+              ),
+              const SizedBox(height: 24),
+
               // Submit
               SizedBox(
                 width: double.infinity,
@@ -254,5 +293,90 @@ class _PoiReportSheetState extends ConsumerState<_PoiReportSheet> {
       case 5: return 'Excellent';
       default: return '';
     }
+  }
+}
+
+/// P2-023 — Tri-state tag row: Yes / No / no-answer. Tapping the active button
+/// clears it back to unanswered so a user can correct a misclick without
+/// committing to either answer.
+class _TriStateTag extends StatelessWidget {
+  const _TriStateTag({
+    required this.label,
+    required this.value,
+    required this.onChanged,
+  });
+
+  final String label;
+  final bool? value;
+  final ValueChanged<bool?> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            label,
+            style: AppTextStyles.bodyMedium.copyWith(
+              color: AppColors.textPrimary,
+              fontSize: 13,
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        _TagButton(
+          icon: Icons.check_rounded,
+          color: AppColors.success,
+          selected: value == true,
+          onTap: () => onChanged(value == true ? null : true),
+        ),
+        const SizedBox(width: 6),
+        _TagButton(
+          icon: Icons.close_rounded,
+          color: AppColors.error,
+          selected: value == false,
+          onTap: () => onChanged(value == false ? null : false),
+        ),
+      ],
+    );
+  }
+}
+
+class _TagButton extends StatelessWidget {
+  const _TagButton({
+    required this.icon,
+    required this.color,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final Color color;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        width: 32,
+        height: 32,
+        decoration: BoxDecoration(
+          color: selected ? color : Colors.transparent,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: selected ? color : AppColors.borderLight,
+            width: 1.2,
+          ),
+        ),
+        child: Icon(
+          icon,
+          size: 18,
+          color: selected ? Colors.white : color,
+        ),
+      ),
+    );
   }
 }

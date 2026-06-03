@@ -71,10 +71,20 @@
   - `domain/community_poi_key.dart` — `communityPoiKey(Poi)` → `poi_<sanitized id>` (`P1-010`).
   - `presentation/controller/pois_providers.dart` — `poiRepositoryProvider` bound to `GooglePlacesPoiSource`; `routePoiServiceProvider`; `poiCategoryControllerProvider.family.autoDispose<PoiCategory>`. Computes `currentPositionKm` from active trip + corridor cache for ahead-filtering (`P1-012`, `P2`).
   - `presentation/controller/poi_category_ui_state.dart` — Freezed sealed `PoiCategoryUiState { loading, data(+currentPositionKm), empty, errored }`, with `PoiQuerySource { alongRoute, nearby, aheadOnRoute }` (each has `label` + `icon`) (`P1-012`, `P2`).
-- `personalization/` (P2 Session 3)
+- `personalization/` (P2 Sessions 3 + 5)
   - `domain/user_preference_vector.dart` — `UserPreferenceVector.fromPreferences()` maps toggles → ranking weights (`P2-010`).
   - `domain/poi_ranker.dart` — pure `PoiRanker.rank()/score()`; quality + proximity + openness + preference signals (`P2-011`).
+  - `domain/route_mode.dart` — `RouteMode { off, family, womenSafe, bike }` + `label/icon/accent/focusedCategories/attributeKeys` (`P2-020/021/022`).
+  - `domain/mode_filter.dart` — `applyRouteModeFilter(pois, mode)` — strict-attribute first, category fallback (`P2-020/021/022`).
   - `presentation/controller/personalization_providers.dart` — `userPreferenceVectorProvider`, `poiRankerProvider` (`P2-012`).
+  - `presentation/controller/route_mode_provider.dart` — `routeModeProvider` (StateProvider, default `off`) (`P2-020/021/022`).
+  - `presentation/widget/route_mode_bar.dart` — horizontal mode chip strip mounted above POI lists (`P2-020/021/022`).
+  - `presentation/widget/mode_badges.dart` — `PoiModeBadges` watches community state per POI to surface qualifying badges (`P2-020/021`).
+- `community/` (P2-023 additions)
+  - `domain/community_tag_aggregation.dart` — `CommunityTagAggregation.from(reports)` + `qualifiesFamily/WomenSafe/Hygienic` (≥ 2 answers, ≥ 50% yes) (`P2-023`).
+  - `domain/models/station_community_submit_input.dart` + `station_community_report.dart` — nullable `babyFriendly/womenSafe/hygienic` fields (`P2-023`).
+  - `data/dto/station_community_report_dto.dart` — read missing → null; write non-null only (`P2-023`).
+  - `presentation/widgets/poi_report_sheet.dart` — tri-state tag rows (`_TriStateTag`/`_TagButton`) (`P2-023`).
   - `presentation/controller/poi_category_controller.dart` — decides between route-aware and nearby strategies based on `PlanController` snapshot at construction; EV without a plan → explicit empty state.
   - `presentation/view/poi_category_screen.dart` — reusable category screen with list/map toggle in app bar (`P1-012` + `P1-015`).
   - `presentation/widget/poi_list_tile.dart` — list tile; `pulseSlot` now filled by `PoiCommunityRatingPulse` (`P1-054`).

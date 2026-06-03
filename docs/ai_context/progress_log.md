@@ -6,6 +6,51 @@
 
 ---
 
+## Phase 2 · Session 5 — Mode-aware filters
+
+- **Started:** 2026-06-02
+- **Finished:** 2026-06-02
+- **Tasks completed (4/4):** `P2-023`, `P2-020`, `P2-021`, `P2-022`.
+- **Theme:** Family / Women-Safe / Bike "lenses" overlay any POI category list; community pulses can now carry mode-relevant tags so badges and filters get smarter with each report.
+
+### Per-task notes
+
+- `P2-023` — Community pulse tags:
+  - Three nullable booleans added to both `StationCommunitySubmitInput` and `StationCommunityReport`: `babyFriendly`, `womenSafe`, `hygienic`. Null = unanswered, so legacy reports and skipped questions don't bias aggregation.
+  - DTO read/write: read missing → null; write only non-null fields (keeps doc size small).
+  - `CommunityTagAggregation` model — counts `yes` and `answered` per tag. Threshold `qualifiesX` requires ≥ 2 answers AND ≥ 50% yes. Sampled from latest 20 reports via `StationCommunityUiStateX.tagAggregation`.
+  - POI report sheet (`poi_report_sheet.dart`) gained three tri-state tag rows ("Baby/kids friendly", "Felt safe for women", "Clean / hygienic") with `_TriStateTag` widget — tap to set ✓/✗, tap again to clear back to unanswered.
+
+- `P2-020` / `P2-021` / `P2-022` — Mode infrastructure:
+  - `lib/features/personalization/domain/route_mode.dart` — `RouteMode { off, family, womenSafe, bike }` with `label`, `icon`, `accent` color, `focusedCategories` (mode-relevant `PoiCategory` sets), `attributeKeys` (POI attribute fields that qualify a POI).
+  - `lib/features/personalization/presentation/controller/route_mode_provider.dart` — `routeModeProvider` (StateProvider). Default `off`; resets on cold start (intentional safety — hiding results requires a deliberate user action).
+  - `lib/features/personalization/domain/mode_filter.dart` — `applyRouteModeFilter(pois, mode)` returns strict-attribute matches first, then category-fallback matches; drops irrelevant POIs entirely.
+  - `lib/features/personalization/presentation/widget/route_mode_bar.dart` — horizontal chip strip "VIEW MODE" with "filtered" indicator. Tap active chip to clear.
+  - `lib/features/personalization/presentation/widget/mode_badges.dart` — `PoiModeBadges` watches per-POI community state, shows mode-qualified badges (Family/Women-Safe) on tiles where community tags agree.
+  - Mounted on `PoiCategoryScreen`: mode bar above source badge; mode badges stacked under the rating pulse; mode-filtered empty state with "Clear mode" CTA.
+
+### Files changed (new)
+- `lib/features/community/domain/community_tag_aggregation.dart`
+- `lib/features/personalization/domain/route_mode.dart`
+- `lib/features/personalization/domain/mode_filter.dart`
+- `lib/features/personalization/presentation/controller/route_mode_provider.dart`
+- `lib/features/personalization/presentation/widget/route_mode_bar.dart`
+- `lib/features/personalization/presentation/widget/mode_badges.dart`
+
+### Files changed (modified)
+- `lib/features/community/domain/models/station_community_submit_input.dart` (3 tag fields)
+- `lib/features/community/domain/models/station_community_report.dart` (3 tag fields)
+- `lib/features/community/data/dto/station_community_report_dto.dart` (read+write tags)
+- `lib/features/community/domain/models/station_community_ui_state.dart` (`tagAggregation` getter)
+- `lib/features/community/presentation/widgets/poi_report_sheet.dart` (tri-state tag UI + submit)
+- `lib/features/pois/presentation/view/poi_category_screen.dart` (mode bar + filter + badges + empty)
+
+### Notes / follow-ups
+- Bike Mode picks up its `bikeFriendly` attribute key — Google Places doesn't populate it today, so for now Bike Mode operates on the focused-category fallback (mechanic / fuel / medical / parking / washroom / hotel / cafe). Adds a community `bikeFriendly` tag later if telemetry shows demand.
+- Station report wizard (existing multi-step EV flow) was NOT extended with tag fields in this pass — the EV pulse already has a "conditions" step that covers the relevant signal. POI pulses (single-step sheet) get the full set.
+
+---
+
 ## Phase 2 · Session 4 — Trust v2 for all POIs
 
 - **Started:** 2026-06-01

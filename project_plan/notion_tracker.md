@@ -111,10 +111,10 @@
 - [ ] `P2-013` Brand affinity learning
 
 ### 2.3 Mode-aware filters
-- [ ] `P2-020` Family Mode
-- [ ] `P2-021` Women-Safe Mode + badge
-- [ ] `P2-022` Bike Rider Mode
-- [ ] `P2-023` Community pulse tags for mode attributes
+- [x] `P2-020` Family Mode
+- [x] `P2-021` Women-Safe Mode + badge
+- [x] `P2-022` Bike Rider Mode
+- [x] `P2-023` Community pulse tags for mode attributes
 
 ### 2.4 Trust v2
 - [x] `P2-030` Generalize reliability score to POIs
@@ -234,7 +234,7 @@
 | Phase | Total Tasks | Done | % |
 |---|---|---|---|
 | Phase 1 — MVP | 50 | 50 | 100% |
-| Phase 2 — Intelligence | 36 | 12 | 33% |
+| Phase 2 — Intelligence | 36 | 16 | 44% |
 | Phase 3 — AI Copilot | 30 | 0 | 0% |
 | Phase 4 — Scale | 18 | 0 | 0% |
 | **Total** | **134** | **0** | **0%** |

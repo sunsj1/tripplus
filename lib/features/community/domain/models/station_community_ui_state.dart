@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:tripplus/features/community/domain/community_condition.dart';
+import 'package:tripplus/features/community/domain/community_tag_aggregation.dart';
 import 'package:tripplus/features/community/domain/models/station_community_report.dart';
 import 'package:tripplus/features/community/domain/trust_level.dart';
 
@@ -88,6 +89,12 @@ extension StationCommunityUiStateX on StationCommunityUiState {
   /// P2-030 — Coarse trust tier from score + report count.
   TrustLevel get trustLevel =>
       TrustLevel.fromScore(reliabilityScore, reports.length);
+
+  /// P2-023 — Aggregated mode-relevant tags across the most recent reports.
+  /// We sample the latest 20 to keep the signal responsive without letting one
+  /// outlier dominate. Used by Family / Women-Safe mode filters and badges.
+  CommunityTagAggregation get tagAggregation =>
+      CommunityTagAggregation.from(reports.take(20).toList());
 
   DateTime? get latestSuccessfulChargeAt {
     for (final r in reports) {

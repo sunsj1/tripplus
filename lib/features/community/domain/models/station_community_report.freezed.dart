@@ -39,7 +39,11 @@ mixin _$StationCommunityReport {
   bool? get chargeSuccessful => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
   CommunityTargetType get targetType => throw _privateConstructorUsedError;
-  String? get targetKey => throw _privateConstructorUsedError;
+  String? get targetKey =>
+      throw _privateConstructorUsedError; // P2-023 — Mode tags. Null = unanswered (legacy reports + skips).
+  bool? get babyFriendly => throw _privateConstructorUsedError;
+  bool? get womenSafe => throw _privateConstructorUsedError;
+  bool? get hygienic => throw _privateConstructorUsedError;
 
   /// Create a copy of StationCommunityReport
   /// with the given fields replaced by the non-null parameter values.
@@ -75,6 +79,9 @@ abstract class $StationCommunityReportCopyWith<$Res> {
     DateTime createdAt,
     CommunityTargetType targetType,
     String? targetKey,
+    bool? babyFriendly,
+    bool? womenSafe,
+    bool? hygienic,
   });
 }
 
@@ -115,6 +122,9 @@ class _$StationCommunityReportCopyWithImpl<
     Object? createdAt = null,
     Object? targetType = null,
     Object? targetKey = freezed,
+    Object? babyFriendly = freezed,
+    Object? womenSafe = freezed,
+    Object? hygienic = freezed,
   }) {
     return _then(
       _value.copyWith(
@@ -194,6 +204,18 @@ class _$StationCommunityReportCopyWithImpl<
                 ? _value.targetKey
                 : targetKey // ignore: cast_nullable_to_non_nullable
                       as String?,
+            babyFriendly: freezed == babyFriendly
+                ? _value.babyFriendly
+                : babyFriendly // ignore: cast_nullable_to_non_nullable
+                      as bool?,
+            womenSafe: freezed == womenSafe
+                ? _value.womenSafe
+                : womenSafe // ignore: cast_nullable_to_non_nullable
+                      as bool?,
+            hygienic: freezed == hygienic
+                ? _value.hygienic
+                : hygienic // ignore: cast_nullable_to_non_nullable
+                      as bool?,
           )
           as $Val,
     );
@@ -229,6 +251,9 @@ abstract class _$$StationCommunityReportImplCopyWith<$Res>
     DateTime createdAt,
     CommunityTargetType targetType,
     String? targetKey,
+    bool? babyFriendly,
+    bool? womenSafe,
+    bool? hygienic,
   });
 }
 
@@ -266,6 +291,9 @@ class __$$StationCommunityReportImplCopyWithImpl<$Res>
     Object? createdAt = null,
     Object? targetType = null,
     Object? targetKey = freezed,
+    Object? babyFriendly = freezed,
+    Object? womenSafe = freezed,
+    Object? hygienic = freezed,
   }) {
     return _then(
       _$StationCommunityReportImpl(
@@ -345,6 +373,18 @@ class __$$StationCommunityReportImplCopyWithImpl<$Res>
             ? _value.targetKey
             : targetKey // ignore: cast_nullable_to_non_nullable
                   as String?,
+        babyFriendly: freezed == babyFriendly
+            ? _value.babyFriendly
+            : babyFriendly // ignore: cast_nullable_to_non_nullable
+                  as bool?,
+        womenSafe: freezed == womenSafe
+            ? _value.womenSafe
+            : womenSafe // ignore: cast_nullable_to_non_nullable
+                  as bool?,
+        hygienic: freezed == hygienic
+            ? _value.hygienic
+            : hygienic // ignore: cast_nullable_to_non_nullable
+                  as bool?,
       ),
     );
   }
@@ -373,6 +413,9 @@ class _$StationCommunityReportImpl extends _StationCommunityReport {
     required this.createdAt,
     this.targetType = CommunityTargetType.station,
     this.targetKey,
+    this.babyFriendly,
+    this.womenSafe,
+    this.hygienic,
   }) : _availableAmenityLabels = availableAmenityLabels,
        super._();
 
@@ -428,10 +471,17 @@ class _$StationCommunityReportImpl extends _StationCommunityReport {
   final CommunityTargetType targetType;
   @override
   final String? targetKey;
+  // P2-023 — Mode tags. Null = unanswered (legacy reports + skips).
+  @override
+  final bool? babyFriendly;
+  @override
+  final bool? womenSafe;
+  @override
+  final bool? hygienic;
 
   @override
   String toString() {
-    return 'StationCommunityReport(id: $id, stationKey: $stationKey, stationNameSnapshot: $stationNameSnapshot, reporterUserId: $reporterUserId, reporterDisplayName: $reporterDisplayName, rating: $rating, condition: $condition, availableAmenityLabels: $availableAmenityLabels, washroomAvailable: $washroomAvailable, washroomClean: $washroomClean, womenFriendlyWashroom: $womenFriendlyWashroom, photoBase64: $photoBase64, comment: $comment, costPerKwh: $costPerKwh, fastChargerAvailable: $fastChargerAvailable, chargeSuccessful: $chargeSuccessful, createdAt: $createdAt, targetType: $targetType, targetKey: $targetKey)';
+    return 'StationCommunityReport(id: $id, stationKey: $stationKey, stationNameSnapshot: $stationNameSnapshot, reporterUserId: $reporterUserId, reporterDisplayName: $reporterDisplayName, rating: $rating, condition: $condition, availableAmenityLabels: $availableAmenityLabels, washroomAvailable: $washroomAvailable, washroomClean: $washroomClean, womenFriendlyWashroom: $womenFriendlyWashroom, photoBase64: $photoBase64, comment: $comment, costPerKwh: $costPerKwh, fastChargerAvailable: $fastChargerAvailable, chargeSuccessful: $chargeSuccessful, createdAt: $createdAt, targetType: $targetType, targetKey: $targetKey, babyFriendly: $babyFriendly, womenSafe: $womenSafe, hygienic: $hygienic)';
   }
 
   @override
@@ -475,7 +525,13 @@ class _$StationCommunityReportImpl extends _StationCommunityReport {
             (identical(other.targetType, targetType) ||
                 other.targetType == targetType) &&
             (identical(other.targetKey, targetKey) ||
-                other.targetKey == targetKey));
+                other.targetKey == targetKey) &&
+            (identical(other.babyFriendly, babyFriendly) ||
+                other.babyFriendly == babyFriendly) &&
+            (identical(other.womenSafe, womenSafe) ||
+                other.womenSafe == womenSafe) &&
+            (identical(other.hygienic, hygienic) ||
+                other.hygienic == hygienic));
   }
 
   @override
@@ -500,6 +556,9 @@ class _$StationCommunityReportImpl extends _StationCommunityReport {
     createdAt,
     targetType,
     targetKey,
+    babyFriendly,
+    womenSafe,
+    hygienic,
   ]);
 
   /// Create a copy of StationCommunityReport
@@ -536,6 +595,9 @@ abstract class _StationCommunityReport extends StationCommunityReport {
     required final DateTime createdAt,
     final CommunityTargetType targetType,
     final String? targetKey,
+    final bool? babyFriendly,
+    final bool? womenSafe,
+    final bool? hygienic,
   }) = _$StationCommunityReportImpl;
   const _StationCommunityReport._() : super._();
 
@@ -580,7 +642,13 @@ abstract class _StationCommunityReport extends StationCommunityReport {
   @override
   CommunityTargetType get targetType;
   @override
-  String? get targetKey;
+  String? get targetKey; // P2-023 — Mode tags. Null = unanswered (legacy reports + skips).
+  @override
+  bool? get babyFriendly;
+  @override
+  bool? get womenSafe;
+  @override
+  bool? get hygienic;
 
   /// Create a copy of StationCommunityReport
   /// with the given fields replaced by the non-null parameter values.

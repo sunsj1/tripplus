@@ -47,6 +47,10 @@ class StationCommunityReportDto {
       targetKey: (targetKeyRaw != null && targetKeyRaw.isNotEmpty)
           ? targetKeyRaw
           : (stationKey.isNotEmpty ? stationKey : null),
+      // P2-023 — tags; missing on legacy docs → null (treated as unanswered).
+      babyFriendly: d['babyFriendly'] as bool?,
+      womenSafe: d['womenSafe'] as bool?,
+      hygienic: d['hygienic'] as bool?,
     );
   }
 
@@ -73,6 +77,10 @@ class StationCommunityReportDto {
       'targetType': input.targetType.wireValue,
       'targetKey': effectiveTargetKey,
       'createdAt': FieldValue.serverTimestamp(),
+      // P2-023 — only write non-null tags so we don't bloat docs with null fields.
+      if (input.babyFriendly != null) 'babyFriendly': input.babyFriendly,
+      if (input.womenSafe != null) 'womenSafe': input.womenSafe,
+      if (input.hygienic != null) 'hygienic': input.hygienic,
     };
   }
 }

@@ -3,7 +3,7 @@
 > **Update this file** whenever a task materially changes the user-visible surface or the architecture.
 > AI agents read this first to avoid re-discovering what's already built.
 
-**Last updated:** 2026-06-01 (**Phase 2 Sessions 1–4** landed — alert engine v2, safety rules, personalized ranking, trust v2 for all POIs).
+**Last updated:** 2026-06-02 (**Phase 2 Sessions 1–5** landed — alert engine v2, safety rules, personalized ranking, trust v2, mode-aware filters).
 
 ---
 
@@ -17,7 +17,14 @@
 
 ---
 
-## Phase 2 progress (12/36 = 33%)
+## Phase 2 progress (16/36 = 44%)
+
+### Session 5 — Mode-aware filters (2026-06-02)
+- ✅ `P2-023` — Community pulses gain `babyFriendly` / `womenSafe` / `hygienic` nullable tags (schema, DTO, tri-state UI in POI report sheet). `CommunityTagAggregation` derives qualification with ≥ 2 answers and ≥ 50% yes.
+- ✅ `P2-020` — Family Mode: filter on attributes + family-friendly category set; Family badge on tiles with consistent community tags.
+- ✅ `P2-021` — Women-Safe Mode: filter on attributes + women-safe category set; Women-Safe badge with shield purple accent.
+- ✅ `P2-022` — Bike Rider Mode: filter focuses on mechanic / fuel / medical / parking / washroom / hotel / cafe categories.
+- New surface: `RouteModeBar` above every POI list (chips: Standard / Family / Women-Safe / Bike), `PoiModeBadges` on tiles, mode-filtered empty state with "Clear mode" CTA. `routeModeProvider` is StateProvider, defaults to `off`, resets on cold start.
 
 ### Session 4 — Trust v2 for all POIs (2026-06-01)
 - ✅ `P2-030` — Reliability scoring generalized to handle POI condition vocab (`good`/`fair`/`poor`) alongside EV (`working`/`issues`/`down`) — fixed a bug where POI conditions all scored neutral-high. New `conditionQuality()`, `TrustLevel`.

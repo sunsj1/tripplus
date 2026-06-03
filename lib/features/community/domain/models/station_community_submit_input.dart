@@ -24,5 +24,11 @@ class StationCommunitySubmitInput with _$StationCommunitySubmitInput {
     bool? chargeSuccessful,
     @Default(CommunityTargetType.station) CommunityTargetType targetType,
     String? targetKey,
+    // P2-023 — Mode-relevant tags. Null = unanswered (don't surface),
+    // true = positive signal, false = negative. Used by aggregation +
+    // Family/Women-Safe mode filters.
+    bool? babyFriendly,
+    bool? womenSafe,
+    bool? hygienic,
   }) = _StationCommunitySubmitInput;
 }

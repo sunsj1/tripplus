@@ -6,6 +6,46 @@
 
 ---
 
+## Phase 2 · Session 13 — Verification + phase rollup docs
+
+- **Started:** 2026-06-02
+- **Finished:** 2026-06-02
+- **Tasks completed:** Verification (no code-side task IDs; closes Phase 2).
+- **Theme:** sign off Phase 2 by running the gates, then introduce a permanent per-phase rollup mechanism so future readers don't have to spelunk through 13 session blocks per phase.
+
+### Activities
+
+- Ran `flutter analyze --no-pub` — clean, zero issues.
+- Ran `flutter test --no-pub` — 5/5 pass (4 alert engine + 1 widget smoke).
+- Authored `docs/PHASE_2_E2E_VERIFICATION.md` — full checklist following the Phase 1 template + sections for every Phase 2 surface (predictive alerts, ranking, modes, trust v2, weather/traffic/tolls, lifecycle, hidden gems, observability, a11y, server-side queries, regression).
+- Authored `docs/PHASE_REPORTS.md` — chronological rollup of completed phases. Phase 2 and Phase 1 blocks both included (Phase 1 reconstructed from the existing log + batches files). A "How to add a new phase report" footer documents the template for future phases.
+- Updated `docs/AI_DEVELOPMENT_WORKFLOW.md`:
+  - New "Files That Change Per-Phase (Rollup)" section in the Documentation Lifecycle.
+  - New "Phase Wrap-Up (After Last Session in a Phase)" sub-section in the Session Execution Loop with the 3 extra steps (prepend `PHASE_REPORTS.md`, update TL;DR, give git tag).
+- Updated `docs/context/current_state.md`:
+  - TL;DR now leads with "Phase 1 + Phase 2 complete and verified" and links the two verification docs plus the new `PHASE_REPORTS.md`.
+  - Progress counter bumped to 36/36 = 100%.
+
+### Files changed (new)
+- `docs/PHASE_2_E2E_VERIFICATION.md`
+- `docs/PHASE_REPORTS.md`
+
+### Files changed (modified)
+- `docs/AI_DEVELOPMENT_WORKFLOW.md` (phase wrap-up step + per-phase doc tier)
+- `docs/context/current_state.md` (TL;DR + 100% counter)
+- `docs/batches/phase_2_batches.md` (Session 13 ✅, total 36/36)
+- `project_plan/notion_tracker.md` (Phase 2 counter 36/36)
+
+### Tag
+
+Apply: `phase-2-intelligence-complete` after the per-device verification checklist signs off.
+
+### Notes / follow-ups
+- The `PHASE_REPORTS.md` doc is the canonical artifact going forward. Phase 3 verification will produce a new block; the same template structure is enforced so phase-to-phase comparison is possible.
+- No code changes in this session — pure documentation and verification.
+
+---
+
 ## Phase 2 · Session 12 — A11y & performance
 
 - **Started:** 2026-06-02

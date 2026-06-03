@@ -173,20 +173,20 @@ driver's GPS position (`PoiQuerySource.aheadOnRoute`).
 
 ---
 
-## ⬜ Session 13 — Phase 2 completion verification
+## ✅ Session 13 — Phase 2 completion verification
 
 **Theme.** No new features — E2E against `project_plan/02_phase_2_intelligence.md`
-completion checklist.
+completion checklist + introduce the per-phase rollup mechanism.
 
 **Activities.**
 
-- Predictive alerts: ghat, night, fatigue, weather (where enabled).
-- Personalized ranking visible on category screens.
-- Family / Women-Safe / Bike modes change results.
-- Weather + traffic on trip timeline; toll estimate where applicable.
-- Hidden Gems on at least 2 corridors.
-- `flutter analyze` + `flutter test` clean.
-- Tag: `phase-2-intelligence-complete`.
+- ✅ `flutter analyze` — clean.
+- ✅ `flutter test` — 5/5 pass.
+- ✅ Authored [`docs/PHASE_2_E2E_VERIFICATION.md`](../PHASE_2_E2E_VERIFICATION.md) — full device checklist.
+- ✅ Authored [`docs/PHASE_REPORTS.md`](../PHASE_REPORTS.md) — chronological rollup. Phase 1 + Phase 2 blocks.
+- ✅ Updated `docs/AI_DEVELOPMENT_WORKFLOW.md` with the per-phase wrap-up step and the new doc tier.
+- ✅ Updated `docs/context/current_state.md` TL;DR.
+- Tag (apply after on-device sign-off): `phase-2-intelligence-complete`.
 
 ---
 
@@ -206,8 +206,8 @@ completion checklist.
 | 10 | 3 | ✅ |
 | 11 | 3 | ✅ |
 | 12 | 3 | ✅ |
-| 13 | verify | ⬜ |
-| **Total** | **36** | **35 / 36 = 97 %** |
+| 13 | verify | ✅ |
+| **Total** | **36** | **36 / 36 = 100 % ✅** |
 
 ---
 

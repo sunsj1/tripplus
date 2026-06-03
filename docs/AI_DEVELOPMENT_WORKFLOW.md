@@ -234,6 +234,28 @@ Run these steps in order:
    - Do NOT commit yourself
    - User runs: `git add -A && git commit -m "..."`
 
+### Phase Wrap-Up (After Last Session in a Phase)
+
+When the **verification** session signs off the phase, do everything in the
+session wrap-up above **plus**:
+
+7. **Prepend a new block to `docs/PHASE_REPORTS.md`**
+   - Template at the bottom of that file
+   - Pull the per-session theme + decisions from `progress_log.md`
+   - Pull the "Features delivered" table by re-reading the batches file
+   - Record gaps + improvements + tag name
+
+8. **Update `docs/context/current_state.md` TL;DR**
+   - Headline becomes "Phase N complete; Phase N+1 planning"
+   - Link to `PHASE_REPORTS.md` for the rollup
+
+9. **Tell the user the git tag to apply**
+   - Format: `phase-N-<theme-slug>-complete`
+   - Example: `phase-2-intelligence-complete`
+
+This phase rollup is the canonical record. Future readers (humans or AI) start
+here before opening the per-session log.
+
 ---
 
 ## Documentation Lifecycle
@@ -250,6 +272,29 @@ These files are *automatically updated* as part of the session loop. Treat them 
 | `docs/batches/phase_1_batches.md` | Start of session, mid-session if re-balancing | AI | Mark sessions ✅, move tasks if user asks |
 | `project_plan/tasks.csv` | After each task | AI | Flip task row to `Done` |
 | `project_plan/notion_tracker.md` | After each task | AI | Tick checkbox for completed task |
+
+### Files That Change Per-Phase (Rollup)
+
+These files are updated **once per phase**, at the verification / sign-off
+step. They roll up the per-session work into a phase-level story so future
+readers don't have to spelunk through every session block.
+
+| File | When updated | Who updates | How |
+|------|--------------|-------------|-----|
+| `docs/PHASE_N_E2E_VERIFICATION.md` | At the start of the verification session | AI | Create a fresh checklist tailored to that phase's surface |
+| `docs/PHASE_REPORTS.md` | At the end of the verification session, after sign-off | AI | Prepend a new `## Phase N — <theme>` block following the template at the bottom of the file |
+| `docs/context/current_state.md` (TL;DR) | At the end of the verification session | AI | Update the headline to "Phase N complete; Phase N+1 planning" |
+
+**Phase final-report block structure** (kept identical across phases for diff-ability):
+
+1. Status / Duration / Verification link / Tag
+2. **Theme** — one paragraph
+3. **Features delivered** — table by surface
+4. **Architecture changes** — bullets
+5. **Improvements over previous phase** — bullets
+6. **Known gaps / deferred to Phase N+1** — bullets
+7. **Files of interest** — annotated path tree
+8. **Test posture** — what's covered, what isn't
 
 ### Files That Rarely Change (Structural)
 

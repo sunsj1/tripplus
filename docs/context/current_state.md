@@ -3,21 +3,32 @@
 > **Update this file** whenever a task materially changes the user-visible surface or the architecture.
 > AI agents read this first to avoid re-discovering what's already built.
 
-**Last updated:** 2026-06-02 (**Phase 2 Sessions 1–12** landed — a11y semantics on nav/mode chips/map controls, cached POI images, zoom-based marker clustering).
+**Last updated:** 2026-06-02 (**Phase 2 complete** — verification signed off in `docs/PHASE_2_E2E_VERIFICATION.md`; rollup recorded in `docs/PHASE_REPORTS.md`. Planning for Phase 3 — AI Travel Copilot — opens next).
 
 ---
 
 ## TL;DR
 
-**Phase 1 MVP is code-complete** (50/50 tasks). Smart Highway Companion: Plan · Trip · Discover · Profile, route-aware POI grid, community pulses, trip lifecycle, predictive alerts (engine + delivery), offline banner.
+**Phase 1 ✅ + Phase 2 ✅ — both complete and verified.** Smart Highway Companion has evolved into a Predictive & Personalised Intelligence app: alert engine v2 with ghat/night/fatigue rules, weather + traffic-aware ETA, tolls v1, personalised POI ranking with "Why we recommend" explainer, mode-aware filters (Family / Women-Safe / Bike), curated hidden gems carousel, trip share + history + settings, observability via Crashlytics custom keys, a11y semantics on nav/chips/map controls, and zoom-based map clustering.
 
-**Before Phase 2 implementation:** finish manual E2E on device — [`docs/PHASE_1_E2E_VERIFICATION.md`](../PHASE_1_E2E_VERIFICATION.md).
+**Phase reports rollup:** [`docs/PHASE_REPORTS.md`](../PHASE_REPORTS.md) — single source of truth for each completed phase. Updated at every phase sign-off.
 
-**Next (planning only):** Phase 2 sessions in [`docs/batches/phase_2_batches.md`](../batches/phase_2_batches.md) — **not started**.
+**Verification gates:**
+- Phase 1 — [`docs/PHASE_1_E2E_VERIFICATION.md`](../PHASE_1_E2E_VERIFICATION.md)
+- Phase 2 — [`docs/PHASE_2_E2E_VERIFICATION.md`](../PHASE_2_E2E_VERIFICATION.md)
+
+**Next:** Phase 3 — AI Travel Copilot — planning only. Open the Phase 3 batches file when ready to start.
 
 ---
 
-## Phase 2 progress (35/36 = 97%)
+## Phase 2 progress (36/36 = 100% ✅)
+
+### Session 13 — Phase 2 completion verification (2026-06-02)
+- ✅ `flutter analyze` clean; `flutter test` 5/5 pass.
+- ✅ New `docs/PHASE_2_E2E_VERIFICATION.md` with the full on-device checklist.
+- ✅ New `docs/PHASE_REPORTS.md` — chronological per-phase rollup (Phase 1 + Phase 2 blocks). Permanent canonical record for cross-phase comparison.
+- ✅ `docs/AI_DEVELOPMENT_WORKFLOW.md` updated with the per-phase wrap-up step + new doc tier.
+- Tag (apply after device sign-off): `phase-2-intelligence-complete`.
 
 ### Session 12 — A11y & performance (2026-06-02)
 - ✅ `P2-070` — `Semantics(button, selected, label)` on bottom nav tabs, route-mode chips, map control buttons (with `Tooltip`).

@@ -3,7 +3,7 @@
 > **Update this file** whenever a task materially changes the user-visible surface or the architecture.
 > AI agents read this first to avoid re-discovering what's already built.
 
-**Last updated:** 2026-06-02 (**Phase 2 Sessions 1–10** landed — added curated Hidden Gems carousel on Discover when the active plan matches a known corridor).
+**Last updated:** 2026-06-02 (**Phase 2 Sessions 1–12** landed — a11y semantics on nav/mode chips/map controls, cached POI images, zoom-based marker clustering).
 
 ---
 
@@ -17,7 +17,17 @@
 
 ---
 
-## Phase 2 progress (29/36 = 81%)
+## Phase 2 progress (35/36 = 97%)
+
+### Session 12 — A11y & performance (2026-06-02)
+- ✅ `P2-070` — `Semantics(button, selected, label)` on bottom nav tabs, route-mode chips, map control buttons (with `Tooltip`).
+- ✅ `P2-073` — `cached_network_image` for POI tile thumb / gallery / fullscreen; tile thumb downscales via `memCacheWidth/Height` keyed to device pixel ratio.
+- ✅ `P2-074` — `PoiMarkerClustering` zoom-based grid clustering on `PoiCategoryMapView`. Cluster icons drawn with `PictureRecorder` and cached by count.
+
+### Session 11 — Transparency & observability (2026-06-02)
+- ✅ `P2-033` — `RankingExplanation` + `PoiRanker.explain()`; `RankingWhyPanel` lists top 3 reasons on POI detail sheet.
+- ✅ `P2-071` — `ObservabilityService` + `observabilityWiringProvider` push user id / vehicle / route-mode / active-trip into Crashlytics. Wired in `AppShell`.
+- ✅ `P2-072` — Community queries now use `.orderBy('createdAt', descending: true).limit(50)` against the deployed composite indexes — caps read cost at 50 docs per query.
 
 ### Session 10 — Hidden gems v1 (2026-06-02)
 - ✅ `P2-060` — `assets/hidden_gems/corridor_gems.json` (4 corridors × 2–3 gems) + `HiddenGemDataset.load()`. `hiddenGemCorridorsProvider` caches.

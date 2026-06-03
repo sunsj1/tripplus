@@ -4,6 +4,7 @@ import 'package:tripplus/core/constants/api_constants.dart';
 import 'package:tripplus/core/domain/poi.dart';
 import 'package:tripplus/core/theme/app_colors.dart';
 import 'package:tripplus/core/theme/app_text_styles.dart';
+import 'package:tripplus/features/pois/presentation/widget/poi_marker_clustering.dart';
 
 /// Google Maps view for [PoiCategoryScreen] (`P1-015`). Mirrors the structure
 /// of `station_map_screen.dart` so look-and-feel stays consistent.
@@ -19,19 +20,52 @@ class _PoiCategoryMapViewState extends State<PoiCategoryMapView> {
   GoogleMapController? _mapController;
   Poi? _selected;
 
-  Set<Marker> get _markers {
-    return widget.pois.map((poi) {
-      return Marker(
-        markerId: MarkerId(poi.id),
-        position: LatLng(poi.latitude, poi.longitude),
-        icon: BitmapDescriptor.defaultMarkerWithHue(
-          poi.openNow == false
-              ? BitmapDescriptor.hueOrange
-              : BitmapDescriptor.hueGreen,
-        ),
-        onTap: () => setState(() => _selected = poi),
-      );
-    }).toSet();
+  // P2-074 — clustering state.
+  static const double _defaultZoom = 11;
+  double _zoom = _defaultZoom;
+  Set<Marker> _markers = const {};
+
+  @override
+  void initState() {
+    super.initState();
+    _rebuildMarkers();
+  }
+
+  @override
+  void didUpdateWidget(covariant PoiCategoryMapView old) {
+    super.didUpdateWidget(old);
+    if (old.pois != widget.pois) _rebuildMarkers();
+  }
+
+  Future<void> _rebuildMarkers() async {
+    final next = await PoiMarkerClustering.build(
+      pois: widget.pois,
+      zoom: _zoom,
+      onPoiTap: (poi) => setState(() => _selected = poi),
+      onClusterTap: (centre) {
+        // Zoom in to the cluster centre — single tap to expand it.
+        final next = (_zoom + 1.5).clamp(0.0, 20.0);
+        _mapController?.animateCamera(
+          CameraUpdate.newLatLngZoom(centre, next),
+        );
+      },
+    );
+    if (!mounted) return;
+    setState(() => _markers = next);
+  }
+
+  void _onCameraIdle() async {
+    final pos = await _mapController?.getZoomLevel();
+    if (pos == null) return;
+    // Only rebuild when zoom crosses the threshold or moves by >= 0.4 to
+    // avoid thrashing the marker set on tiny pan/zoom adjustments.
+    if ((pos - _zoom).abs() < 0.4 &&
+        (pos < PoiMarkerClustering.clusterZoomThreshold) ==
+            (_zoom < PoiMarkerClustering.clusterZoomThreshold)) {
+      return;
+    }
+    _zoom = pos;
+    await _rebuildMarkers();
   }
 
   LatLng get _initialPosition {
@@ -50,9 +84,11 @@ class _PoiCategoryMapViewState extends State<PoiCategoryMapView> {
       children: [
         GoogleMap(
           initialCameraPosition:
-              CameraPosition(target: _initialPosition, zoom: 11),
+              CameraPosition(target: _initialPosition, zoom: _defaultZoom),
           markers: _markers,
           onMapCreated: (c) => _mapController = c,
+          // P2-074 — refresh markers as zoom crosses the cluster threshold.
+          onCameraIdle: _onCameraIdle,
           myLocationEnabled: true,
           myLocationButtonEnabled: false,
           zoomControlsEnabled: false,
@@ -65,6 +101,7 @@ class _PoiCategoryMapViewState extends State<PoiCategoryMapView> {
             children: [
               _MapButton(
                 icon: Icons.my_location,
+                label: 'Recenter map',
                 onTap: () {
                   if (widget.pois.isNotEmpty) {
                     _mapController?.animateCamera(
@@ -76,12 +113,14 @@ class _PoiCategoryMapViewState extends State<PoiCategoryMapView> {
               const SizedBox(height: 8),
               _MapButton(
                 icon: Icons.add,
+                label: 'Zoom in',
                 onTap: () =>
                     _mapController?.animateCamera(CameraUpdate.zoomIn()),
               ),
               const SizedBox(height: 8),
               _MapButton(
                 icon: Icons.remove,
+                label: 'Zoom out',
                 onTap: () =>
                     _mapController?.animateCamera(CameraUpdate.zoomOut()),
               ),
@@ -110,13 +149,16 @@ class _PoiCategoryMapViewState extends State<PoiCategoryMapView> {
 }
 
 class _MapButton extends StatelessWidget {
-  const _MapButton({required this.icon, required this.onTap});
+  const _MapButton({required this.icon, required this.onTap, this.label});
   final IconData icon;
   final VoidCallback onTap;
 
+  /// P2-070 — Optional semantic label / tooltip for the icon button.
+  final String? label;
+
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    final button = GestureDetector(
       onTap: onTap,
       child: Container(
         width: 44,
@@ -133,6 +175,12 @@ class _MapButton extends StatelessWidget {
         ),
         child: Icon(icon, size: 20, color: AppColors.textPrimary),
       ),
+    );
+
+    if (label == null) return button;
+    return Tooltip(
+      message: label!,
+      child: Semantics(button: true, label: label, child: button),
     );
   }
 }

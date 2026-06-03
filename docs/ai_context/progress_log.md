@@ -6,6 +6,94 @@
 
 ---
 
+## Phase 2 · Session 12 — A11y & performance
+
+- **Started:** 2026-06-02
+- **Finished:** 2026-06-02
+- **Tasks completed (3/3):** `P2-070`, `P2-073`, `P2-074`.
+- **Theme:** the app gets quieter for screen readers, lighter on Google Photos quota, and scales gracefully when a category returns hundreds of POIs on the map.
+
+### Per-task notes
+
+- `P2-073` — Cached POI photos:
+  - New `cached_network_image: ^3.4.1` dep.
+  - Replaced 3 `Image.network` calls in `core/widgets/poi_photo.dart` (tile thumbnail, gallery thumbs, fullscreen viewer) with `CachedNetworkImage`. Thumbnail tile uses `memCacheWidth/Height` keyed to the device pixel ratio so we don't decode a 400×400 PNG into a 44×44 view.
+  - Same cache key serves the gallery thumb and the fullscreen view — opening a photo from the gallery is instant after first load.
+  - `ListView.builder` was already lazy; verified no `shrinkWrap` or `NeverScrollableScrollPhysics` on hot paths.
+
+- `P2-074` — Map clustering:
+  - New `lib/features/pois/presentation/widget/poi_marker_clustering.dart` — pure-Dart zoom-based grid clustering. No new package. At zoom < `12.5` POIs bucket into ~90 px cells; ≥ 2 POIs in a cell render as a count badge marker. ≥ 12.5 every POI gets its own pin again.
+  - Cluster icon is drawn with Skia (`PictureRecorder` + `Canvas`) — primary-green circle with a 99+ cap on the count, cached by count so we don't re-encode on every zoom tick.
+  - `PoiCategoryMapView` tracks `_zoom`, rebuilds markers on `onCameraIdle` only when zoom changes by ≥ 0.4 *or* crosses the cluster threshold (debounces panning).
+  - Tap a cluster → camera animates +1.5 zoom into its centre; tap a single pin → existing popup.
+
+- `P2-070` — A11y pass:
+  - `app_bottom_nav.dart`: wrapped each tab's GestureDetector in `Semantics(button: true, selected: isActive, label: "$label, tab")`. Selected state now announced.
+  - `route_mode_bar.dart`: same treatment on mode chips ("Family, mode, selected").
+  - `poi_category_map_view.dart` `_MapButton`: gained an optional `label` prop. When set, wraps the button in `Tooltip` + `Semantics(button: true, label: ...)`. Called sites for the three controls (Recenter map / Zoom in / Zoom out).
+  - The detail-sheet "Open in Maps", "Share trip", and report sheet ✓/✗ buttons already have labels — verified no additional fix needed.
+
+### Files changed (new)
+- `lib/features/pois/presentation/widget/poi_marker_clustering.dart`
+
+### Files changed (modified)
+- `pubspec.yaml` (`cached_network_image`)
+- `lib/core/widgets/poi_photo.dart` (3 sites → `CachedNetworkImage`)
+- `lib/features/pois/presentation/widget/poi_category_map_view.dart` (clustering + map button a11y)
+- `lib/core/widgets/app_bottom_nav.dart` (tab semantics)
+- `lib/features/personalization/presentation/widget/route_mode_bar.dart` (mode chip semantics)
+
+### Notes / follow-ups
+- Cluster algorithm uses a simple Web-Mercator approximation; close enough for the highway-corridor use case but slightly off near the poles. Fine for India coverage.
+- Cluster icon cache (`_iconCache`) is process-lifetime; clears on app restart. Phase 3 could persist them in the engine cache if Canvas rendering shows up in perf traces.
+- Full contrast audit (large-text mode + AA ratios) would benefit from a manual device sweep that's outside this code-only session. Easy follow-up in pre-rollout QA.
+
+---
+
+## Phase 2 · Session 11 — Transparency & observability
+
+- **Started:** 2026-06-02
+- **Finished:** 2026-06-02
+- **Tasks completed (3/3):** `P2-033`, `P2-071`, `P2-072`.
+- **Theme:** the ranker is no longer a black box, Crashlytics reports carry user/vehicle/mode context, and community queries use the deployed composite indexes server-side.
+
+### Per-task notes
+
+- `P2-033` — "Why we recommend this" explainer:
+  - **`RankingReason` / `RankingReasonKind` / `RankingExplanation`** — structured signal list with `weight`, `label`, `icon` per contributing factor.
+  - `PoiRanker._evaluate()` private method is now the single source of truth — both `score()` and `explain()` delegate to it. No duplicate scoring logic.
+  - Reason gating is conservative: quality only contributes a *reason* when `rating ≥ 4.0` AND the weighted score > 0.5; proximity only mentions distance when ≤ 30 km ahead; budget only when match score > 0.4. Prevents noise like "highly rated" on a 2★ place.
+  - `RankingWhyPanel` mounted on `PoiDetailSheet` between the fact-pill row and "Open in Maps". Renders top 3 reasons with primary-tinted card. Returns `SizedBox.shrink()` when no reasons — silence beats noise.
+
+- `P2-071` — Crashlytics customisation:
+  - Native gradle plugin was already wired in `settings.gradle.kts` + `app/build.gradle.kts` since Phase 1 — verified, no native changes needed.
+  - **`ObservabilityService`** — best-effort wrapper around `FirebaseCrashlytics` with `bindUser`, `setVehicleType`, `setRouteMode`, `setActiveTrip`, `recordEvent`. Disabled in debug builds (matches the `setCrashlyticsCollectionEnabled(!kDebugMode)` policy in `main.dart`).
+  - **`observabilityWiringProvider`** uses `ref.listen` + `fireImmediately` to push user identifier / vehicle / route-mode / active-trip into Crashlytics whenever they change.
+  - `AppShell` watches `observabilityWiringProvider` for the shell lifetime, alongside the alert notifier wiring.
+
+- `P2-072` — Use composite indexes server-side:
+  - Pre-Phase 2 we deployed the `stationKey + createdAt` and `targetKey + createdAt` indexes but the queries still did `where + snapshots + sort + take(50)` in memory.
+  - `watchStationReports` and `watchByTargetKey` now use `.orderBy('createdAt', descending: true).limit(50)` server-side. Eliminates client sort and caps read cost (a station with 1k reports now costs 50 reads, not 1000).
+  - Re-ran `firebase deploy --only firestore:indexes` to confirm the indexes are still live in the project.
+
+### Files changed (new)
+- `lib/features/personalization/domain/ranking_explanation.dart`
+- `lib/features/personalization/presentation/widget/ranking_why_panel.dart`
+- `lib/core/services/observability_service.dart`
+- `lib/core/services/observability_providers.dart`
+
+### Files changed (modified)
+- `lib/features/personalization/domain/poi_ranker.dart` (`explain()` + refactor through `_evaluate`)
+- `lib/features/pois/presentation/widget/poi_detail_sheet.dart` (mount `RankingWhyPanel`)
+- `lib/features/shell/presentation/view/app_shell.dart` (watch observability wiring)
+- `lib/features/community/data/repository/community_report_repository.dart` (server-side orderBy + limit)
+
+### Notes / follow-ups
+- Firebase Analytics isn't initialised (would need `firebase_analytics` dep + `FirebaseAnalytics.instance` setup). Crashlytics breadcrumbs via `ObservabilityService.recordEvent` cover the "user did this" need for now — Analytics can be a separate task in Phase 3.
+- `RankingWhyPanel` is only on the detail sheet; an inline tile chip would also work. Telemetry will tell us whether the detail-sheet placement is enough.
+
+---
+
 ## Phase 2 · Session 10 — Hidden gems v1
 
 - **Started:** 2026-06-02

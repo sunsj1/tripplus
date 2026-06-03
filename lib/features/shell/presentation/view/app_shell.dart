@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tripplus/core/services/observability_providers.dart';
 import 'package:tripplus/core/widgets/app_bottom_nav.dart';
 import 'package:tripplus/core/widgets/offline_banner.dart';
 import 'package:tripplus/features/alerts/presentation/controller/alerts_providers.dart';
@@ -28,6 +29,8 @@ class AppShell extends ConsumerWidget {
 
     // P1-028 — keep alert notifier subscribed for the shell lifetime.
     ref.watch(alertNotifierProvider);
+    // P2-071 — attach Crashlytics context listeners for the shell lifetime.
+    ref.watch(observabilityWiringProvider);
 
     return Scaffold(
       // P1-044 — offline degraded-mode banner sits above the tab content.

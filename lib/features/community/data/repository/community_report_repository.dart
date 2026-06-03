@@ -16,27 +16,23 @@ class CommunityReportRepository {
 
   /// Live list for a station (newest first).
   ///
-  /// Uses only `where('stationKey')` so **no composite index** is required.
-  /// We sort by [StationCommunityReport.createdAt] in memory and keep the latest 50.
-  /// (If a station ever has huge report volume, add a Firestore composite index
-  /// and switch to server-side `orderBy` + `limit` to reduce reads — see
-  /// [firebase/firestore.indexes.json].)
+  /// P2-072 — Uses the deployed `stationKey + createdAt desc` composite index
+  /// for server-side ordering + `limit(50)`. Eliminates client-side sort and
+  /// caps read cost: a station with 1k reports now costs 50 reads, not 1000.
   Stream<Either<String, List<StationCommunityReport>>> watchStationReports(
     String stationKey,
   ) {
     return _db
         .collection(_collection)
         .where('stationKey', isEqualTo: stationKey)
+        .orderBy('createdAt', descending: true)
+        .limit(50)
         .snapshots()
         .map((snapshot) {
       try {
         final list = snapshot.docs
             .map(StationCommunityReportDto.fromDocument)
             .toList();
-        list.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-        if (list.length > 50) {
-          list.removeRange(50, list.length);
-        }
         return right<String, List<StationCommunityReport>>(list);
       } catch (e) {
         return left<String, List<StationCommunityReport>>('$e');
@@ -52,26 +48,22 @@ class CommunityReportRepository {
   /// callers should keep using [watchStationReports] — this query won't see
   /// them. New writes (post-`P1-010`) appear here.
   ///
-  /// Same in-memory-sort + `take(50)` pattern as [watchStationReports]; the
-  /// composite index `targetKey + createdAt` (`P1-055`,
-  /// `firebase/firestore.indexes.json`) provides headroom for switching to
-  /// server-side `orderBy` + `limit` if read volume warrants it.
+  /// P2-072 — Uses the `targetKey + createdAt desc` composite index for
+  /// server-side ordering + limit; same payoff as [watchStationReports].
   Stream<Either<String, List<StationCommunityReport>>> watchByTargetKey(
     String targetKey,
   ) {
     return _db
         .collection(_collection)
         .where('targetKey', isEqualTo: targetKey)
+        .orderBy('createdAt', descending: true)
+        .limit(50)
         .snapshots()
         .map((snapshot) {
       try {
         final list = snapshot.docs
             .map(StationCommunityReportDto.fromDocument)
             .toList();
-        list.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-        if (list.length > 50) {
-          list.removeRange(50, list.length);
-        }
         return right<String, List<StationCommunityReport>>(list);
       } catch (e) {
         return left<String, List<StationCommunityReport>>('$e');

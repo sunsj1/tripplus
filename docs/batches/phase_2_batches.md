@@ -149,27 +149,27 @@ driver's GPS position (`PoiQuerySource.aheadOnRoute`).
 
 ---
 
-## ⬜ Session 11 — Transparency & observability
+## ✅ Session 11 — Transparency & observability
 
 **Theme.** “Why we recommend this”, Crashlytics/Analytics, Firestore indexes.
 
 | ID | Task | Est | Depends on |
 |---|---|---|---|
-| `P2-033` | “Why we recommend this” explainer chip | 6 h | `P2-011` |
-| `P2-071` | Wire Crashlytics + Analytics (native gradle plugin) | 6 h | `P1-064` ✅ |
-| `P2-072` | Deploy composite Firestore indexes | 4 h | `P1-055` ✅ |
+| `P2-033` ✅ | “Why we recommend this” explainer chip | 6 h | `P2-011` |
+| `P2-071` ✅ | Wire Crashlytics + Analytics (native gradle plugin) | 6 h | `P1-064` ✅ |
+| `P2-072` ✅ | Deploy composite Firestore indexes | 4 h | `P1-055` ✅ |
 
 ---
 
-## ⬜ Session 12 — A11y & performance
+## ✅ Session 12 — A11y & performance
 
 **Theme.** Accessibility pass, list perf, map clustering.
 
 | ID | Task | Est | Depends on |
 |---|---|---|---|
-| `P2-070` | A11y pass — contrast, semantics, large text | 1 d | — |
-| `P2-073` | List virtualization + image caching on POI lists | 6 h | `P1-012` ✅ |
-| `P2-074` | Map clustering for crowded categories | 6 h | `P1-015` ✅ |
+| `P2-070` ✅ | A11y pass — contrast, semantics, large text | 1 d | — |
+| `P2-073` ✅ | List virtualization + image caching on POI lists | 6 h | `P1-012` ✅ |
+| `P2-074` ✅ | Map clustering for crowded categories | 6 h | `P1-015` ✅ |
 
 ---
 
@@ -204,10 +204,10 @@ completion checklist.
 | 8 | 3 | ✅ |
 | 9 | 2 | ✅ |
 | 10 | 3 | ✅ |
-| 11 | 3 | ⬜ |
-| 12 | 3 | ⬜ |
+| 11 | 3 | ✅ |
+| 12 | 3 | ✅ |
 | 13 | verify | ⬜ |
-| **Total** | **36** | **29 / 36 = 81 %** |
+| **Total** | **36** | **35 / 36 = 97 %** |
 
 ---
 

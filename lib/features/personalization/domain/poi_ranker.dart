@@ -1,6 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:tripplus/core/domain/fuel_brand.dart';
 import 'package:tripplus/core/domain/poi.dart';
 import 'package:tripplus/core/domain/user_preferences.dart';
+import 'package:tripplus/features/personalization/domain/ranking_explanation.dart';
 import 'package:tripplus/features/personalization/domain/user_preference_vector.dart';
 
 /// P2-011 — Pure scoring function that ranks POIs against a
@@ -42,68 +44,167 @@ class PoiRanker {
     Poi poi,
     UserPreferenceVector v, {
     double? currentPositionKm,
+  }) =>
+      _evaluate(poi, v, currentPositionKm: currentPositionKm).totalScore;
+
+  /// P2-033 — Structured explanation of how the score was built. Used by the
+  /// "Why we recommend this" chip on POI tiles and detail sheets.
+  RankingExplanation explain(
+    Poi poi,
+    UserPreferenceVector v, {
+    double? currentPositionKm,
+  }) =>
+      _evaluate(poi, v, currentPositionKm: currentPositionKm);
+
+  // ── Single source of truth for both score() and explain() ──────────────────
+
+  RankingExplanation _evaluate(
+    Poi poi,
+    UserPreferenceVector v, {
+    double? currentPositionKm,
   }) {
-    var s = 0.0;
+    var total = 0.0;
+    final reasons = <RankingReason>[];
 
     // Quality — rating (0–1) × confidence (saturating with review count).
     final ratingNorm = (poi.rating / 5.0).clamp(0.0, 1.0);
     final confidence = poi.reviewCount / (poi.reviewCount + 20);
-    s += v.qualityWeight * ratingNorm * (0.5 + 0.5 * confidence);
+    final qualityScore =
+        v.qualityWeight * ratingNorm * (0.5 + 0.5 * confidence);
+    total += qualityScore;
+    // Only call out quality as a *reason* when it's actually high — a 2-star
+    // place getting a 0.3 quality contribution shouldn't explain itself as
+    // "highly rated".
+    if (poi.rating >= 4.0 && qualityScore > 0.5) {
+      reasons.add(RankingReason(
+        kind: RankingReasonKind.quality,
+        label: '${poi.rating.toStringAsFixed(1)}★ '
+            '${poi.reviewCount > 0 ? "from ${poi.reviewCount} reviews" : ""}'
+                .trim(),
+        weight: qualityScore,
+        icon: Icons.star_rounded,
+      ));
+    }
 
     // Proximity — smooth decay over ~25 km of "ahead" distance.
     final d = poi.distanceAlongRouteKm;
     if (d != null) {
       final ahead = currentPositionKm != null ? d - currentPositionKm : d;
       if (ahead >= 0) {
-        s += v.proximityWeight * (1.0 / (1.0 + ahead / 25.0));
+        final proximityScore =
+            v.proximityWeight * (1.0 / (1.0 + ahead / 25.0));
+        total += proximityScore;
+        if (ahead <= 30) {
+          reasons.add(RankingReason(
+            kind: RankingReasonKind.proximity,
+            label: '${ahead.toStringAsFixed(1)} km away on your route',
+            weight: proximityScore,
+            icon: Icons.route_outlined,
+          ));
+        }
       }
     }
 
     // Openness.
-    if (poi.openNow == true) s += v.opennessWeight;
+    if (poi.openNow == true) {
+      total += v.opennessWeight;
+      reasons.add(RankingReason(
+        kind: RankingReasonKind.openNow,
+        label: 'Open now',
+        weight: v.opennessWeight,
+        icon: Icons.schedule_outlined,
+      ));
+    }
 
     // Dietary (pure veg).
-    if (v.dietaryWeight > 0 && _isVeg(poi)) s += v.dietaryWeight;
+    if (v.dietaryWeight > 0 && _isVeg(poi)) {
+      total += v.dietaryWeight;
+      reasons.add(RankingReason(
+        kind: RankingReasonKind.dietary,
+        label: 'Pure veg',
+        weight: v.dietaryWeight,
+        icon: Icons.eco_outlined,
+      ));
+    }
 
     // Family-friendly.
     if (v.familyWeight > 0 &&
         _attrTrue(poi, const ['family_friendly', 'family', 'kids'])) {
-      s += v.familyWeight;
+      total += v.familyWeight;
+      reasons.add(RankingReason(
+        kind: RankingReasonKind.family,
+        label: 'Family-friendly',
+        weight: v.familyWeight,
+        icon: Icons.family_restroom_outlined,
+      ));
     }
 
     // Women-safe.
     if (v.womenSafeWeight > 0 &&
         _attrTrue(poi, const ['women_safe', 'women_friendly'])) {
-      s += v.womenSafeWeight;
+      total += v.womenSafeWeight;
+      reasons.add(RankingReason(
+        kind: RankingReasonKind.womenSafe,
+        label: 'Reported women-safe',
+        weight: v.womenSafeWeight,
+        icon: Icons.shield_outlined,
+      ));
     }
 
     // Pet-friendly.
     if (v.petWeight > 0 && _attrTrue(poi, const ['pet_friendly', 'pets'])) {
-      s += v.petWeight;
+      total += v.petWeight;
+      reasons.add(RankingReason(
+        kind: RankingReasonKind.pet,
+        label: 'Pet-friendly',
+        weight: v.petWeight,
+        icon: Icons.pets_outlined,
+      ));
     }
 
     // Scenic / tourist categories.
     if (v.scenicWeight > 0 &&
         (poi.category == PoiCategory.scenic ||
             poi.category == PoiCategory.tourist)) {
-      s += v.scenicWeight;
+      total += v.scenicWeight;
+      reasons.add(RankingReason(
+        kind: RankingReasonKind.scenic,
+        label: 'Scenic spot',
+        weight: v.scenicWeight,
+        icon: Icons.landscape_outlined,
+      ));
     }
 
     // Budget match via Google price level.
-    s += v.budgetWeight * _budgetMatch(poi, v);
+    final budgetScore = v.budgetWeight * _budgetMatch(poi, v);
+    total += budgetScore;
+    if (budgetScore > 0.4) {
+      reasons.add(RankingReason(
+        kind: RankingReasonKind.budget,
+        label: 'Matches your ${v.budgetTier.label.toLowerCase()} budget',
+        weight: budgetScore,
+        icon: Icons.payments_outlined,
+      ));
+    }
 
     // Fuel-brand affinity (fuel POIs only).
     if (poi.category == PoiCategory.fuel && v.brandWeights.isNotEmpty) {
       final lowerName = poi.name.toLowerCase();
       for (final entry in v.brandWeights.entries) {
         if (lowerName.contains(entry.key.label.toLowerCase())) {
-          s += entry.value;
+          total += entry.value;
+          reasons.add(RankingReason(
+            kind: RankingReasonKind.fuelBrand,
+            label: 'You prefer ${entry.key.label}',
+            weight: entry.value,
+            icon: Icons.local_gas_station_outlined,
+          ));
           break;
         }
       }
     }
 
-    return s;
+    return RankingExplanation(totalScore: total, reasons: reasons);
   }
 
   // ── Signal helpers ─────────────────────────────────────────────────────────

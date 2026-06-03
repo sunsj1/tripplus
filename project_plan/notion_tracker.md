@@ -120,7 +120,7 @@
 - [x] `P2-030` Generalize reliability score to POIs
 - [x] `P2-031` Conflict-aware timeline on POIs
 - [x] `P2-032` Source badges on every POI
-- [ ] `P2-033` "Why we recommend this" explainer
+- [x] `P2-033` "Why we recommend this" explainer
 
 ### 2.5 Environmental integrations
 - [x] `P2-040` Weather (Open-Meteo) per segment
@@ -140,11 +140,11 @@
 - [x] `P2-062` Tag categories
 
 ### 2.8 Quality, A11y, Observability
-- [ ] `P2-070` A11y pass
-- [ ] `P2-071` Crashlytics + Analytics
-- [ ] `P2-072` Composite index deployment
-- [ ] `P2-073` List virtualization + image cache
-- [ ] `P2-074` Map clustering
+- [x] `P2-070` A11y pass
+- [x] `P2-071` Crashlytics + Analytics
+- [x] `P2-072` Composite index deployment
+- [x] `P2-073` List virtualization + image cache
+- [x] `P2-074` Map clustering
 
 ---
 
@@ -234,7 +234,7 @@
 | Phase | Total Tasks | Done | % |
 |---|---|---|---|
 | Phase 1 — MVP | 50 | 50 | 100% |
-| Phase 2 — Intelligence | 36 | 29 | 81% |
+| Phase 2 — Intelligence | 36 | 35 | 97% |
 | Phase 3 — AI Copilot | 30 | 0 | 0% |
 | Phase 4 — Scale | 18 | 0 | 0% |
 | **Total** | **134** | **0** | **0%** |

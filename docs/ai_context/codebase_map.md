@@ -112,6 +112,17 @@
   - `presentation/controller/hidden_gems_providers.dart` — `hiddenGemCorridorsProvider` (full dataset) + `activeCorridorGemsProvider` (corridor match for the active plan via the same waypoint-hit heuristic as `TollEstimator`) (`P2-061`).
   - `presentation/widget/hidden_gems_carousel.dart` — horizontal cards mounted on `DiscoveryScreen` between Emergency tile and the grid. Hides itself when no plan or no match (`P2-061`).
 - `assets/hidden_gems/corridor_gems.json` — bundled curation (4 corridors, 10 gems) (`P2-060`).
+- `personalization/domain/ranking_explanation.dart` — `RankingReason`/`RankingReasonKind`/`RankingExplanation` (`P2-033`).
+- `personalization/domain/poi_ranker.dart` — `explain()` added; `score()` and `explain()` share private `_evaluate()` (`P2-033`).
+- `personalization/presentation/widget/ranking_why_panel.dart` — "Why we recommend this" card mounted on `PoiDetailSheet` (`P2-033`).
+- `core/services/observability_service.dart` — `ObservabilityService` wrapping Crashlytics (`bindUser`, `setVehicleType`, `setRouteMode`, `setActiveTrip`, `recordEvent`) (`P2-071`).
+- `core/services/observability_providers.dart` — `observabilityServiceProvider` + `observabilityWiringProvider` (listeners attach in `AppShell`) (`P2-071`).
+- `community/data/repository/community_report_repository.dart` — `watchStationReports` and `watchByTargetKey` now `.orderBy('createdAt', descending: true).limit(50)` server-side (`P2-072`).
+- `pois/presentation/widget/poi_marker_clustering.dart` — `PoiMarkerClustering.build()` — zoom-based grid clustering, count badges drawn via `PictureRecorder` and cached by count (`P2-074`).
+- `pois/presentation/widget/poi_category_map_view.dart` — `_zoom` + `_onCameraIdle` rebuilds the marker set when zoom crosses the cluster threshold; `_MapButton` accepts a `label` for `Tooltip`+`Semantics` (`P2-074`, `P2-070`).
+- `core/widgets/poi_photo.dart` — `CachedNetworkImage` for tile thumb, gallery, fullscreen viewer; tile uses `memCacheWidth/Height` scaled to device pixel ratio (`P2-073`).
+- `core/widgets/app_bottom_nav.dart` — tab `Semantics(button, selected, label)` (`P2-070`).
+- `personalization/presentation/widget/route_mode_bar.dart` — mode chip semantics (`P2-070`).
   - `presentation/controller/poi_category_controller.dart` — decides between route-aware and nearby strategies based on `PlanController` snapshot at construction; EV without a plan → explicit empty state.
   - `presentation/view/poi_category_screen.dart` — reusable category screen with list/map toggle in app bar (`P1-012` + `P1-015`).
   - `presentation/widget/poi_list_tile.dart` — list tile; `pulseSlot` now filled by `PoiCommunityRatingPulse` (`P1-054`).

@@ -101,7 +101,13 @@ class _ModeChip extends StatelessWidget {
         ? mode.accent
         : mode.accent.withValues(alpha: 0.3);
 
-    return GestureDetector(
+    // P2-070 — A11y: mode chips are toggle buttons; expose mode label +
+    // active state so VoiceOver announces "Family, mode, selected".
+    return Semantics(
+      button: true,
+      selected: isActive,
+      label: '${mode.label}, mode',
+      child: GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
@@ -126,6 +132,7 @@ class _ModeChip extends StatelessWidget {
             ),
           ],
         ),
+      ),
       ),
     );
   }

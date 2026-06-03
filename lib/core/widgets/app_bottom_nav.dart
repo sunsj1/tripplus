@@ -112,8 +112,15 @@ class _NavItem extends StatelessWidget {
     const duration = Duration(milliseconds: 220);
     final fg = isActive ? AppColors.primary : AppColors.navInactive;
 
+    // P2-070 — A11y: each tab is a button; expose its label and selected
+    // state to screen readers so VoiceOver/TalkBack can announce e.g.
+    // "Trip, tab, 2 of 4, selected".
     return Expanded(
-      child: GestureDetector(
+      child: Semantics(
+        button: true,
+        selected: isActive,
+        label: '${spec.label}, tab',
+        child: GestureDetector(
         onTap: onTap,
         behavior: HitTestBehavior.opaque,
         child: Column(
@@ -167,6 +174,7 @@ class _NavItem extends StatelessWidget {
             ),
           ],
         ),
+      ),
       ),
     );
   }

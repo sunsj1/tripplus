@@ -8,6 +8,7 @@ import 'package:tripplus/core/widgets/poi_photo.dart';
 import 'package:tripplus/core/widgets/source_badge.dart';
 import 'package:tripplus/features/community/presentation/widgets/poi_community_reports_section.dart';
 import 'package:tripplus/features/personalization/presentation/controller/brand_affinity_controller.dart';
+import 'package:tripplus/features/personalization/presentation/widget/ranking_why_panel.dart';
 import 'package:tripplus/features/pois/presentation/controller/pois_providers.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -199,6 +200,12 @@ class _PoiDetailSheetState extends ConsumerState<_PoiDetailSheet> {
                           label: 'Closed',
                         ),
                     ],
+                  ),
+                  const SizedBox(height: 16),
+                  // P2-033 — Top contributing ranker reasons for this POI.
+                  RankingWhyPanel(
+                    poi: _poi,
+                    currentPositionKm: _poi.distanceAlongRouteKm,
                   ),
                   const SizedBox(height: 16),
                   _OpenInMapsButton(poi: _poi),

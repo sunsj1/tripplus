@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:tripplus/core/domain/poi.dart';
 import 'package:tripplus/core/theme/app_colors.dart';
@@ -29,28 +30,29 @@ class PoiPhotoThumbnail extends StatelessWidget {
       );
     }
 
+    // P2-073 — cached_network_image keeps the JPEG on disk + a decoded copy
+    // in the resizable ImageCache so scrolling the same list twice doesn't
+    // re-hit Google Photos. Also avoids the layout jank we used to see when
+    // a fast scroll re-decoded a cleared image.
     return ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
-      child: SizedBox(
+      child: CachedNetworkImage(
+        imageUrl: url,
         width: size,
         height: size,
-        child: Image.network(
-          url,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) => _IconTile(
-            size: size,
-            borderRadius: borderRadius,
-            icon: icon,
-          ),
-          loadingBuilder: (context, child, progress) {
-            if (progress == null) return child;
-            return _IconTile(
-              size: size,
-              borderRadius: borderRadius,
-              icon: icon,
-              loading: true,
-            );
-          },
+        fit: BoxFit.cover,
+        memCacheWidth: (size * MediaQuery.devicePixelRatioOf(context)).round(),
+        memCacheHeight: (size * MediaQuery.devicePixelRatioOf(context)).round(),
+        placeholder: (context, _) => _IconTile(
+          size: size,
+          borderRadius: borderRadius,
+          icon: icon,
+          loading: true,
+        ),
+        errorWidget: (context, _, _) => _IconTile(
+          size: size,
+          borderRadius: borderRadius,
+          icon: icon,
         ),
       ),
     );
@@ -183,11 +185,14 @@ class PoiPhotoGallery extends StatelessWidget {
                       child: Stack(
                         fit: StackFit.expand,
                         children: [
-                          Image.network(
-                            urls[index],
+                          // P2-073 — cached carousel thumbnails.
+                          CachedNetworkImage(
+                            imageUrl: urls[index],
                             fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) =>
-                                Container(
+                            placeholder: (context, _) => Container(
+                              color: AppColors.primarySurface,
+                            ),
+                            errorWidget: (context, _, _) => Container(
                               color: AppColors.primarySurface,
                               child: const Icon(
                                 Icons.broken_image_outlined,
@@ -314,21 +319,21 @@ class _PoiPhotoFullscreenPageState extends State<_PoiPhotoFullscreenPage> {
                 minScale: 0.8,
                 maxScale: 4,
                 child: Center(
-                  child: Image.network(
-                    widget.photoUrls[index],
+                  // P2-073 — same cache key serves the gallery thumbnail and
+                  // the fullscreen view, so opening a photo is instant after
+                  // it has been seen once.
+                  child: CachedNetworkImage(
+                    imageUrl: widget.photoUrls[index],
                     fit: BoxFit.contain,
                     width: double.infinity,
                     height: double.infinity,
-                    loadingBuilder: (context, child, progress) {
-                      if (progress == null) return child;
-                      return const Center(
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        ),
-                      );
-                    },
-                    errorBuilder: (context, error, stackTrace) => const Icon(
+                    placeholder: (context, _) => const Center(
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      ),
+                    ),
+                    errorWidget: (context, _, _) => const Icon(
                       Icons.broken_image_outlined,
                       color: Colors.white54,
                       size: 48,

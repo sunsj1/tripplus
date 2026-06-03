@@ -3,6 +3,7 @@ import 'package:tripplus/core/domain/user_preferences.dart';
 import 'package:tripplus/core/domain/vehicle.dart';
 import 'package:tripplus/core/services/directions_service.dart';
 import 'package:tripplus/core/utils/polyline_decoder.dart';
+import 'package:tripplus/features/weather/domain/route_weather_segment.dart';
 
 /// Inputs for a single [AlertEngine.evaluate] pass.
 ///
@@ -20,6 +21,7 @@ class AlertEngineInput {
     this.evaluatedAt,
     this.upcomingWindowKm = defaultWindowKm,
     this.drivingDuration,
+    this.upcomingWeather = const [],
   });
 
   /// P2-001 — Default upcoming evaluation window (km).
@@ -52,6 +54,11 @@ class AlertEngineInput {
   /// already excluded). Null when not tracking a live trip. Consumed by the
   /// fatigue rule.
   final Duration? drivingDuration;
+
+  /// P2-005 — Per-segment weather along the route (pre-fetched by the
+  /// notifier). The weather rule scans this for the nearest hazardous
+  /// segment in the upcoming window.
+  final List<RouteWeatherSegment> upcomingWeather;
 
   List<Poi> poisFor(PoiCategory category) =>
       upcomingPois[category] ?? const <Poi>[];

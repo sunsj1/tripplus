@@ -45,6 +45,8 @@ class _PoiReportSheetState extends ConsumerState<_PoiReportSheet> {
   bool? _babyFriendly;
   bool? _womenSafe;
   bool? _hygienic;
+  // P2-043 — Road condition near the place. null = unanswered.
+  String? _roadCondition;
 
   @override
   void dispose() {
@@ -95,6 +97,8 @@ class _PoiReportSheetState extends ConsumerState<_PoiReportSheet> {
       babyFriendly: _babyFriendly,
       womenSafe: _womenSafe,
       hygienic: _hygienic,
+      // P2-043 — Road condition (if picked).
+      roadCondition: _roadCondition,
     );
 
     final result = await controller.submit(input);
@@ -253,6 +257,45 @@ class _PoiReportSheetState extends ConsumerState<_PoiReportSheet> {
                 value: _hygienic,
                 onChanged: (v) => setState(() => _hygienic = v),
               ),
+              const SizedBox(height: 14),
+              // P2-043 — Road condition near the place.
+              Text(
+                'Road near here',
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: AppColors.textPrimary,
+                  fontSize: 13,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Wrap(
+                spacing: 6,
+                children: [
+                  _RoadConditionChip(
+                    label: 'Smooth',
+                    value: 'good',
+                    selected: _roadCondition == 'good',
+                    color: AppColors.success,
+                    onTap: (v) => setState(
+                        () => _roadCondition = _roadCondition == v ? null : v),
+                  ),
+                  _RoadConditionChip(
+                    label: 'Rough',
+                    value: 'rough',
+                    selected: _roadCondition == 'rough',
+                    color: AppColors.warning,
+                    onTap: (v) => setState(
+                        () => _roadCondition = _roadCondition == v ? null : v),
+                  ),
+                  _RoadConditionChip(
+                    label: 'Construction',
+                    value: 'construction',
+                    selected: _roadCondition == 'construction',
+                    color: AppColors.error,
+                    onTap: (v) => setState(
+                        () => _roadCondition = _roadCondition == v ? null : v),
+                  ),
+                ],
+              ),
               const SizedBox(height: 24),
 
               // Submit
@@ -338,6 +381,51 @@ class _TriStateTag extends StatelessWidget {
           onTap: () => onChanged(value == false ? null : false),
         ),
       ],
+    );
+  }
+}
+
+/// P2-043 — Single-select chip for `good` / `rough` / `construction`. Tap the
+/// active chip again to deselect (mirrors `_TriStateTag` UX).
+class _RoadConditionChip extends StatelessWidget {
+  const _RoadConditionChip({
+    required this.label,
+    required this.value,
+    required this.selected,
+    required this.color,
+    required this.onTap,
+  });
+
+  final String label;
+  final String value;
+  final bool selected;
+  final Color color;
+  final ValueChanged<String> onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => onTap(value),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: selected ? color.withValues(alpha: 0.12) : Colors.transparent,
+          borderRadius: BorderRadius.circular(999),
+          border: Border.all(
+            color: selected ? color : AppColors.borderLight,
+            width: selected ? 1.4 : 1,
+          ),
+        ),
+        child: Text(
+          label,
+          style: AppTextStyles.bodySmall.copyWith(
+            color: selected ? color : AppColors.textSecondary,
+            fontWeight: FontWeight.w700,
+            fontSize: 12,
+          ),
+        ),
+      ),
     );
   }
 }

@@ -3,7 +3,7 @@
 > **Update this file** whenever a task materially changes the user-visible surface or the architecture.
 > AI agents read this first to avoid re-discovering what's already built.
 
-**Last updated:** 2026-06-02 (**Phase 2 Sessions 1–5** landed — alert engine v2, safety rules, personalized ranking, trust v2, mode-aware filters).
+**Last updated:** 2026-06-02 (**Phase 2 Sessions 1–8** landed — added Settings screen with per-alert mutes, richer trip history, one-tap re-plan).
 
 ---
 
@@ -17,7 +17,21 @@
 
 ---
 
-## Phase 2 progress (16/36 = 44%)
+## Phase 2 progress (24/36 = 67%)
+
+### Session 8 — Trip lifecycle & settings (2026-06-02)
+- ✅ `P2-053` — `settings/` slice: `AppSettings` (units, alerts master, per-`AlertType` mute list, system-notification toggle) persisted to Hive `app_settings`. `SettingsScreen` mounted via new Profile menu tile. `AlertNotifierController` skips muted alerts and respects the system-notification preference.
+- ✅ `P2-050` — Trip history gets sort chips (Newest / Longest / Farthest), tappable cards, and a per-trip detail screen with a 2-column stat grid.
+- ✅ `P2-051` — `tripReplanRequestProvider` + "Plan this trip again" CTA. Plan screen consumes the request on rebuild and pre-fills From/To.
+
+### Session 7 — Tolls & road condition (2026-06-02)
+- ✅ `P2-042` — `tolls/` slice with `kTollCorridors` (7 expressways) + `TollEstimator` that matches the route polyline to a known corridor (≥ 50% waypoint hits). `PlanResult.tollCorridorName` surfaced beneath the dashboard as "Via {Corridor Name}".
+- ✅ `P2-043` — Community pulses gain `roadCondition` (good/rough/construction). `RoadConditionAggregation` + `RoadConditionChip` show "Rough road" / "Road work" advisory on POI tiles when ≥ 2 recent reports converge.
+
+### Session 6 — Weather & traffic (2026-06-02)
+- ✅ `P2-040` — `weather/` slice with `OpenMeteoWeatherService`, `routeWeatherProvider`, and `RouteWeatherStrip` mounted on the plan result.
+- ✅ `P2-041` — `RouteInfo.durationInTrafficMinutes` from Directions `departure_time=now`; `PlanController` switches ETA + traffic level to use live data when present.
+- ✅ `P2-005` — `WeatherRule` registered; `AlertNotifierController` pre-fetches per-trip weather with 20-min cache and forwards via `AlertEngineInput.upcomingWeather`.
 
 ### Session 5 — Mode-aware filters (2026-06-02)
 - ✅ `P2-023` — Community pulses gain `babyFriendly` / `womenSafe` / `hygienic` nullable tags (schema, DTO, tri-state UI in POI report sheet). `CommunityTagAggregation` derives qualification with ≥ 2 answers and ≥ 50% yes.

@@ -91,38 +91,38 @@ driver's GPS position (`PoiQuerySource.aheadOnRoute`).
 
 ---
 
-## ⬜ Session 6 — Weather & traffic on the trip
+## ✅ Session 6 — Weather & traffic on the trip
 
 **Theme.** Open-Meteo on timeline + traffic-aware ETA.
 
 | ID | Task | Est | Depends on |
 |---|---|---|---|
-| `P2-040` | Weather via Open-Meteo per segment | 1 d | `P1-020` ✅ |
-| `P2-041` | Traffic-aware ETA (Google Routes) | 1 d | `P1-018` ✅ |
-| `P2-005` | Weather alert rule on upcoming segment | 6 h | `P2-040`, `P2-001` |
+| `P2-040` ✅ | Weather via Open-Meteo per segment | 1 d | `P1-020` ✅ |
+| `P2-041` ✅ | Traffic-aware ETA (Google Directions w/ departure_time=now) | 1 d | `P1-018` ✅ |
+| `P2-005` ✅ | Weather alert rule on upcoming segment | 6 h | `P2-040`, `P2-001` |
 
 ---
 
-## ⬜ Session 7 — Tolls & road condition
+## ✅ Session 7 — Tolls & road condition
 
 **Theme.** Richer cost picture + community road-condition hints.
 
 | ID | Task | Est | Depends on |
 |---|---|---|---|
-| `P2-042` | Toll estimation v1 (static corridor dataset) | 2 d | `P1-018` ✅ |
-| `P2-043` | Road-condition tags from community pulses | 6 h | `P2-030` |
+| `P2-042` ✅ | Toll estimation v1 (static corridor dataset) | 2 d | `P1-018` ✅ |
+| `P2-043` ✅ | Road-condition tags from community pulses | 6 h | `P2-030` |
 
 ---
 
-## ⬜ Session 8 — Trip lifecycle & settings
+## ✅ Session 8 — Trip lifecycle & settings
 
 **Theme.** History, settings, one-tap re-plan.
 
 | ID | Task | Est | Depends on |
 |---|---|---|---|
-| `P2-053` | Settings — units, vehicle, notification prefs | 1 d | `P1-033` ✅, `P1-028` ✅ |
-| `P2-050` | Trip history list screen | 1 d | `P1-041` ✅ |
-| `P2-051` | Save & reuse trip (one-tap re-plan) | 4 h | `P2-050` |
+| `P2-053` ✅ | Settings — units, vehicle, notification prefs | 1 d | `P1-033` ✅, `P1-028` ✅ |
+| `P2-050` ✅ | Trip history list screen | 1 d | `P1-041` ✅ |
+| `P2-051` ✅ | Save & reuse trip (one-tap re-plan) | 4 h | `P2-050` |
 
 ---
 
@@ -199,15 +199,15 @@ completion checklist.
 | 3 | 3 | ✅ |
 | 4 | 3 | ✅ |
 | 5 | 4 | ✅ |
-| 6 | 3 | ⬜ |
-| 7 | 2 | ⬜ |
-| 8 | 3 | ⬜ |
+| 6 | 3 | ✅ |
+| 7 | 2 | ✅ |
+| 8 | 3 | ✅ |
 | 9 | 2 | ⬜ |
 | 10 | 3 | ⬜ |
 | 11 | 3 | ⬜ |
 | 12 | 3 | ⬜ |
 | 13 | verify | ⬜ |
-| **Total** | **36** | **16 / 36 = 44 %** |
+| **Total** | **36** | **24 / 36 = 67 %** |
 
 ---
 

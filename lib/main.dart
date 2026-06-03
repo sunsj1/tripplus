@@ -11,6 +11,7 @@ import 'package:tripplus/core/theme/app_theme.dart';
 import 'package:tripplus/features/auth/presentation/view/auth_gate.dart';
 import 'package:tripplus/features/community/data/community_submit_queue.dart';
 import 'package:tripplus/features/profile/data/local_db/profile_box.dart';
+import 'package:tripplus/features/settings/data/local_db/settings_box.dart';
 import 'package:tripplus/core/services/local_notification_service.dart';
 import 'package:tripplus/features/trip/data/local_db/corridor_cache_box.dart';
 import 'package:tripplus/features/trip/data/local_db/trip_box.dart';
@@ -58,6 +59,7 @@ void main() async {
   await Hive.openBox<dynamic>(TripBox.boxName);          // P1-040 active_trip box
   await Hive.openBox<dynamic>(TripHistoryBox.boxName);
   await Hive.openBox<dynamic>(CorridorCacheBox.boxName); // P1-043 corridor_cache box
+  await Hive.openBox<dynamic>(SettingsBox.boxName);      // P2-053 app_settings box
 
   // P1-027 — local notifications for predictive alerts (delivery in P1-028).
   final notifications = LocalNotificationService();

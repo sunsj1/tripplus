@@ -6,6 +6,7 @@ import 'package:tripplus/core/theme/app_colors.dart';
 import 'package:tripplus/core/theme/app_text_styles.dart';
 import 'package:tripplus/core/utils/failure.dart';
 import 'package:tripplus/features/community/presentation/widgets/poi_community_rating_pulse.dart';
+import 'package:tripplus/features/community/presentation/widgets/road_condition_chip.dart';
 import 'package:tripplus/features/personalization/domain/mode_filter.dart';
 import 'package:tripplus/features/personalization/domain/route_mode.dart';
 import 'package:tripplus/features/personalization/presentation/controller/personalization_providers.dart';
@@ -586,7 +587,14 @@ class _ListState extends ConsumerState<_List> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       PoiCommunityRatingPulse(poi: poi),
-                      PoiModeBadges(poi: poi),
+                      Wrap(
+                        spacing: 6,
+                        runSpacing: 4,
+                        children: [
+                          PoiModeBadges(poi: poi),
+                          RoadConditionChip(poi: poi), // P2-043
+                        ],
+                      ),
                     ],
                   ),
                   onTap: () => showPoiDetailSheet(context, poi),

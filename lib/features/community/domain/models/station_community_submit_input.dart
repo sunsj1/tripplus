@@ -30,5 +30,8 @@ class StationCommunitySubmitInput with _$StationCommunitySubmitInput {
     bool? babyFriendly,
     bool? womenSafe,
     bool? hygienic,
+    /// P2-043 — Road condition near this POI: `good` / `rough` /
+    /// `construction`. Null = unanswered. Aggregated into a per-POI hint chip.
+    String? roadCondition,
   }) = _StationCommunitySubmitInput;
 }

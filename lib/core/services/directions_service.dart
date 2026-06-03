@@ -10,6 +10,12 @@ class RouteInfo {
   final LatLng destination;
   final double distanceKm;
   final int durationMinutes;
+
+  /// P2-041 — Live traffic-adjusted duration (minutes). Returned by Google
+  /// Directions when `departure_time=now` is supplied; null on the
+  /// straight-line fallback or when the response omits it.
+  final int? durationInTrafficMinutes;
+
   final List<LatLng> polylinePoints;
 
   /// Google-encoded overview polyline when sourced from Directions API.
@@ -22,7 +28,21 @@ class RouteInfo {
     required this.durationMinutes,
     required this.polylinePoints,
     this.encodedPolyline,
+    this.durationInTrafficMinutes,
   });
+
+  /// P2-041 — Best available duration: traffic-aware when present, else the
+  /// free-flow estimate. Callers can derive ETA without caring about source.
+  int get effectiveDurationMinutes =>
+      durationInTrafficMinutes ?? durationMinutes;
+
+  /// Extra minutes lost to traffic (≥ 0). Zero when no live data.
+  int get trafficDelayMinutes {
+    final live = durationInTrafficMinutes;
+    if (live == null) return 0;
+    final delta = live - durationMinutes;
+    return delta > 0 ? delta : 0;
+  }
 }
 
 class DirectionsService {
@@ -54,6 +74,11 @@ class DirectionsService {
         'origin': '${origin.latitude},${origin.longitude}',
         'destination': '${destination.latitude},${destination.longitude}',
         'mode': 'driving',
+        // P2-041 — Adding these two unlocks `duration_in_traffic` in the
+        // response (free for Directions API "Now" calls; requires the Maps
+        // billing key already in use).
+        'departure_time': 'now',
+        'traffic_model': 'best_guess',
         'key': ApiConstants.googleMapsApiKey,
       },
     );
@@ -73,6 +98,10 @@ class DirectionsService {
     final leg = (route['legs'] as List)[0] as Map<String, dynamic>;
     final distanceMeters = leg['distance']['value'] as int;
     final durationSeconds = leg['duration']['value'] as int;
+    // P2-041 — Live traffic duration when present.
+    final trafficValue =
+        (leg['duration_in_traffic'] as Map<String, dynamic>?)?['value']
+            as int?;
     final encodedPolyline =
         route['overview_polyline']['points'] as String;
 
@@ -81,7 +110,8 @@ class DirectionsService {
 
     _logger.i(
       'Route: ${distanceKm.round()} km, '
-      '${(durationSeconds / 60).round()} min, '
+      '${(durationSeconds / 60).round()} min'
+      '${trafficValue != null ? " (traffic ${(trafficValue / 60).round()}m)" : ""}, '
       '${polylinePoints.length} polyline points',
     );
 
@@ -90,6 +120,8 @@ class DirectionsService {
       destination: destination,
       distanceKm: distanceKm,
       durationMinutes: (durationSeconds / 60).round(),
+      durationInTrafficMinutes:
+          trafficValue != null ? (trafficValue / 60).round() : null,
       polylinePoints: polylinePoints,
       encodedPolyline: encodedPolyline,
     );

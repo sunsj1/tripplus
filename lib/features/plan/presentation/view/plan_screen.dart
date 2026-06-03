@@ -15,6 +15,7 @@ import 'package:tripplus/features/plan/presentation/view/plan_result_view.dart';
 import 'package:tripplus/core/utils/trip_plan_copy.dart';
 import 'package:tripplus/features/plan/presentation/widget/route_input_card.dart';
 import 'package:tripplus/features/profile/presentation/controller/profile_providers.dart';
+import 'package:tripplus/features/trip/presentation/controller/trip_replan_provider.dart';
 
 class PlanScreen extends ConsumerStatefulWidget {
   const PlanScreen({super.key});
@@ -119,6 +120,15 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
   Widget build(BuildContext context) {
     final planState = ref.watch(planControllerProvider);
 
+    // P2-051 — Re-plan request from Trip history. Consume-and-clear pattern
+    // so reopening the Plan tab doesn't keep re-applying the same values.
+    ref.listen<TripReplanRequest?>(tripReplanRequestProvider, (_, next) {
+      if (next == null) return;
+      _fromController.text = next.from;
+      _toController.text = next.to;
+      ref.read(tripReplanRequestProvider.notifier).state = null;
+    });
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -146,6 +156,7 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
             :final weatherTag,
             :final trafficLevel,
             :final encodedRoutePolyline,
+            :final tollCorridorName,
           ) =>
             PlanResultView(
               from: from,
@@ -164,6 +175,7 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
               weatherTag: weatherTag,
               trafficLevel: trafficLevel,
               encodedRoutePolyline: encodedRoutePolyline,
+              tollCorridorName: tollCorridorName,
             ),
           PlanEmpty() => EmptyStateScreen(onSearchAgain: _onReset),
           PlanError(:final message) => _buildErrorView(message),

@@ -41,6 +41,10 @@ mixin _$StationCommunitySubmitInput {
   bool? get womenSafe => throw _privateConstructorUsedError;
   bool? get hygienic => throw _privateConstructorUsedError;
 
+  /// P2-043 — Road condition near this POI: `good` / `rough` /
+  /// `construction`. Null = unanswered. Aggregated into a per-POI hint chip.
+  String? get roadCondition => throw _privateConstructorUsedError;
+
   /// Create a copy of StationCommunitySubmitInput
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -80,6 +84,7 @@ abstract class $StationCommunitySubmitInputCopyWith<$Res> {
     bool? babyFriendly,
     bool? womenSafe,
     bool? hygienic,
+    String? roadCondition,
   });
 }
 
@@ -121,6 +126,7 @@ class _$StationCommunitySubmitInputCopyWithImpl<
     Object? babyFriendly = freezed,
     Object? womenSafe = freezed,
     Object? hygienic = freezed,
+    Object? roadCondition = freezed,
   }) {
     return _then(
       _value.copyWith(
@@ -204,6 +210,10 @@ class _$StationCommunitySubmitInputCopyWithImpl<
                 ? _value.hygienic
                 : hygienic // ignore: cast_nullable_to_non_nullable
                       as bool?,
+            roadCondition: freezed == roadCondition
+                ? _value.roadCondition
+                : roadCondition // ignore: cast_nullable_to_non_nullable
+                      as String?,
           )
           as $Val,
     );
@@ -240,6 +250,7 @@ abstract class _$$StationCommunitySubmitInputImplCopyWith<$Res>
     bool? babyFriendly,
     bool? womenSafe,
     bool? hygienic,
+    String? roadCondition,
   });
 }
 
@@ -281,6 +292,7 @@ class __$$StationCommunitySubmitInputImplCopyWithImpl<$Res>
     Object? babyFriendly = freezed,
     Object? womenSafe = freezed,
     Object? hygienic = freezed,
+    Object? roadCondition = freezed,
   }) {
     return _then(
       _$StationCommunitySubmitInputImpl(
@@ -364,6 +376,10 @@ class __$$StationCommunitySubmitInputImplCopyWithImpl<$Res>
             ? _value.hygienic
             : hygienic // ignore: cast_nullable_to_non_nullable
                   as bool?,
+        roadCondition: freezed == roadCondition
+            ? _value.roadCondition
+            : roadCondition // ignore: cast_nullable_to_non_nullable
+                  as String?,
       ),
     );
   }
@@ -394,6 +410,7 @@ class _$StationCommunitySubmitInputImpl
     this.babyFriendly,
     this.womenSafe,
     this.hygienic,
+    this.roadCondition,
   }) : _availableAmenityLabels = availableAmenityLabels;
 
   @override
@@ -450,9 +467,14 @@ class _$StationCommunitySubmitInputImpl
   @override
   final bool? hygienic;
 
+  /// P2-043 — Road condition near this POI: `good` / `rough` /
+  /// `construction`. Null = unanswered. Aggregated into a per-POI hint chip.
+  @override
+  final String? roadCondition;
+
   @override
   String toString() {
-    return 'StationCommunitySubmitInput(stationKey: $stationKey, stationNameSnapshot: $stationNameSnapshot, reporterUserId: $reporterUserId, reporterDisplayName: $reporterDisplayName, rating: $rating, condition: $condition, availableAmenityLabels: $availableAmenityLabels, washroomAvailable: $washroomAvailable, washroomClean: $washroomClean, womenFriendlyWashroom: $womenFriendlyWashroom, photoBase64: $photoBase64, comment: $comment, costPerKwh: $costPerKwh, fastChargerAvailable: $fastChargerAvailable, chargeSuccessful: $chargeSuccessful, targetType: $targetType, targetKey: $targetKey, babyFriendly: $babyFriendly, womenSafe: $womenSafe, hygienic: $hygienic)';
+    return 'StationCommunitySubmitInput(stationKey: $stationKey, stationNameSnapshot: $stationNameSnapshot, reporterUserId: $reporterUserId, reporterDisplayName: $reporterDisplayName, rating: $rating, condition: $condition, availableAmenityLabels: $availableAmenityLabels, washroomAvailable: $washroomAvailable, washroomClean: $washroomClean, womenFriendlyWashroom: $womenFriendlyWashroom, photoBase64: $photoBase64, comment: $comment, costPerKwh: $costPerKwh, fastChargerAvailable: $fastChargerAvailable, chargeSuccessful: $chargeSuccessful, targetType: $targetType, targetKey: $targetKey, babyFriendly: $babyFriendly, womenSafe: $womenSafe, hygienic: $hygienic, roadCondition: $roadCondition)';
   }
 
   @override
@@ -499,7 +521,9 @@ class _$StationCommunitySubmitInputImpl
             (identical(other.womenSafe, womenSafe) ||
                 other.womenSafe == womenSafe) &&
             (identical(other.hygienic, hygienic) ||
-                other.hygienic == hygienic));
+                other.hygienic == hygienic) &&
+            (identical(other.roadCondition, roadCondition) ||
+                other.roadCondition == roadCondition));
   }
 
   @override
@@ -525,6 +549,7 @@ class _$StationCommunitySubmitInputImpl
     babyFriendly,
     womenSafe,
     hygienic,
+    roadCondition,
   ]);
 
   /// Create a copy of StationCommunitySubmitInput
@@ -562,6 +587,7 @@ abstract class _StationCommunitySubmitInput
     final bool? babyFriendly,
     final bool? womenSafe,
     final bool? hygienic,
+    final String? roadCondition,
   }) = _$StationCommunitySubmitInputImpl;
 
   @override
@@ -606,6 +632,11 @@ abstract class _StationCommunitySubmitInput
   bool? get womenSafe;
   @override
   bool? get hygienic;
+
+  /// P2-043 — Road condition near this POI: `good` / `rough` /
+  /// `construction`. Null = unanswered. Aggregated into a per-POI hint chip.
+  @override
+  String? get roadCondition;
 
   /// Create a copy of StationCommunitySubmitInput
   /// with the given fields replaced by the non-null parameter values.

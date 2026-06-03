@@ -43,6 +43,8 @@ class StationCommunityReport with _$StationCommunityReport {
     bool? babyFriendly,
     bool? womenSafe,
     bool? hygienic,
+    /// P2-043 — Road condition near this POI: `good` / `rough` / `construction`.
+    String? roadCondition,
   }) = _StationCommunityReport;
 
   /// Generic identity. Old reports written before `P1-050` only have

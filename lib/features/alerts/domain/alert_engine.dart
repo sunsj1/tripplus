@@ -9,6 +9,7 @@ import 'package:tripplus/features/alerts/domain/rules/food_window_rule.dart';
 import 'package:tripplus/features/alerts/domain/rules/fuel_low_rule.dart';
 import 'package:tripplus/features/alerts/domain/rules/ghat_rule.dart';
 import 'package:tripplus/features/alerts/domain/rules/night_rule.dart';
+import 'package:tripplus/features/alerts/domain/rules/weather_rule.dart';
 
 /// Pure-Dart rule evaluator for predictive corridor alerts.
 ///
@@ -26,6 +27,7 @@ class AlertEngine {
               GhatRule(),     // P2-002
               NightRule(),    // P2-003
               FatigueRule(),  // P2-004
+              WeatherRule(),  // P2-005
             ];
 
   final List<AlertRule> _rules;
@@ -63,6 +65,7 @@ class AlertEngine {
       evaluatedAt: evaluatedAt,
       upcomingWindowKm: input.upcomingWindowKm,
       drivingDuration: input.drivingDuration,
+      upcomingWeather: input.upcomingWeather,
     );
 
     final byType = <AlertType, Alert>{};

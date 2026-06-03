@@ -14,6 +14,7 @@ import 'package:tripplus/features/plan/presentation/widget/smart_trip_timeline.d
 import 'package:tripplus/features/plan/presentation/widget/stat_card.dart';
 import 'package:tripplus/features/profile/presentation/controller/profile_providers.dart';
 import 'package:tripplus/features/stations/presentation/view/station_detail_screen.dart';
+import 'package:tripplus/features/weather/presentation/widget/route_weather_strip.dart';
 import 'package:tripplus/features/stations/presentation/widget/station_list_tile.dart';
 import 'package:tripplus/features/shell/presentation/controller/shell_providers.dart';
 import 'package:tripplus/features/trip/presentation/controller/trip_providers.dart';
@@ -35,6 +36,7 @@ PlanResult _toPlanResult(PlanResultView v) => PlanResult(
       weatherTag: v.weatherTag,
       trafficLevel: v.trafficLevel,
       encodedRoutePolyline: v.encodedRoutePolyline,
+      tollCorridorName: v.tollCorridorName,
     );
 
 class PlanResultView extends ConsumerWidget {
@@ -56,6 +58,8 @@ class PlanResultView extends ConsumerWidget {
   final String? weatherTag;
   final String? trafficLevel;
   final String? encodedRoutePolyline;
+  /// P2-042 — Matched toll corridor name; null on flat fallback.
+  final String? tollCorridorName;
 
   bool get _isEv => TripPlanCopy.isEv(vehicleType);
 
@@ -77,6 +81,7 @@ class PlanResultView extends ConsumerWidget {
     this.weatherTag,
     this.trafficLevel,
     this.encodedRoutePolyline,
+    this.tollCorridorName,
   });
 
   ChargingStation? get _nearestStation {
@@ -122,7 +127,37 @@ class PlanResultView extends ConsumerWidget {
                 isCharging: chargingEstimate != null,
                 trafficLevel: trafficLevel,
               ),
-              const SizedBox(height: 16),
+              // P2-042 — Corridor name beneath the stat row when matched.
+              if (tollCorridorName != null) ...[
+                const SizedBox(height: 6),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.toll_outlined,
+                          size: 12, color: AppColors.textTertiary),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          'Via $tollCorridorName',
+                          style: AppTextStyles.bodySmall.copyWith(
+                            fontSize: 10.5,
+                            color: AppColors.textTertiary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+              const SizedBox(height: 18),
+
+              // P2-040 — Per-segment weather strip from Open-Meteo.
+              RouteWeatherStrip(plan: plan),
+              const SizedBox(height: 18),
 
               RouteTripActions(
                 from: from,

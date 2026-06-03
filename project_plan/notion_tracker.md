@@ -100,7 +100,7 @@
 - [x] `P2-002` Ghat / Risk alert
 - [x] `P2-003` Night alert
 - [x] `P2-004` Fatigue alert
-- [ ] `P2-005` Weather alerts
+- [x] `P2-005` Weather alerts
 - [x] `P2-006` Alert deduplication + cooldown
 - [x] `P2-007` Alert priorities + presentation
 
@@ -123,16 +123,16 @@
 - [ ] `P2-033` "Why we recommend this" explainer
 
 ### 2.5 Environmental integrations
-- [ ] `P2-040` Weather (Open-Meteo) per segment
-- [ ] `P2-041` Traffic-aware ETA
-- [ ] `P2-042` Toll estimation v1
-- [ ] `P2-043` Road-condition tag aggregation
+- [x] `P2-040` Weather (Open-Meteo) per segment
+- [x] `P2-041` Traffic-aware ETA
+- [x] `P2-042` Toll estimation v1
+- [x] `P2-043` Road-condition tag aggregation
 
 ### 2.6 Trip lifecycle
-- [ ] `P2-050` Trip history list
-- [ ] `P2-051` Save & reuse trip
+- [x] `P2-050` Trip history list
+- [x] `P2-051` Save & reuse trip
 - [ ] `P2-052` Share trip
-- [ ] `P2-053` Settings screen
+- [x] `P2-053` Settings screen
 
 ### 2.7 Hidden gems v1 (curated)
 - [ ] `P2-060` Curation dataset
@@ -234,7 +234,7 @@
 | Phase | Total Tasks | Done | % |
 |---|---|---|---|
 | Phase 1 — MVP | 50 | 50 | 100% |
-| Phase 2 — Intelligence | 36 | 16 | 44% |
+| Phase 2 — Intelligence | 36 | 24 | 67% |
 | Phase 3 — AI Copilot | 30 | 0 | 0% |
 | Phase 4 — Scale | 18 | 0 | 0% |
 | **Total** | **134** | **0** | **0%** |

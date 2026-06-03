@@ -5,12 +5,13 @@ import 'package:tripplus/core/domain/vehicle.dart';
 import 'package:tripplus/core/services/route_station_service.dart';
 import 'package:tripplus/core/utils/trip_plan_copy.dart';
 import 'package:tripplus/features/plan/presentation/controller/plan_state.dart';
+import 'package:tripplus/features/tolls/domain/toll_estimator.dart';
 
 // Petrol/diesel price per litre (₹) — rough Indian highway average.
 const _petrolPricePerLitre = 103.0;
 const _dieselPricePerLitre = 90.0;
-// Toll cost per km on national highways (₹).
-const _tollPerKm = 1.5;
+// P2-042 — Toll cost is now derived from the matched corridor in [TollEstimator],
+// with a flat ₹1.5/km fallback baked into the estimator itself.
 // Charging cost per stop (₹) — rough mid-range DC fast-charge estimate.
 const _chargingCostPerStop = 250.0;
 // Time added per charging stop for an EV (minutes).
@@ -52,6 +53,8 @@ class PlanController extends StateNotifier<PlanState> {
         } else {
           final distKm = analysis.route.distanceKm;
           final driveMins = analysis.route.durationMinutes;
+          // P2-041 — Prefer the live traffic duration when Directions returned one.
+          final driveMinsForEta = analysis.route.effectiveDurationMinutes;
           final stationCount = analysis.stations.length;
 
           // --- P1-018: compute estimates -----------------------------------------
@@ -61,10 +64,19 @@ class PlanController extends StateNotifier<PlanState> {
           final stopMins = isEv
               ? stationCount * _chargingMinutesPerStop
               : _fuelStopMinutes; // one fuel stop assumed for ICE
-          final etaMins = driveMins + stopMins;
+          final etaMins = driveMinsForEta + stopMins;
 
-          // Toll (₹) — not applicable for bikes
-          final tollsEst = isBike ? null : distKm * _tollPerKm;
+          // P2-042 — Toll (₹) via corridor match with flat fallback.
+          double? tollsEst;
+          String? tollCorridorName;
+          if (!isBike) {
+            final tollResult = const TollEstimator().estimate(
+              polylinePoints: analysis.route.polylinePoints,
+              totalDistanceKm: distKm,
+            );
+            tollsEst = tollResult.totalRupees;
+            tollCorridorName = tollResult.matchedCorridor;
+          }
 
           // Fuel cost (₹) — only for ICE vehicles
           double? fuelEst;
@@ -80,12 +92,20 @@ class PlanController extends StateNotifier<PlanState> {
           final chargingEst =
               isEv ? stationCount * _chargingCostPerStop : null;
 
-          // Traffic level derived from duration vs. theoretical 80 km/h speed
-          final theoreticalMins = (distKm / 80.0) * 60;
-          final ratio = driveMins / theoreticalMins;
-          final trafficLevel = ratio >= 1.5
+          // P2-041 — Traffic level prefers the live free-flow vs. traffic
+          // duration ratio when available (most accurate). Falls back to the
+          // legacy theoretical-80 km/h ratio when traffic data isn't returned.
+          final liveTrafficMins = analysis.route.durationInTrafficMinutes;
+          double ratio;
+          if (liveTrafficMins != null && driveMins > 0) {
+            ratio = liveTrafficMins / driveMins;
+          } else {
+            final theoreticalMins = (distKm / 80.0) * 60;
+            ratio = driveMins / theoreticalMins;
+          }
+          final trafficLevel = ratio >= 1.4
               ? 'High'
-              : ratio >= 1.2
+              : ratio >= 1.15
                   ? 'Moderate'
                   : 'Low';
           // -----------------------------------------------------------------------
@@ -105,6 +125,7 @@ class PlanController extends StateNotifier<PlanState> {
             chargingEstimate: chargingEst,
             trafficLevel: trafficLevel,
             encodedRoutePolyline: analysis.route.encodedPolyline,
+            tollCorridorName: tollCorridorName, // P2-042
           );
         }
       },

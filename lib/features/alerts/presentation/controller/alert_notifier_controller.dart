@@ -13,10 +13,14 @@ import 'package:tripplus/features/alerts/presentation/controller/alerts_provider
 import 'package:tripplus/features/plan/presentation/controller/plan_providers.dart';
 import 'package:tripplus/features/pois/presentation/controller/pois_providers.dart';
 import 'package:tripplus/features/profile/presentation/controller/profile_providers.dart';
+import 'package:tripplus/features/settings/domain/app_settings.dart';
+import 'package:tripplus/features/settings/presentation/controller/settings_controller.dart';
 import 'package:tripplus/features/trip/data/local_db/corridor_cache_box.dart';
 import 'package:tripplus/features/trip/domain/models/trip.dart';
 import 'package:tripplus/features/trip/presentation/controller/active_trip_state.dart';
 import 'package:tripplus/features/trip/presentation/controller/trip_providers.dart';
+import 'package:tripplus/features/weather/domain/route_weather_segment.dart';
+import 'package:tripplus/features/weather/presentation/controller/weather_providers.dart';
 
 /// Polls location + [AlertEngine] while a trip is active; fires local
 /// notifications and drives the in-app banner.
@@ -35,6 +39,9 @@ class AlertNotifierController extends StateNotifier<AlertNotifierState> {
   Timer? _pollTimer;
   RouteInfo? _route;
   Map<PoiCategory, List<Poi>>? _pois;
+  /// P2-005 — Per-segment weather, fetched once per trip.
+  List<RouteWeatherSegment>? _weather;
+  DateTime? _weatherFetchedAt;
   bool _evaluating = false;
 
   /// P2-006 — Tracks when each [AlertType] last fired in this session.
@@ -44,6 +51,8 @@ class AlertNotifierController extends StateNotifier<AlertNotifierState> {
     if (tripState is ActiveTripIdle || tripState is ActiveTripCompleted) {
       _route = null;
       _pois = null;
+      _weather = null;
+      _weatherFetchedAt = null;
       _lastFiredAt.clear(); // P2-006 — reset cooldowns for next trip
       state = const AlertNotifierState();
     }
@@ -94,6 +103,7 @@ class AlertNotifierController extends StateNotifier<AlertNotifierState> {
       if (route == null) return;
 
       final pois = await _ensurePois(trip, route);
+      final weather = await _ensureWeather(trip, route);
       final profile = _ref.read(profileControllerProvider).data;
 
       final engine = _ref.read(alertEngineProvider);
@@ -106,36 +116,44 @@ class AlertNotifierController extends StateNotifier<AlertNotifierState> {
           upcomingPois: pois,
           // P2-004 — continuous driving time (paused time already excluded).
           drivingDuration: trip.elapsed,
+          // P2-005 — pre-fetched weather along the corridor.
+          upcomingWeather: weather,
         ),
       );
 
+      final settings = _ref.read(settingsControllerProvider);
       final now = DateTime.now();
       for (final alert in alerts) {
+        // P2-053 — Honour user mute settings (master switch + per-type).
+        if (settings.isMuted(alert.type)) continue;
         // P2-006 — Cooldown: skip if the same type fired within [_cooldown].
         final lastFired = _lastFiredAt[alert.type];
         if (lastFired != null && now.difference(lastFired) < _cooldown) {
           continue;
         }
-        await _deliver(alert, trip);
+        await _deliver(alert, trip, settings);
       }
     } finally {
       _evaluating = false;
     }
   }
 
-  Future<void> _deliver(Alert alert, Trip trip) async {
+  Future<void> _deliver(Alert alert, Trip trip, AppSettings settings) async {
     // P2-006 — Record cooldown timestamp before any async work so a rapid
     // second evaluation can't slip through before the await resolves.
     _lastFiredAt[alert.type] = DateTime.now();
 
     await _ref.read(activeTripControllerProvider.notifier).recordFiredAlert(alert);
 
-    final notifications = _ref.read(localNotificationServiceProvider);
-    await notifications.showTripAlert(
-      notificationId: alert.type.index,
-      title: alert.type.label,
-      body: alert.message,
-    );
+    // P2-053 — Skip system notifications when the user disabled them.
+    if (settings.systemNotificationsEnabled) {
+      final notifications = _ref.read(localNotificationServiceProvider);
+      await notifications.showTripAlert(
+        notificationId: alert.type.index,
+        title: alert.type.label,
+        body: alert.message,
+      );
+    }
 
     AppTelemetry.alertFired(type: alert.type, severity: alert.severity);
 
@@ -202,6 +220,36 @@ class AlertNotifierController extends StateNotifier<AlertNotifierState> {
 
     _pois = map;
     return map;
+  }
+
+  /// P2-005 — Fetch weather samples along the corridor. Cache for [_weatherTtl]
+  /// so polling doesn't hammer Open-Meteo every 30 seconds.
+  static const _weatherTtl = Duration(minutes: 20);
+
+  Future<List<RouteWeatherSegment>> _ensureWeather(
+    Trip trip,
+    RouteInfo route,
+  ) async {
+    final cached = _weather;
+    final cachedAt = _weatherFetchedAt;
+    if (cached != null &&
+        cachedAt != null &&
+        DateTime.now().difference(cachedAt) < _weatherTtl) {
+      return cached;
+    }
+
+    try {
+      final service = _ref.read(openMeteoWeatherServiceProvider);
+      final fresh = await service.sampleAlongRoute(
+        polylinePoints: route.polylinePoints,
+        totalDistanceKm: trip.totalDistanceKm,
+      );
+      _weather = fresh;
+      _weatherFetchedAt = DateTime.now();
+      return fresh;
+    } catch (_) {
+      return const [];
+    }
   }
 
   @override

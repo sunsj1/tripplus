@@ -47,7 +47,12 @@
   - `domain/alert_engine.dart` — pure-Dart evaluator; **P2-001** pre-filters `upcomingPois` to `upcomingWindowKm` (100 km) ahead before rules run; dedupes by type (`P1-023`, `P2-001`).
   - `domain/alert_engine_input.dart` — `(route, location, vehicle, prefs, upcomingPois, upcomingWindowKm)` (`P1-023`, `P2-001`).
   - `domain/alert_route_utils.dart` — polyline projection + gap helpers; **`poisInWindow(pois, currentKm, windowKm)`** (`P1-023`, `P2-001`).
-  - `domain/rules/` — `fuel_low_rule.dart` (`P1-024`), `ev_gap_rule.dart` (`P1-025`), `food_window_rule.dart` (`P1-026`), **`ghat_rule.dart`** (`P2-002`), **`night_rule.dart`** (`P2-003`), **`fatigue_rule.dart`** (`P2-004`). Rules see pre-windowed POIs — no per-rule window logic needed.
+  - `domain/rules/` — `fuel_low_rule.dart` (`P1-024`), `ev_gap_rule.dart` (`P1-025`), `food_window_rule.dart` (`P1-026`), **`ghat_rule.dart`** (`P2-002`), **`night_rule.dart`** (`P2-003`), **`fatigue_rule.dart`** (`P2-004`), **`weather_rule.dart`** (`P2-005`). Rules see pre-windowed POIs + pre-fetched weather — no per-rule window logic needed.
+- `weather/` (P2 Session 6)
+  - `domain/route_weather_segment.dart` — plain Dart `RouteWeatherSegment` (label, distanceAlongRouteKm, temperatureC, weatherCode, precipitationMm, windKph) + `conditionLabel` / `isDrivingHazard` getters (`P2-040`).
+  - `data/open_meteo_weather_service.dart` — `OpenMeteoWeatherService.sampleAlongRoute()`, free no-key endpoint, up to 4 samples (`P2-040`).
+  - `presentation/controller/weather_providers.dart` — `openMeteoWeatherServiceProvider`, `routeWeatherProvider = FutureProvider.autoDispose.family<…, PlanResult>` (`P2-040`).
+  - `presentation/widget/route_weather_strip.dart` — horizontal weather cards mounted on `PlanResultView` (`P2-040`).
   - `domain/ghat_dataset.dart` — `GhatSection` + `kGhatSections` (14 curated Indian ghats) (`P2-002`).
   - `presentation/controller/alerts_providers.dart` — `alertEngineProvider`, `localNotificationServiceProvider`, `alertNotifierProvider` (`P1-028`).
   - `presentation/controller/alert_notifier_controller.dart` — polls every 30s while trip active; **P2-006** per-type 20-min cooldown via `_lastFiredAt` map (replaces permanent dedup) (`P1-028`, `P2-006`).
@@ -80,11 +85,22 @@
   - `presentation/controller/route_mode_provider.dart` — `routeModeProvider` (StateProvider, default `off`) (`P2-020/021/022`).
   - `presentation/widget/route_mode_bar.dart` — horizontal mode chip strip mounted above POI lists (`P2-020/021/022`).
   - `presentation/widget/mode_badges.dart` — `PoiModeBadges` watches community state per POI to surface qualifying badges (`P2-020/021`).
-- `community/` (P2-023 additions)
+- `community/` (P2-023 + P2-043 additions)
   - `domain/community_tag_aggregation.dart` — `CommunityTagAggregation.from(reports)` + `qualifiesFamily/WomenSafe/Hygienic` (≥ 2 answers, ≥ 50% yes) (`P2-023`).
-  - `domain/models/station_community_submit_input.dart` + `station_community_report.dart` — nullable `babyFriendly/womenSafe/hygienic` fields (`P2-023`).
-  - `data/dto/station_community_report_dto.dart` — read missing → null; write non-null only (`P2-023`).
-  - `presentation/widgets/poi_report_sheet.dart` — tri-state tag rows (`_TriStateTag`/`_TagButton`) (`P2-023`).
+  - `domain/road_condition_aggregation.dart` — `RoadConditionAggregation.from(reports)` + `dominantCondition` (construction ≥ 30%, else rough/good ≥ 50%) + `hasAdvisory` + `advisoryLabel` (`P2-043`).
+  - `domain/models/station_community_submit_input.dart` + `station_community_report.dart` — nullable `babyFriendly/womenSafe/hygienic` (`P2-023`) + `roadCondition` (`P2-043`).
+  - `data/dto/station_community_report_dto.dart` — read missing → null; write non-null only (`P2-023`, `P2-043`).
+  - `presentation/widgets/poi_report_sheet.dart` — tri-state tag rows (`P2-023`) + single-select road-condition chips (`P2-043`).
+  - `presentation/widgets/road_condition_chip.dart` — `RoadConditionChip` rendered on POI tiles when an advisory exists (`P2-043`).
+- `tolls/` (P2 Session 7)
+  - `domain/toll_corridor.dart` — `TollCorridor` + `kTollCorridors` static dataset of 7 major Indian expressways (`P2-042`).
+  - `domain/toll_estimator.dart` — `TollEstimator.estimate(polyline, distance)` returns `TollEstimate(totalRupees, matchedCorridor, isCorridorMatch)` (`P2-042`).
+- `settings/` (P2 Session 8)
+  - `domain/app_settings.dart` — Freezed+JSON `AppSettings { distanceUnit, alertsEnabled, mutedAlertTypes, systemNotificationsEnabled }`; `isMuted(AlertType)` / `toggleMute()` extensions (`P2-053`).
+  - `data/local_db/settings_box.dart` — Hive `app_settings` box (one JSON doc) (`P2-053`).
+  - `presentation/controller/settings_controller.dart` — `SettingsController` + `settingsControllerProvider`. Reads from Hive on construction, persists on every change (`P2-053`).
+  - `presentation/view/settings_screen.dart` — units segmented control + master alerts switch + system notifications switch + per-`AlertType` mute list. Mounted via Settings menu tile in `ProfileTabScreen` (`P2-053`).
+- `trip/presentation/controller/trip_replan_provider.dart` — `TripReplanRequest(from, to)` + `tripReplanRequestProvider` (StateProvider, nullable). Plan screen consume-and-clears in `build` (`P2-051`).
   - `presentation/controller/poi_category_controller.dart` — decides between route-aware and nearby strategies based on `PlanController` snapshot at construction; EV without a plan → explicit empty state.
   - `presentation/view/poi_category_screen.dart` — reusable category screen with list/map toggle in app bar (`P1-012` + `P1-015`).
   - `presentation/widget/poi_list_tile.dart` — list tile; `pulseSlot` now filled by `PoiCommunityRatingPulse` (`P1-054`).
@@ -110,6 +126,7 @@
 - `ProfileBox.boxName` (`user_profile`) — `P1-004`.
 - `TripBox.boxName` (`active_trip`) — `P1-040`.
 - `CorridorCacheBox.boxName` (`corridor_cache`) — `P1-043`.
+- `SettingsBox.boxName` (`app_settings`) — `P2-053`.
 
 ## Build-runner
 After ANY change to a `*.freezed.dart` source class, run:

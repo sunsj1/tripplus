@@ -38,6 +38,9 @@ sealed class PlanState with _$PlanState {
     String? trafficLevel,
     /// Google-encoded route polyline for corridor cache + alert engine (P1-028).
     String? encodedRoutePolyline,
+    /// P2-042 — Matched toll corridor name (e.g. "Mumbai–Pune Expressway").
+    /// Null when the toll estimate is the legacy flat fallback.
+    String? tollCorridorName,
     // ---------------------------------------------------------------------------
   }) = PlanResult;
   const factory PlanState.empty({

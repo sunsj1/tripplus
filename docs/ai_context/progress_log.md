@@ -6,6 +6,144 @@
 
 ---
 
+## Phase 2 · Session 8 — Trip lifecycle & settings
+
+- **Started:** 2026-06-02
+- **Finished:** 2026-06-02
+- **Tasks completed (3/3):** `P2-053`, `P2-050`, `P2-051`.
+- **Theme:** the app finally has a place to silence specific alerts, a richer view of past trips, and the muscle-memory shortcut to re-run a trip you've taken before.
+
+### Per-task notes
+
+- `P2-053` — Settings (units + notification mutes):
+  - New `settings/` feature slice. `AppSettings` (Freezed + JSON) with `distanceUnit` (`km` / `miles`), master `alertsEnabled`, `systemNotificationsEnabled`, and `mutedAlertTypes: List<String>` (per-type opt-out by `AlertType` wire value).
+  - `SettingsBox` (Hive `app_settings`) follows the existing `TripBox` / `CorridorCacheBox` JSON-encoded pattern; opened in `main.dart`.
+  - `SettingsController` (`StateNotifier<AppSettings>`) reads synchronously on construction and persists every change.
+  - `SettingsScreen` mounted via a new **Settings** menu tile on the Profile tab. SegmentedButton for units, switches for the master + system-notifications, per-`AlertType` mute list (icon from `AlertType.icon`).
+  - `AlertNotifierController` reads `settingsControllerProvider`: skips delivery when `settings.isMuted(alert.type)` and skips the system-notification call when `systemNotificationsEnabled` is false. Master off ⇒ silent across all types.
+
+- `P2-050` — Trip history enhanced:
+  - `TripHistoryScreen` now `ConsumerStatefulWidget` with `_SortMode` (Newest / Longest / Farthest) chips.
+  - Cards become tappable, opening **`_TripDetailScreen`** with a 2-column stat grid (duration, distance, vehicle, planned ETA, tolls, fuel/charging cost, alerts fired) plus the re-plan CTA.
+
+- `P2-051` — One-tap re-plan:
+  - `TripReplanRequest` model + `tripReplanRequestProvider` (StateProvider, nullable).
+  - Detail screen's "Plan this trip again" sets the provider, `navigateToShellTab(ref, 0)` switches to Plan, then pops itself.
+  - `PlanScreen.build` listens on `tripReplanRequestProvider` (consume-and-clear) — populates `_fromController` / `_toController` so the user just taps "Analyze Route" to re-run with current conditions.
+
+### Files changed (new)
+- `lib/features/settings/domain/app_settings.dart` (+ generated)
+- `lib/features/settings/data/local_db/settings_box.dart`
+- `lib/features/settings/presentation/controller/settings_controller.dart`
+- `lib/features/settings/presentation/view/settings_screen.dart`
+- `lib/features/trip/presentation/controller/trip_replan_provider.dart`
+
+### Files changed (modified)
+- `lib/main.dart` (open `app_settings` Hive box)
+- `lib/features/alerts/presentation/controller/alert_notifier_controller.dart` (honour mute + system-notif setting)
+- `lib/features/profile/presentation/view/profile_tab_screen.dart` (Settings menu tile)
+- `lib/features/profile/presentation/view/trip_history_screen.dart` (sort chips, detail screen, replan CTA)
+- `lib/features/plan/presentation/view/plan_screen.dart` (consume replan request)
+
+### Notes / follow-ups
+- `distanceUnit` is wired but no rendering code reads it yet. Threading through the display layer (stat cards, history cards, range chips) is a small consistency follow-up rather than a feature gate.
+- `P2-052` (share trip) is the lone unfinished task in this section — left for Session 9 alongside brand-affinity learning.
+- `mutedAlertTypes` uses wire strings (not the enum) so the JSON survives any future enum rename gracefully.
+
+---
+
+## Phase 2 · Session 7 — Tolls & road condition
+
+- **Started:** 2026-06-02
+- **Finished:** 2026-06-02
+- **Tasks completed (2/2):** `P2-042`, `P2-043`.
+- **Theme:** the toll number on the dashboard becomes meaningful (matched to the actual expressway), and POI tiles can warn the driver about rough roads ahead via community pulses.
+
+### Per-task notes
+
+- `P2-042` — Toll estimation v1:
+  - New `tolls/` feature slice with **`TollCorridor`** + **`kTollCorridors`** static dataset — 7 major Indian expressways (Mumbai–Pune, Yamuna, Delhi–Meerut, Bengaluru–Mysuru, Samruddhi Mahamarg, Eastern/Western Peripheral, Hyderabad ORR) with per-km rates and 3–5 waypoints each.
+  - **`TollEstimator.estimate(polyline, distance)`** scores each corridor by counting waypoints whose perpendicular distance to the route ≤ `matchRadiusKm` (12 km default). Requires ≥ 50% of a corridor's waypoints to match. Picks the highest-hit corridor; falls back to flat ₹1.5/km when no corridor matches.
+  - `PlanController` calls the estimator and persists `tollCorridorName` on `PlanResult`. `plan_screen.dart` + `plan_result_view.dart` thread the field through.
+  - `PlanResultView` shows a "Via {Corridor Name}" line under the dashboard stat row when a corridor matched — answers "why is this number different from a flat per-km estimate?" without cluttering the card.
+
+- `P2-043` — Road-condition tags:
+  - Community submit input + report gained nullable `roadCondition: String?` (`good` / `rough` / `construction`). DTO read missing → null; write only when set.
+  - New **`RoadConditionAggregation`** model — counts each bucket from the latest 20 reports. `dominantCondition` returns construction when ≥ 30% (more actionable), else rough/good if dominant ≥ 50%. `hasAdvisory` + `advisoryLabel` for the chip.
+  - `StationCommunityUiStateX.roadConditionAggregation` getter.
+  - **`RoadConditionChip`** widget watches the community provider per POI and renders an amber "Rough road" / red "Road work" pill on the tile when there's an advisory.
+  - POI report sheet gained a third "Road near here" group with `_RoadConditionChip` single-select chips (tap-active-to-clear).
+
+### Files changed (new)
+- `lib/features/tolls/domain/toll_corridor.dart`
+- `lib/features/tolls/domain/toll_estimator.dart`
+- `lib/features/community/domain/road_condition_aggregation.dart`
+- `lib/features/community/presentation/widgets/road_condition_chip.dart`
+
+### Files changed (modified)
+- `lib/features/plan/presentation/controller/plan_state.dart` (`tollCorridorName`)
+- `lib/features/plan/presentation/controller/plan_controller.dart` (estimator + remove `_tollPerKm`)
+- `lib/features/plan/presentation/view/plan_screen.dart` (thread corridor name)
+- `lib/features/plan/presentation/view/plan_result_view.dart` (Via corridor line)
+- `lib/features/community/domain/models/station_community_submit_input.dart` (`roadCondition`)
+- `lib/features/community/domain/models/station_community_report.dart` (`roadCondition`)
+- `lib/features/community/data/dto/station_community_report_dto.dart` (read+write)
+- `lib/features/community/domain/models/station_community_ui_state.dart` (`roadConditionAggregation`)
+- `lib/features/community/presentation/widgets/poi_report_sheet.dart` (road condition chips)
+- `lib/features/pois/presentation/view/poi_category_screen.dart` (RoadConditionChip on tiles)
+
+### Notes / follow-ups
+- `TollEstimator` is per-route, not per-segment. A future session could split the route at corridor boundaries (some highways alternate between tolled corridor and arterial) for a more accurate composite estimate.
+- Road condition is keyed off POIs, not the route geometry. It's a "near this POI" hint — fine for showing on POI tiles, less so for a top-of-route summary. A corridor-segment aggregator would build on this in Phase 3+.
+
+---
+
+## Phase 2 · Session 6 — Weather & traffic on the trip
+
+- **Started:** 2026-06-02
+- **Finished:** 2026-06-02
+- **Tasks completed (3/3):** `P2-040`, `P2-041`, `P2-005`.
+- **Theme:** the plan now reflects live conditions — per-segment weather across the corridor and traffic-adjusted ETA — and the alert engine warns about hazardous weather ahead.
+
+### Per-task notes
+
+- `P2-040` — Weather via Open-Meteo:
+  - New `weather/` feature slice. `OpenMeteoWeatherService.sampleAlongRoute()` picks origin / (early/midway) / destination (max 4 samples) and hits Open-Meteo's free `current` endpoint — no key, no quota.
+  - `RouteWeatherSegment` (plain class) with `conditionLabel` and `isDrivingHazard` (rain, snow, fog, thunderstorm, wind ≥ 40 kmh).
+  - `routeWeatherProvider = FutureProvider.autoDispose.family<…, PlanResult>` decodes the encoded polyline and fetches; failures degrade silently to empty list.
+  - `RouteWeatherStrip` mounted on `PlanResultView` between the dashboard stat row and the trip actions; horizontal cards with temperature/condition/wind/precip and a top-line "N caution" tag when hazards exist.
+
+- `P2-041` — Traffic-aware ETA:
+  - `RouteInfo` gains `durationInTrafficMinutes` + helpers `effectiveDurationMinutes`, `trafficDelayMinutes`.
+  - `DirectionsService._getGoogleRoute` now sends `departure_time=now` + `traffic_model=best_guess` and parses `duration_in_traffic.value`.
+  - `PlanController` uses `route.effectiveDurationMinutes` for ETA computation and switches the traffic-level ratio to `liveTrafficMins / driveMins` (more accurate than the theoretical-80 kmh fallback). Thresholds tightened: ≥ 1.4 = High, ≥ 1.15 = Moderate.
+
+- `P2-005` — Weather alert rule:
+  - `AlertEngineInput` gains `upcomingWeather: List<RouteWeatherSegment>`; engine forwards it on the windowed-copy.
+  - `WeatherRule` registered (after `FatigueRule`). Picks the first hazardous segment within the upcoming window. Thunderstorm or precipitation ≥ 4 mm/h → critical; other hazards → warning.
+  - `AlertNotifierController._ensureWeather()` caches per-trip results (20-minute TTL) so 30-second poll cycles don't hammer Open-Meteo; resets on trip idle/completed.
+
+### Files changed (new)
+- `lib/features/weather/domain/route_weather_segment.dart`
+- `lib/features/weather/data/open_meteo_weather_service.dart`
+- `lib/features/weather/presentation/controller/weather_providers.dart`
+- `lib/features/weather/presentation/widget/route_weather_strip.dart`
+- `lib/features/alerts/domain/rules/weather_rule.dart`
+
+### Files changed (modified)
+- `lib/core/services/directions_service.dart` (traffic params + parse)
+- `lib/features/plan/presentation/controller/plan_controller.dart` (effective duration + traffic ratio)
+- `lib/features/plan/presentation/view/plan_result_view.dart` (mount weather strip)
+- `lib/features/alerts/domain/alert_engine_input.dart` (`upcomingWeather`)
+- `lib/features/alerts/domain/alert_engine.dart` (register `WeatherRule`, forward weather)
+- `lib/features/alerts/presentation/controller/alert_notifier_controller.dart` (fetch + cache + pass weather)
+
+### Notes / follow-ups
+- Open-Meteo's `current` block is a single point-in-time snapshot. For multi-hour drives the destination sample can grow stale; a later session could re-sample as the driver progresses.
+- `weatherTag` (legacy summary string on `PlanResult`) is still unused — could be wired to a one-line summary derived from the segments, but the strip already covers it.
+
+---
+
 ## Phase 2 · Session 5 — Mode-aware filters
 
 - **Started:** 2026-06-02

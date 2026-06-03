@@ -45,6 +45,9 @@ mixin _$StationCommunityReport {
   bool? get womenSafe => throw _privateConstructorUsedError;
   bool? get hygienic => throw _privateConstructorUsedError;
 
+  /// P2-043 — Road condition near this POI: `good` / `rough` / `construction`.
+  String? get roadCondition => throw _privateConstructorUsedError;
+
   /// Create a copy of StationCommunityReport
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -82,6 +85,7 @@ abstract class $StationCommunityReportCopyWith<$Res> {
     bool? babyFriendly,
     bool? womenSafe,
     bool? hygienic,
+    String? roadCondition,
   });
 }
 
@@ -125,6 +129,7 @@ class _$StationCommunityReportCopyWithImpl<
     Object? babyFriendly = freezed,
     Object? womenSafe = freezed,
     Object? hygienic = freezed,
+    Object? roadCondition = freezed,
   }) {
     return _then(
       _value.copyWith(
@@ -216,6 +221,10 @@ class _$StationCommunityReportCopyWithImpl<
                 ? _value.hygienic
                 : hygienic // ignore: cast_nullable_to_non_nullable
                       as bool?,
+            roadCondition: freezed == roadCondition
+                ? _value.roadCondition
+                : roadCondition // ignore: cast_nullable_to_non_nullable
+                      as String?,
           )
           as $Val,
     );
@@ -254,6 +263,7 @@ abstract class _$$StationCommunityReportImplCopyWith<$Res>
     bool? babyFriendly,
     bool? womenSafe,
     bool? hygienic,
+    String? roadCondition,
   });
 }
 
@@ -294,6 +304,7 @@ class __$$StationCommunityReportImplCopyWithImpl<$Res>
     Object? babyFriendly = freezed,
     Object? womenSafe = freezed,
     Object? hygienic = freezed,
+    Object? roadCondition = freezed,
   }) {
     return _then(
       _$StationCommunityReportImpl(
@@ -385,6 +396,10 @@ class __$$StationCommunityReportImplCopyWithImpl<$Res>
             ? _value.hygienic
             : hygienic // ignore: cast_nullable_to_non_nullable
                   as bool?,
+        roadCondition: freezed == roadCondition
+            ? _value.roadCondition
+            : roadCondition // ignore: cast_nullable_to_non_nullable
+                  as String?,
       ),
     );
   }
@@ -416,6 +431,7 @@ class _$StationCommunityReportImpl extends _StationCommunityReport {
     this.babyFriendly,
     this.womenSafe,
     this.hygienic,
+    this.roadCondition,
   }) : _availableAmenityLabels = availableAmenityLabels,
        super._();
 
@@ -479,9 +495,13 @@ class _$StationCommunityReportImpl extends _StationCommunityReport {
   @override
   final bool? hygienic;
 
+  /// P2-043 — Road condition near this POI: `good` / `rough` / `construction`.
+  @override
+  final String? roadCondition;
+
   @override
   String toString() {
-    return 'StationCommunityReport(id: $id, stationKey: $stationKey, stationNameSnapshot: $stationNameSnapshot, reporterUserId: $reporterUserId, reporterDisplayName: $reporterDisplayName, rating: $rating, condition: $condition, availableAmenityLabels: $availableAmenityLabels, washroomAvailable: $washroomAvailable, washroomClean: $washroomClean, womenFriendlyWashroom: $womenFriendlyWashroom, photoBase64: $photoBase64, comment: $comment, costPerKwh: $costPerKwh, fastChargerAvailable: $fastChargerAvailable, chargeSuccessful: $chargeSuccessful, createdAt: $createdAt, targetType: $targetType, targetKey: $targetKey, babyFriendly: $babyFriendly, womenSafe: $womenSafe, hygienic: $hygienic)';
+    return 'StationCommunityReport(id: $id, stationKey: $stationKey, stationNameSnapshot: $stationNameSnapshot, reporterUserId: $reporterUserId, reporterDisplayName: $reporterDisplayName, rating: $rating, condition: $condition, availableAmenityLabels: $availableAmenityLabels, washroomAvailable: $washroomAvailable, washroomClean: $washroomClean, womenFriendlyWashroom: $womenFriendlyWashroom, photoBase64: $photoBase64, comment: $comment, costPerKwh: $costPerKwh, fastChargerAvailable: $fastChargerAvailable, chargeSuccessful: $chargeSuccessful, createdAt: $createdAt, targetType: $targetType, targetKey: $targetKey, babyFriendly: $babyFriendly, womenSafe: $womenSafe, hygienic: $hygienic, roadCondition: $roadCondition)';
   }
 
   @override
@@ -531,7 +551,9 @@ class _$StationCommunityReportImpl extends _StationCommunityReport {
             (identical(other.womenSafe, womenSafe) ||
                 other.womenSafe == womenSafe) &&
             (identical(other.hygienic, hygienic) ||
-                other.hygienic == hygienic));
+                other.hygienic == hygienic) &&
+            (identical(other.roadCondition, roadCondition) ||
+                other.roadCondition == roadCondition));
   }
 
   @override
@@ -559,6 +581,7 @@ class _$StationCommunityReportImpl extends _StationCommunityReport {
     babyFriendly,
     womenSafe,
     hygienic,
+    roadCondition,
   ]);
 
   /// Create a copy of StationCommunityReport
@@ -598,6 +621,7 @@ abstract class _StationCommunityReport extends StationCommunityReport {
     final bool? babyFriendly,
     final bool? womenSafe,
     final bool? hygienic,
+    final String? roadCondition,
   }) = _$StationCommunityReportImpl;
   const _StationCommunityReport._() : super._();
 
@@ -649,6 +673,10 @@ abstract class _StationCommunityReport extends StationCommunityReport {
   bool? get womenSafe;
   @override
   bool? get hygienic;
+
+  /// P2-043 — Road condition near this POI: `good` / `rough` / `construction`.
+  @override
+  String? get roadCondition;
 
   /// Create a copy of StationCommunityReport
   /// with the given fields replaced by the non-null parameter values.

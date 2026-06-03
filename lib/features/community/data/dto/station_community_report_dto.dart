@@ -51,6 +51,8 @@ class StationCommunityReportDto {
       babyFriendly: d['babyFriendly'] as bool?,
       womenSafe: d['womenSafe'] as bool?,
       hygienic: d['hygienic'] as bool?,
+      // P2-043 — Road condition tag (good / rough / construction). Optional.
+      roadCondition: d['roadCondition'] as String?,
     );
   }
 
@@ -81,6 +83,8 @@ class StationCommunityReportDto {
       if (input.babyFriendly != null) 'babyFriendly': input.babyFriendly,
       if (input.womenSafe != null) 'womenSafe': input.womenSafe,
       if (input.hygienic != null) 'hygienic': input.hygienic,
+      // P2-043 — Road condition: only persist if the user picked one.
+      if (input.roadCondition != null) 'roadCondition': input.roadCondition,
     };
   }
 }

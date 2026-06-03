@@ -8,6 +8,7 @@ import 'package:tripplus/features/profile/presentation/view/about_tripplus_scree
 import 'package:tripplus/features/profile/presentation/view/privacy_policy_screen.dart';
 import 'package:tripplus/features/profile/presentation/view/profile_preferences_screen.dart';
 import 'package:tripplus/features/profile/presentation/view/trip_history_screen.dart';
+import 'package:tripplus/features/settings/presentation/view/settings_screen.dart';
 import 'package:tripplus/features/trip/presentation/controller/trip_providers.dart';
 
 /// Profile hub — menus for preferences, history, and privacy disclosures.
@@ -69,6 +70,17 @@ class ProfileTabScreen extends ConsumerWidget {
                     onTap: () => Navigator.of(context).push(
                       MaterialPageRoute<void>(
                         builder: (_) => const TripHistoryScreen(),
+                      ),
+                    ),
+                  ),
+                  // P2-053 — App-level settings (units, alert mutes).
+                  _MenuTile(
+                    icon: Icons.settings_outlined,
+                    title: 'Settings',
+                    subtitle: 'Units, alerts, notifications',
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const SettingsScreen(),
                       ),
                     ),
                   ),

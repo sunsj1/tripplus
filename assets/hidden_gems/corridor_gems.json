@@ -1,0 +1,142 @@
+{
+  "_meta": {
+    "description": "P2-060 — Curated hidden-gem POIs per major Indian highway corridor. Coords are approximate (good enough for the carousel + corridor matching, since the user opens each in Maps to navigate). Tags must match HiddenGemTag enum wireValues.",
+    "schemaVersion": 1
+  },
+  "corridors": [
+    {
+      "name": "Mumbai–Pune Expressway",
+      "waypoints": [
+        { "lat": 19.041, "lng": 73.019 },
+        { "lat": 18.928, "lng": 73.275 },
+        { "lat": 18.7508, "lng": 73.3838 },
+        { "lat": 18.619, "lng": 73.720 },
+        { "lat": 18.568, "lng": 73.772 }
+      ],
+      "gems": [
+        {
+          "id": "mp-mahalaxmi-sweets",
+          "name": "Mahalaxmi Sweets, Lonavla",
+          "lat": 18.752,
+          "lng": 73.395,
+          "category": "food",
+          "tags": ["food", "specialty"],
+          "description": "Original chikki since 1908 — buy a tray for the family, queue moves fast."
+        },
+        {
+          "id": "mp-rajmachi-viewpoint",
+          "name": "Rajmachi Viewpoint",
+          "lat": 18.785,
+          "lng": 73.398,
+          "category": "scenic",
+          "tags": ["scenic", "underrated"],
+          "description": "Tiny pull-off above the Khopoli descent — sweeping Sahyadri valley views."
+        },
+        {
+          "id": "mp-german-bakery-koregaon",
+          "name": "German Bakery, Koregaon Park",
+          "lat": 18.5398,
+          "lng": 73.8959,
+          "category": "food",
+          "tags": ["food", "underrated"],
+          "description": "Pune institution — apple strudel and good coffee right at trip-end."
+        }
+      ]
+    },
+    {
+      "name": "Yamuna Expressway",
+      "waypoints": [
+        { "lat": 28.487, "lng": 77.523 },
+        { "lat": 28.067, "lng": 77.753 },
+        { "lat": 27.403, "lng": 77.951 }
+      ],
+      "gems": [
+        {
+          "id": "ye-vrindavan-prem-mandir",
+          "name": "Prem Mandir, Vrindavan",
+          "lat": 27.5752,
+          "lng": 77.6814,
+          "category": "scenic",
+          "tags": ["scenic", "specialty"],
+          "description": "Marble temple complex — late evenings the fountain show is genuinely lovely."
+        },
+        {
+          "id": "ye-agra-petha-panchhi",
+          "name": "Panchhi Petha, Agra",
+          "lat": 27.1716,
+          "lng": 78.0089,
+          "category": "food",
+          "tags": ["food", "specialty"],
+          "description": "Original Panchhi outlet — the kesar and chocolate petha are the picks."
+        }
+      ]
+    },
+    {
+      "name": "Bengaluru–Mysuru Expressway",
+      "waypoints": [
+        { "lat": 12.912, "lng": 77.505 },
+        { "lat": 12.729, "lng": 77.287 },
+        { "lat": 12.543, "lng": 76.893 },
+        { "lat": 12.305, "lng": 76.655 }
+      ],
+      "gems": [
+        {
+          "id": "bm-maddur-tiffanys",
+          "name": "Maddur Tiffanys, Maddur",
+          "lat": 12.5876,
+          "lng": 77.0397,
+          "category": "food",
+          "tags": ["food", "underrated"],
+          "description": "Maddur vade and filter coffee — the South Indian breakfast detour worth taking."
+        },
+        {
+          "id": "bm-ranganathittu",
+          "name": "Ranganathittu Bird Sanctuary",
+          "lat": 12.4305,
+          "lng": 76.6463,
+          "category": "scenic",
+          "tags": ["scenic", "specialty", "underrated"],
+          "description": "Cauvery backwaters with painted storks and crocodiles — quiet morning boat ride."
+        },
+        {
+          "id": "bm-mysore-mylari-dosa",
+          "name": "Hotel Mylari Dosa, Mysuru",
+          "lat": 12.3076,
+          "lng": 76.6519,
+          "category": "food",
+          "tags": ["food", "specialty"],
+          "description": "Buttery Mysuru-style dosa, no menu, no fuss. Carry cash."
+        }
+      ]
+    },
+    {
+      "name": "Samruddhi Mahamarg (Mumbai–Nagpur)",
+      "waypoints": [
+        { "lat": 19.767, "lng": 75.083 },
+        { "lat": 20.316, "lng": 75.910 },
+        { "lat": 20.728, "lng": 77.536 },
+        { "lat": 21.145, "lng": 79.082 }
+      ],
+      "gems": [
+        {
+          "id": "sm-ellora-caves",
+          "name": "Ellora Caves",
+          "lat": 20.0258,
+          "lng": 75.1791,
+          "category": "scenic",
+          "tags": ["scenic", "specialty"],
+          "description": "UNESCO rock-cut wonder. Easy 20 km detour off the Aurangabad belt."
+        },
+        {
+          "id": "sm-shegaon-kachori",
+          "name": "Bhakti Sagar Kachori, Shegaon",
+          "lat": 20.7937,
+          "lng": 76.6907,
+          "category": "food",
+          "tags": ["food", "underrated"],
+          "description": "Famous khalbat kachori — locals time their fuel stop here for a reason."
+        }
+      ]
+    }
+  ]
+}

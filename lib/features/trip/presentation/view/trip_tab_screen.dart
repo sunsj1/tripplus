@@ -8,6 +8,7 @@ import 'package:tripplus/features/trip/domain/models/trip.dart';
 import 'package:tripplus/features/trip/domain/models/trip_status.dart';
 import 'package:tripplus/features/trip/presentation/controller/active_trip_state.dart';
 import 'package:tripplus/features/trip/presentation/controller/trip_providers.dart';
+import 'package:tripplus/features/trip/presentation/utils/share_trip.dart';
 import 'package:tripplus/features/trip/presentation/utils/trip_formatters.dart';
 import 'package:tripplus/features/trip/presentation/widget/trip_elapsed_panel.dart';
 import 'package:tripplus/features/trip/presentation/widget/trip_end_dialog.dart';
@@ -430,6 +431,16 @@ class _CompletedView extends ConsumerWidget {
             ),
             const SizedBox(height: 16),
           ],
+          // P2-052 — Share completed trip in chat / SMS.
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: () => shareTrip(context, trip),
+              icon: const Icon(Icons.ios_share_outlined),
+              label: const Text('Share this trip'),
+            ),
+          ),
+          const SizedBox(height: 10),
           SizedBox(
             width: double.infinity,
             child: OutlinedButton.icon(

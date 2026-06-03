@@ -3,7 +3,7 @@
 > **Update this file** whenever a task materially changes the user-visible surface or the architecture.
 > AI agents read this first to avoid re-discovering what's already built.
 
-**Last updated:** 2026-06-02 (**Phase 2 Sessions 1–8** landed — added Settings screen with per-alert mutes, richer trip history, one-tap re-plan).
+**Last updated:** 2026-06-02 (**Phase 2 Sessions 1–10** landed — added curated Hidden Gems carousel on Discover when the active plan matches a known corridor).
 
 ---
 
@@ -17,7 +17,16 @@
 
 ---
 
-## Phase 2 progress (24/36 = 67%)
+## Phase 2 progress (29/36 = 81%)
+
+### Session 10 — Hidden gems v1 (2026-06-02)
+- ✅ `P2-060` — `assets/hidden_gems/corridor_gems.json` (4 corridors × 2–3 gems) + `HiddenGemDataset.load()`. `hiddenGemCorridorsProvider` caches.
+- ✅ `P2-062` — `HiddenGemCategory` (food / scenic / specialty / other) + multi-valued `HiddenGemTag` (food / scenic / specialty / underrated).
+- ✅ `P2-061` — `activeCorridorGemsProvider` matches the active `PlanResult` to a curated corridor (same waypoint-hit heuristic as `TollEstimator`); `HiddenGemsCarousel` renders cards on `DiscoveryScreen`. Hides on no plan / no match. Cards tap to Google Maps.
+
+### Session 9 — Share trip & brand learning (2026-06-02)
+- ✅ `P2-052` — `share_plus` dep + `buildTripShareText()` pure builder + `shareTrip(context, trip)` wrapper. Share button on Trip history detail + completed-trip view.
+- ✅ `P2-013` — `BrandAffinityBox` Hive store + `BrandAffinityController.registerInteraction({poi, signal})` (view = 1.0, pulse = 5.0, ceiling 50). `userPreferenceVectorProvider` merges normalised learned weights into `brandWeights` (scaled to 1.5 so explicit selections still win).
 
 ### Session 8 — Trip lifecycle & settings (2026-06-02)
 - ✅ `P2-053` — `settings/` slice: `AppSettings` (units, alerts master, per-`AlertType` mute list, system-notification toggle) persisted to Hive `app_settings`. `SettingsScreen` mounted via new Profile menu tile. `AlertNotifierController` skips muted alerts and respects the system-notification preference.

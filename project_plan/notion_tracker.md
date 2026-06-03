@@ -108,7 +108,7 @@
 - [x] `P2-010` `UserPreferenceVector`
 - [x] `P2-011` `PoiRanker` scoring
 - [x] `P2-012` Apply ranker to all POI lists
-- [ ] `P2-013` Brand affinity learning
+- [x] `P2-013` Brand affinity learning
 
 ### 2.3 Mode-aware filters
 - [x] `P2-020` Family Mode
@@ -131,13 +131,13 @@
 ### 2.6 Trip lifecycle
 - [x] `P2-050` Trip history list
 - [x] `P2-051` Save & reuse trip
-- [ ] `P2-052` Share trip
+- [x] `P2-052` Share trip
 - [x] `P2-053` Settings screen
 
 ### 2.7 Hidden gems v1 (curated)
-- [ ] `P2-060` Curation dataset
-- [ ] `P2-061` Hidden Gems carousel
-- [ ] `P2-062` Tag categories
+- [x] `P2-060` Curation dataset
+- [x] `P2-061` Hidden Gems carousel
+- [x] `P2-062` Tag categories
 
 ### 2.8 Quality, A11y, Observability
 - [ ] `P2-070` A11y pass
@@ -234,7 +234,7 @@
 | Phase | Total Tasks | Done | % |
 |---|---|---|---|
 | Phase 1 — MVP | 50 | 50 | 100% |
-| Phase 2 — Intelligence | 36 | 24 | 67% |
+| Phase 2 — Intelligence | 36 | 29 | 81% |
 | Phase 3 — AI Copilot | 30 | 0 | 0% |
 | Phase 4 — Scale | 18 | 0 | 0% |
 | **Total** | **134** | **0** | **0%** |

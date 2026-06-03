@@ -126,26 +126,26 @@ driver's GPS position (`PoiQuerySource.aheadOnRoute`).
 
 ---
 
-## ⬜ Session 9 — Share trip & brand learning
+## ✅ Session 9 — Share trip & brand learning
 
 **Theme.** Social share + fuel brand affinity.
 
 | ID | Task | Est | Depends on |
 |---|---|---|---|
-| `P2-052` | Share trip link / text | 6 h | `P2-051` |
-| `P2-013` | Brand affinity learning for fuel ranking | 6 h | `P2-010` |
+| `P2-052` ✅ | Share trip link / text | 6 h | `P2-051` |
+| `P2-013` ✅ | Brand affinity learning for fuel ranking | 6 h | `P2-010` |
 
 ---
 
-## ⬜ Session 10 — Hidden gems v1
+## ✅ Session 10 — Hidden gems v1
 
 **Theme.** Curated corridor gems on Discover.
 
 | ID | Task | Est | Depends on |
 |---|---|---|---|
-| `P2-060` | Manual curation JSON per major corridor | 1 d | `P1-006` ✅ |
-| `P2-062` | Tag categories (food, scenic, specialty, underrated) | 4 h | `P2-060` |
-| `P2-061` | Hidden Gems carousel on `DiscoveryScreen` | 6 h | `P2-060` |
+| `P2-060` ✅ | Manual curation JSON per major corridor | 1 d | `P1-006` ✅ |
+| `P2-062` ✅ | Tag categories (food, scenic, specialty, underrated) | 4 h | `P2-060` |
+| `P2-061` ✅ | Hidden Gems carousel on `DiscoveryScreen` | 6 h | `P2-060` |
 
 ---
 
@@ -202,12 +202,12 @@ completion checklist.
 | 6 | 3 | ✅ |
 | 7 | 2 | ✅ |
 | 8 | 3 | ✅ |
-| 9 | 2 | ⬜ |
-| 10 | 3 | ⬜ |
+| 9 | 2 | ✅ |
+| 10 | 3 | ✅ |
 | 11 | 3 | ⬜ |
 | 12 | 3 | ⬜ |
 | 13 | verify | ⬜ |
-| **Total** | **36** | **24 / 36 = 67 %** |
+| **Total** | **36** | **29 / 36 = 81 %** |
 
 ---
 

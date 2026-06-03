@@ -6,6 +6,91 @@
 
 ---
 
+## Phase 2 · Session 10 — Hidden gems v1
+
+- **Started:** 2026-06-02
+- **Finished:** 2026-06-02
+- **Tasks completed (3/3):** `P2-060`, `P2-062`, `P2-061`.
+- **Theme:** the Discover tab shows a curator's selection of "you should stop here" places when the planned route matches a known corridor — no LLM, no API, just a hand-tuned JSON.
+
+### Per-task notes
+
+- `P2-060` — Curated dataset:
+  - `assets/hidden_gems/corridor_gems.json` — 4 corridors (Mumbai–Pune Expressway, Yamuna Expressway, Bengaluru–Mysuru Expressway, Samruddhi Mahamarg) × 2–3 gems each. Schema: `corridors[].{name, waypoints[], gems[].{id, name, lat, lng, category, description, tags[]}}`.
+  - `HiddenGemDataset.load()` reads via `rootBundle.loadString(...)` and caches in-memory. Asset registered in `pubspec.yaml`.
+
+- `P2-062` — Tag system:
+  - `HiddenGemCategory { food, scenic, specialty, other }` with `label`, `icon`, `accent`.
+  - `HiddenGemTag { food, scenic, specialty, underrated }` — multi-valued, parsed from JSON `tags[]`.
+  - `HiddenGem` carries one category + a list of tags so a single entry can be both "scenic" and "underrated".
+
+- `P2-061` — Discover carousel:
+  - `hiddenGemCorridorsProvider` (FutureProvider) loads the asset once.
+  - `activeCorridorGemsProvider` (FutureProvider) matches the active `PlanResult.encodedRoutePolyline` to a corridor via the **same waypoint-hit heuristic** as `TollEstimator` (≥ 50% within `matchRadiusKm`, slightly larger 15 km radius to accept short detours). Returns gems sorted by distance along the route.
+  - `HiddenGemsCarousel` renders the strip on `DiscoveryScreen` between the Emergency tile and the Smart Intelligence Grid. Hides itself entirely (returns `SizedBox.shrink()`) when no plan, no match, or loading — keeps cold opens clean.
+  - Each card uses the category accent for icon/border halo; tap opens Google Maps via `url_launcher` so the user navigates with their preferred app.
+
+### Files changed (new)
+- `assets/hidden_gems/corridor_gems.json`
+- `lib/features/hidden_gems/domain/hidden_gem.dart`
+- `lib/features/hidden_gems/data/hidden_gem_dataset.dart`
+- `lib/features/hidden_gems/presentation/controller/hidden_gems_providers.dart`
+- `lib/features/hidden_gems/presentation/widget/hidden_gems_carousel.dart`
+
+### Files changed (modified)
+- `pubspec.yaml` (asset registration)
+- `lib/features/discovery/presentation/view/discovery_screen.dart` (mount carousel)
+
+### Notes / follow-ups
+- Coverage is intentionally narrow — 4 corridors, 10 gems total. Easy to expand by appending to the JSON; no code changes needed.
+- The carousel doesn't surface tags as filters yet — users can read the tag pills on each card but can't "show only Food gems". Worth doing once the dataset is bigger.
+- Hidden gems are **separate from** the POI category list. They're handpicked editorial content, not Google Places results. Phase 3 (`P3-050`) will replace the JSON with LLM-curated entries that cite sources.
+
+---
+
+## Phase 2 · Session 9 — Share trip & brand learning
+
+- **Started:** 2026-06-02
+- **Finished:** 2026-06-02
+- **Tasks completed (2/2):** `P2-052`, `P2-013`.
+- **Theme:** trips become shareable in two taps, and the ranker quietly learns which fuel brands the user actually prefers.
+
+### Per-task notes
+
+- `P2-052` — Trip share:
+  - New `share_plus: ^11.0.0` dependency.
+  - **`buildTripShareText(trip)`** (pure Dart, in `domain/trip_share_text.dart`) — emoji-prefixed text with origin → destination, distance, ETA, cost line (fuel or charging), tolls, Google Maps directions URL, "Planned with TripPlus" footer.
+  - **`shareTrip(context, trip)`** wrapper (in `presentation/utils/share_trip.dart`) hands the text to `SharePlus.instance.share(...)` and supplies `sharePositionOrigin` for iPad.
+  - Share button mounted on `_TripDetailScreen` (history) app-bar actions + new outlined "Share this trip" button on `_CompletedView` (Trip tab).
+
+- `P2-013` — Brand affinity learning:
+  - **`BrandAffinityBox`** — Hive `brand_affinity` box, JSON-encoded `Map<wireValue, double>` under key `scores`. Opened in `main.dart`.
+  - **`BrandAffinityController`** (`StateNotifier<Map<FuelBrand, double>>`) — restores on construction; `registerInteraction({poi, signal})` bumps by 1.0 for `view`, 5.0 for `pulse`, clamped at 50.0 ceiling. Brand detected from the POI name (case-insensitive contains against `FuelBrand.label`).
+  - `userPreferenceVectorProvider` now watches the affinity controller and merges normalised learned weights into `brandWeights` — scaled to max 1.5 so an explicit user pick (weight 2.0) always wins.
+  - Signals hooked: `showPoiDetailSheet` registers `view` in `initState`, `poi_report_sheet`'s submit-success branch registers `pulse`.
+
+### Files changed (new)
+- `lib/features/trip/domain/trip_share_text.dart`
+- `lib/features/trip/presentation/utils/share_trip.dart`
+- `lib/features/personalization/data/brand_affinity_box.dart`
+- `lib/features/personalization/presentation/controller/brand_affinity_controller.dart`
+
+### Files changed (modified)
+- `pubspec.yaml` (`share_plus`)
+- `lib/main.dart` (open `brand_affinity` Hive box)
+- `lib/features/profile/presentation/view/trip_history_screen.dart` (Share action)
+- `lib/features/trip/presentation/view/trip_tab_screen.dart` (Share completed trip)
+- `lib/features/personalization/presentation/controller/personalization_providers.dart` (merge learned weights)
+- `lib/features/pois/presentation/widget/poi_detail_sheet.dart` (view signal)
+- `lib/features/community/presentation/widgets/poi_report_sheet.dart` (pulse signal)
+
+### Notes / follow-ups
+- Affinity scores never decay. If a user gives up on a brand it'll stay near the top until something else accumulates more. Phase 3 can add time-based half-life if telemetry shows the weights getting stale.
+- Brand detection is name-substring matching — brittle against non-Latin signage. A structured `attributes['brand']` field on `Poi` (populated by curated/OCM sources) would be the proper fix.
+- Share doesn't yet include the corridor name (`tollCorridorName`) or weather summary — easy add later if user feedback wants it.
+
+---
+
 ## Phase 2 · Session 8 — Trip lifecycle & settings
 
 - **Started:** 2026-06-02

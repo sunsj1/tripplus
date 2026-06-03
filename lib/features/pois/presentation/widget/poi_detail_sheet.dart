@@ -7,6 +7,7 @@ import 'package:tripplus/core/utils/google_places_photo.dart';
 import 'package:tripplus/core/widgets/poi_photo.dart';
 import 'package:tripplus/core/widgets/source_badge.dart';
 import 'package:tripplus/features/community/presentation/widgets/poi_community_reports_section.dart';
+import 'package:tripplus/features/personalization/presentation/controller/brand_affinity_controller.dart';
 import 'package:tripplus/features/pois/presentation/controller/pois_providers.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -41,6 +42,13 @@ class _PoiDetailSheetState extends ConsumerState<_PoiDetailSheet> {
     super.initState();
     _poi = widget.poi;
     _enrichFromPlaceDetails();
+    // P2-013 — opening a fuel POI is a soft signal towards its brand.
+    Future.microtask(() {
+      if (!mounted) return;
+      ref
+          .read(brandAffinityControllerProvider.notifier)
+          .registerInteraction(poi: widget.poi, signal: 'view');
+    });
   }
 
   /// Place Details returns more photos than Nearby Search — fetch on open.

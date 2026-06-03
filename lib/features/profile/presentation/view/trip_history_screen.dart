@@ -7,6 +7,7 @@ import 'package:tripplus/features/shell/presentation/controller/shell_providers.
 import 'package:tripplus/features/trip/domain/models/trip.dart';
 import 'package:tripplus/features/trip/presentation/controller/trip_providers.dart';
 import 'package:tripplus/features/trip/presentation/controller/trip_replan_provider.dart';
+import 'package:tripplus/features/trip/presentation/utils/share_trip.dart';
 import 'package:tripplus/features/trip/presentation/utils/trip_formatters.dart';
 
 /// On-device trip archive — route labels and estimates only, no GPS trails.
@@ -286,6 +287,14 @@ class _TripDetailScreen extends ConsumerWidget {
         elevation: 0,
         foregroundColor: AppColors.textPrimary,
         title: Text('Trip', style: AppTextStyles.titleMedium),
+        actions: [
+          // P2-052 — Drop the trip into the OS share sheet.
+          IconButton(
+            tooltip: 'Share',
+            onPressed: () => shareTrip(context, trip),
+            icon: const Icon(Icons.ios_share_outlined),
+          ),
+        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(

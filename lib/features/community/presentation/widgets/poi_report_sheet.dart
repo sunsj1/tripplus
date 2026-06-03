@@ -7,6 +7,7 @@ import 'package:tripplus/features/auth/presentation/providers/auth_providers.dar
 import 'package:tripplus/features/community/domain/community_target_type.dart';
 import 'package:tripplus/features/community/domain/models/station_community_submit_input.dart';
 import 'package:tripplus/features/community/presentation/controller/community_providers.dart';
+import 'package:tripplus/features/personalization/presentation/controller/brand_affinity_controller.dart';
 import 'package:tripplus/features/pois/domain/community_poi_key.dart';
 
 /// Opens a lightweight pulse sheet for any [Poi].
@@ -114,6 +115,10 @@ class _PoiReportSheetState extends ConsumerState<_PoiReportSheet> {
         ),
       ),
       (_) {
+        // P2-013 — a deliberate pulse is a strong brand-affinity signal.
+        ref
+            .read(brandAffinityControllerProvider.notifier)
+            .registerInteraction(poi: widget.poi, signal: 'pulse');
         Navigator.of(context).pop(true);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(

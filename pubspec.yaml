@@ -53,6 +53,11 @@ dependencies:
   flutter_local_notifications: ^17.2.4
   connectivity_plus: ^6.1.0
 
+  # P2-052 — OS share sheet for trips
+  share_plus: ^11.0.0
+  # P2-060 — load bundled hidden-gem corridor dataset
+  # (no extra dep needed — uses flutter/services rootBundle)
+
   # Unique ID generation (Trip IDs)
   uuid: ^4.5.1
 
@@ -74,3 +79,5 @@ flutter:
 
   assets:
     - .env
+    # P2-060 — bundled hidden-gem corridor dataset
+    - assets/hidden_gems/corridor_gems.json

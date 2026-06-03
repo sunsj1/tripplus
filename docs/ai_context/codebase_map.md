@@ -101,6 +101,17 @@
   - `presentation/controller/settings_controller.dart` — `SettingsController` + `settingsControllerProvider`. Reads from Hive on construction, persists on every change (`P2-053`).
   - `presentation/view/settings_screen.dart` — units segmented control + master alerts switch + system notifications switch + per-`AlertType` mute list. Mounted via Settings menu tile in `ProfileTabScreen` (`P2-053`).
 - `trip/presentation/controller/trip_replan_provider.dart` — `TripReplanRequest(from, to)` + `tripReplanRequestProvider` (StateProvider, nullable). Plan screen consume-and-clears in `build` (`P2-051`).
+- `trip/domain/trip_share_text.dart` — pure `buildTripShareText(trip)` → emoji-prefixed summary + Google Maps URL (`P2-052`).
+- `trip/presentation/utils/share_trip.dart` — `shareTrip(context, trip)` wrapper around `SharePlus.instance.share(...)` (`P2-052`).
+- `personalization/data/brand_affinity_box.dart` — Hive `brand_affinity` box (JSON-encoded `Map<wireValue, double>`) (`P2-013`).
+- `personalization/presentation/controller/brand_affinity_controller.dart` — `BrandAffinityController` + `brandAffinityControllerProvider`. `registerInteraction({poi, signal: 'view'|'pulse'})` (`P2-013`).
+- `personalization/presentation/controller/personalization_providers.dart` — `userPreferenceVectorProvider` now merges normalised learned brand weights into explicit selections (`P2-013`).
+- `hidden_gems/` (P2 Session 10)
+  - `domain/hidden_gem.dart` — `HiddenGem`, `HiddenGemCorridor`, `HiddenGemCategory { food, scenic, specialty, other }`, `HiddenGemTag { food, scenic, specialty, underrated }` (`P2-060`, `P2-062`).
+  - `data/hidden_gem_dataset.dart` — `HiddenGemDataset.load()` reads `assets/hidden_gems/corridor_gems.json` via `rootBundle`, cached (`P2-060`).
+  - `presentation/controller/hidden_gems_providers.dart` — `hiddenGemCorridorsProvider` (full dataset) + `activeCorridorGemsProvider` (corridor match for the active plan via the same waypoint-hit heuristic as `TollEstimator`) (`P2-061`).
+  - `presentation/widget/hidden_gems_carousel.dart` — horizontal cards mounted on `DiscoveryScreen` between Emergency tile and the grid. Hides itself when no plan or no match (`P2-061`).
+- `assets/hidden_gems/corridor_gems.json` — bundled curation (4 corridors, 10 gems) (`P2-060`).
   - `presentation/controller/poi_category_controller.dart` — decides between route-aware and nearby strategies based on `PlanController` snapshot at construction; EV without a plan → explicit empty state.
   - `presentation/view/poi_category_screen.dart` — reusable category screen with list/map toggle in app bar (`P1-012` + `P1-015`).
   - `presentation/widget/poi_list_tile.dart` — list tile; `pulseSlot` now filled by `PoiCommunityRatingPulse` (`P1-054`).
@@ -127,6 +138,7 @@
 - `TripBox.boxName` (`active_trip`) — `P1-040`.
 - `CorridorCacheBox.boxName` (`corridor_cache`) — `P1-043`.
 - `SettingsBox.boxName` (`app_settings`) — `P2-053`.
+- `BrandAffinityBox.boxName` (`brand_affinity`) — `P2-013`.
 
 ## Build-runner
 After ANY change to a `*.freezed.dart` source class, run:

@@ -1,4 +1,4 @@
-# TripPlus — Master UI Generation Prompt
+# JourneyPlus — Master UI Generation Prompt
 
 Use this file as the source-of-truth prompt for any AI UI generator (Stitch by Google, Figma AI, Galileo, v0, Uizard, Cursor, Lovable). Paste the relevant section verbatim — never paraphrase the design system.
 
@@ -18,7 +18,7 @@ For Stitch/Figma AI specifically: paste 1+2+4+5 once at the start, then iterate 
 
 # SECTION 1 — MASTER CONTEXT (paste first, every session)
 
-You are a senior product designer designing **TripPlus — India's Smart Highway Companion**, a Flutter mobile app (Android + iOS, mobile-first, portrait). It is not a maps app. It is an **AI copilot for Indian road trips** that helps drivers plan, discover, and travel safely on Indian highways with multi-vehicle support (Petrol, Diesel, EV, Bike).
+You are a senior product designer designing **JourneyPlus — India's Smart Highway Companion**, a Flutter mobile app (Android + iOS, mobile-first, portrait). It is not a maps app. It is an **AI copilot for Indian road trips** that helps drivers plan, discover, and travel safely on Indian highways with multi-vehicle support (Petrol, Diesel, EV, Bike).
 
 ## Product principles (every screen must respect)
 
@@ -59,7 +59,7 @@ This design system is locked. Do not invent new colors, type sizes, or radii. Us
 
 ## 2.1 Brand identity
 
-- **Wordmark:** "TripPlus"
+- **Wordmark:** "JourneyPlus"
 - **Tagline:** "AI Copilot for Indian Road Trips"
 - **Mood board keywords:** trust, calm, highway, India, premium-yet-friendly, dawn-light green.
 - **Inspirations:** Google Maps' clarity, Linear's minimalism, Apple Maps' calm typography, Zomato's category icons, IRCTC's familiarity (but cleaner).
@@ -395,7 +395,7 @@ The app needs every screen below. Generate them in this order:
 
 **Layout:**
 - Full-screen `tealGradient` background.
-- Centered: TripPlus wordmark in white `h1`, then tagline "AI Copilot for Indian Road Trips" in `bodyLarge` white at 80% opacity.
+- Centered: JourneyPlus wordmark in white `h1`, then tagline "AI Copilot for Indian Road Trips" in `bodyLarge` white at 80% opacity.
 - A subtle animated highway-line illustration at the bottom (white at 30% opacity), pulsing.
 - No interactive elements.
 
@@ -770,7 +770,7 @@ Full screen list of every pulse for a POI.
   - What I learned (Phase 3, hidden in Phase 1)
   - Settings
 - Footer: "Sign out" text button (textSecondary) and "Delete account" text button (error).
-- Tiny version line at very bottom: "TripPlus v1.0.0".
+- Tiny version line at very bottom: "JourneyPlus v1.0.0".
 
 ---
 
@@ -952,7 +952,7 @@ OUTPUT
 Use the short re-anchor:
 
 ```
-Continue in the same TripPlus design system. Do NOT change any tokens.
+Continue in the same JourneyPlus design system. Do NOT change any tokens.
 
 NEXT SCREEN
 [paste next brief from Section 3, e.g. 3.15 Discover]
@@ -1050,7 +1050,7 @@ Every page uses the same set of color and text styles registered as **Figma loca
 
 ## Template — first message of a new design session
 
-> You are a senior product designer for **TripPlus — India's Smart Highway Companion** (Flutter mobile, multi-vehicle road-trip copilot, not a maps app).
+> You are a senior product designer for **JourneyPlus — India's Smart Highway Companion** (Flutter mobile, multi-vehicle road-trip copilot, not a maps app).
 >
 > Use this design system exactly:
 >
@@ -1072,7 +1072,7 @@ Every page uses the same set of color and text styles registered as **Figma loca
 
 ## Template — single-screen request (mid-session)
 
-> Same TripPlus design system. Same tokens.
+> Same JourneyPlus design system. Same tokens.
 >
 > SCREEN: [paste brief]
 >
@@ -1080,7 +1080,7 @@ Every page uses the same set of color and text styles registered as **Figma loca
 
 ## Template — fix-up request
 
-> Same TripPlus design system. The previous screen used wrong tokens.
+> Same JourneyPlus design system. The previous screen used wrong tokens.
 > Reset:
 > - primary `#1B5E20` only
 > - card radius 16, button radius 16

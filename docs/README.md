@@ -1,4 +1,4 @@
-# TripPlus — `docs/`
+# JourneyPlus — `docs/`
 
 This folder is the **knowledge base** of the project — what we're building, how it's wired, and the conventions we follow. Read it from top to bottom on a new machine and you're caught up in ~30 minutes.
 

@@ -2,18 +2,18 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:tripplus/core/domain/vehicle.dart';
-import 'package:tripplus/core/services/location_service.dart';
-import 'package:tripplus/core/telemetry/app_telemetry.dart';
-import 'package:tripplus/features/alerts/domain/alert.dart';
-import 'package:tripplus/features/plan/presentation/controller/plan_state.dart';
-import 'package:tripplus/features/trip/data/local_db/corridor_cache_box.dart';
-import 'package:tripplus/features/trip/data/local_db/trip_history_box.dart';
-import 'package:tripplus/features/trip/data/local_db/trip_box.dart';
-import 'package:tripplus/features/trip/domain/models/corridor_cache.dart';
-import 'package:tripplus/features/trip/domain/models/trip.dart';
-import 'package:tripplus/features/trip/domain/models/trip_status.dart';
-import 'package:tripplus/features/trip/presentation/controller/active_trip_state.dart';
+import 'package:journeyplus/core/domain/vehicle.dart';
+import 'package:journeyplus/core/services/location_service.dart';
+import 'package:journeyplus/core/telemetry/app_telemetry.dart';
+import 'package:journeyplus/features/alerts/domain/alert.dart';
+import 'package:journeyplus/features/plan/presentation/controller/plan_state.dart';
+import 'package:journeyplus/features/trip/data/local_db/corridor_cache_box.dart';
+import 'package:journeyplus/features/trip/data/local_db/trip_history_box.dart';
+import 'package:journeyplus/features/trip/data/local_db/trip_box.dart';
+import 'package:journeyplus/features/trip/domain/models/corridor_cache.dart';
+import 'package:journeyplus/features/trip/domain/models/trip.dart';
+import 'package:journeyplus/features/trip/domain/models/trip_status.dart';
+import 'package:journeyplus/features/trip/presentation/controller/active_trip_state.dart';
 import 'package:uuid/uuid.dart';
 
 /// Manages the full lifecycle of the single active road trip.

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
 
 /// Pinned red entry point on the Discover grid — always visible above categories.
 class EmergencyPinnedTile extends StatelessWidget {

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tripplus/core/domain/poi.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
-import 'package:tripplus/features/personalization/domain/ranking_explanation.dart';
-import 'package:tripplus/features/personalization/presentation/controller/personalization_providers.dart';
+import 'package:journeyplus/core/domain/poi.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/features/personalization/domain/ranking_explanation.dart';
+import 'package:journeyplus/features/personalization/presentation/controller/personalization_providers.dart';
 
 /// P2-033 — "Why we recommend this" surface.
 ///

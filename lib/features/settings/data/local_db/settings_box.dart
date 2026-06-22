@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:tripplus/features/settings/domain/app_settings.dart';
+import 'package:journeyplus/features/settings/domain/app_settings.dart';
 
 /// P2-053 — Hive persistence wrapper for [AppSettings].
 ///

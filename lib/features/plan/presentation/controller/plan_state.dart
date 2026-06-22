@@ -1,8 +1,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:tripplus/core/domain/user_preferences.dart';
-import 'package:tripplus/core/domain/vehicle.dart';
-import 'package:tripplus/core/services/route_station_service.dart';
-import 'package:tripplus/features/charging/domain/models/charging_station.dart';
+import 'package:journeyplus/core/domain/user_preferences.dart';
+import 'package:journeyplus/core/domain/vehicle.dart';
+import 'package:journeyplus/core/services/route_station_service.dart';
+import 'package:journeyplus/features/charging/domain/models/charging_station.dart';
 
 part 'plan_state.freezed.dart';
 

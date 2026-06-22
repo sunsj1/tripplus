@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
-import 'package:tripplus/core/widgets/app_top_bar.dart';
-import 'package:tripplus/features/alerts/presentation/widget/journey_timeline.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/core/widgets/app_top_bar.dart';
+import 'package:journeyplus/features/alerts/presentation/widget/journey_timeline.dart';
 
 class GapAlertScreen extends StatefulWidget {
   final double gapKm;

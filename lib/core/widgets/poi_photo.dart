@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:tripplus/core/domain/poi.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/utils/google_places_photo.dart';
+import 'package:journeyplus/core/domain/poi.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/utils/google_places_photo.dart';
 
 /// Square thumbnail for POI list rows — Google photo when available, else icon.
 class PoiPhotoThumbnail extends StatelessWidget {

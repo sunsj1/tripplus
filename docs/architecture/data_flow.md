@@ -1,6 +1,6 @@
 # Data Flow
 
-How data moves through TripPlus — from external sources to UI, and from user actions back to storage.
+How data moves through JourneyPlus — from external sources to UI, and from user actions back to storage.
 
 ---
 

@@ -1,9 +1,9 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
-import 'package:tripplus/features/community/data/community_photo_compress.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/features/community/data/community_photo_compress.dart';
 
 class StationReportStepPhoto extends StatelessWidget {
   final Uint8List? jpegBytes;

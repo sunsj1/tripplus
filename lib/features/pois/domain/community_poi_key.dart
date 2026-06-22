@@ -1,4 +1,4 @@
-import 'package:tripplus/core/domain/poi.dart';
+import 'package:journeyplus/core/domain/poi.dart';
 
 /// Stable identity for a [Poi] in the community-reports collection. The same
 /// physical POI shares pulses across users and route variations.

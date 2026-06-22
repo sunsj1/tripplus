@@ -1,7 +1,7 @@
 import 'package:hive/hive.dart';
-import 'package:tripplus/core/domain/user_preferences.dart';
-import 'package:tripplus/core/domain/vehicle.dart';
-import 'package:tripplus/features/profile/domain/profile_data.dart';
+import 'package:journeyplus/core/domain/user_preferences.dart';
+import 'package:journeyplus/core/domain/vehicle.dart';
+import 'package:journeyplus/features/profile/domain/profile_data.dart';
 
 /// Hive-backed local mirror of [ProfileData]. The box itself is opened in
 /// `main.dart` at boot so reads stay synchronous.

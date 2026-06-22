@@ -3,10 +3,10 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
-import 'package:tripplus/features/auth/data/auth_repository.dart';
-import 'package:tripplus/features/auth/presentation/providers/auth_providers.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/features/auth/data/auth_repository.dart';
+import 'package:journeyplus/features/auth/presentation/providers/auth_providers.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
@@ -189,7 +189,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
                       opacity: _logoFade,
                       child: const Center(
                         child: Text(
-                          'TripPlus',
+                          'JourneyPlus',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w700,
@@ -225,7 +225,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
                       child: SlideTransition(
                         position: _bodySlide,
                         child: Text(
-                          'TripPlus predicts charging gaps\non your route so you can travel\nwithout anxiety.',
+                          'JourneyPlus predicts charging gaps\non your route so you can travel\nwithout anxiety.',
                           style: AppTextStyles.bodyLarge.copyWith(
                             color:
                                 AppColors.textOnDark.withValues(alpha: 0.85),

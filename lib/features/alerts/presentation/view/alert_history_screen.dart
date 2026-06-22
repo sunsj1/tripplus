@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
-import 'package:tripplus/core/widgets/app_top_bar.dart';
-import 'package:tripplus/core/telemetry/app_telemetry.dart';
-import 'package:tripplus/features/alerts/domain/alert.dart';
-import 'package:tripplus/features/trip/domain/models/trip.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/core/widgets/app_top_bar.dart';
+import 'package:journeyplus/core/telemetry/app_telemetry.dart';
+import 'package:journeyplus/features/alerts/domain/alert.dart';
+import 'package:journeyplus/features/trip/domain/models/trip.dart';
 
 /// Per-trip log of fired predictive alerts (`P1-034`).
 class AlertHistoryScreen extends StatelessWidget {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tripplus/core/domain/poi.dart';
+import 'package:journeyplus/core/domain/poi.dart';
 
 /// Emergency help categories surfaced on the Discover → Emergency screen.
 enum EmergencyServiceType {

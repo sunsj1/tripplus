@@ -8,7 +8,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError('TripPlus: configure Firebase for web if needed.');
+      throw UnsupportedError('JourneyPlus: configure Firebase for web if needed.');
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -38,6 +38,6 @@ class DefaultFirebaseOptions {
     storageBucket: 'tripplus-8aff2.firebasestorage.app',
     iosClientId:
         '840443034452-onmuspsi946895fufcf1i3velu3jj8qg.apps.googleusercontent.com',
-    iosBundleId: 'com.tripplus.tripplus',
+    iosBundleId: 'com.journeyplus.journeyplus',
   );
 }

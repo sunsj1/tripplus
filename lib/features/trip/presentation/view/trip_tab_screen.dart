@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
-import 'package:tripplus/features/alerts/presentation/view/alert_history_screen.dart';
-import 'package:tripplus/features/plan/presentation/widget/stat_card.dart';
-import 'package:tripplus/features/trip/domain/models/trip.dart';
-import 'package:tripplus/features/trip/domain/models/trip_status.dart';
-import 'package:tripplus/features/trip/presentation/controller/active_trip_state.dart';
-import 'package:tripplus/features/trip/presentation/controller/trip_providers.dart';
-import 'package:tripplus/features/trip/presentation/utils/share_trip.dart';
-import 'package:tripplus/features/trip/presentation/utils/trip_formatters.dart';
-import 'package:tripplus/features/trip/presentation/widget/trip_elapsed_panel.dart';
-import 'package:tripplus/features/trip/presentation/widget/trip_end_dialog.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/features/alerts/presentation/view/alert_history_screen.dart';
+import 'package:journeyplus/features/plan/presentation/widget/stat_card.dart';
+import 'package:journeyplus/features/trip/domain/models/trip.dart';
+import 'package:journeyplus/features/trip/domain/models/trip_status.dart';
+import 'package:journeyplus/features/trip/presentation/controller/active_trip_state.dart';
+import 'package:journeyplus/features/trip/presentation/controller/trip_providers.dart';
+import 'package:journeyplus/features/trip/presentation/utils/share_trip.dart';
+import 'package:journeyplus/features/trip/presentation/utils/trip_formatters.dart';
+import 'package:journeyplus/features/trip/presentation/widget/trip_elapsed_panel.dart';
+import 'package:journeyplus/features/trip/presentation/widget/trip_end_dialog.dart';
 
 class TripTabScreen extends ConsumerWidget {
   const TripTabScreen({super.key, required this.onPlanTrip});

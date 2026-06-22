@@ -15,7 +15,7 @@ You don't have to pick one — import **both**. They share the same task IDs (`P
 
 This gives you a real Notion database with filters, sorts, kanban view by status, etc.
 
-1. Open Notion → choose the workspace/parent page where TripPlus should live.
+1. Open Notion → choose the workspace/parent page where JourneyPlus should live.
 2. Click **`+ Add a page`** (or open an existing parent page).
 3. Inside the page, type `/import` and select **Import**.
 4. Choose **CSV**.
@@ -93,7 +93,7 @@ If you prefer Notion to always reflect the repo (one-way: repo → Notion), do t
 Once imported, this is a clean structure that mirrors the repo:
 
 ```
-TripPlus (parent page)
+JourneyPlus (parent page)
 ├── 📌 Overview (paste contents of project_plan/00_overview.md)
 ├── 📋 Tasks (the imported database from tasks.csv)
 ├── ✅ Tracker (the imported notion_tracker.md page)

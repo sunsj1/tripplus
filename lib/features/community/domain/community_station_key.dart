@@ -1,4 +1,4 @@
-import 'package:tripplus/features/charging/domain/models/charging_station.dart';
+import 'package:journeyplus/features/charging/domain/models/charging_station.dart';
 
 /// Stable key so the same physical station shares community data across users,
 /// routes, and list/detail screens.

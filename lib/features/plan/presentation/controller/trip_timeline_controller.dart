@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tripplus/core/domain/user_preferences.dart';
-import 'package:tripplus/core/utils/trip_plan_copy.dart';
-import 'package:tripplus/features/charging/domain/models/charging_station.dart';
-import 'package:tripplus/features/plan/domain/timeline_stop.dart';
-import 'package:tripplus/features/plan/presentation/controller/plan_state.dart';
+import 'package:journeyplus/core/domain/user_preferences.dart';
+import 'package:journeyplus/core/utils/trip_plan_copy.dart';
+import 'package:journeyplus/features/charging/domain/models/charging_station.dart';
+import 'package:journeyplus/features/plan/domain/timeline_stop.dart';
+import 'package:journeyplus/features/plan/presentation/controller/plan_state.dart';
 
 /// Input for building the route timeline (plan + trip context).
 @immutable

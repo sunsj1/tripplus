@@ -1,14 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tripplus/core/domain/poi.dart';
-import 'package:tripplus/core/domain/user_preferences.dart';
-import 'package:tripplus/core/services/directions_service.dart';
-import 'package:tripplus/core/utils/polyline_decoder.dart';
-import 'package:tripplus/core/utils/trip_plan_copy.dart';
-import 'package:tripplus/features/charging/domain/models/charging_station.dart';
-import 'package:tripplus/features/plan/domain/preference_corridor_insight.dart';
-import 'package:tripplus/features/plan/presentation/controller/plan_state.dart';
-import 'package:tripplus/features/pois/presentation/controller/pois_providers.dart';
+import 'package:journeyplus/core/domain/poi.dart';
+import 'package:journeyplus/core/domain/user_preferences.dart';
+import 'package:journeyplus/core/services/directions_service.dart';
+import 'package:journeyplus/core/utils/polyline_decoder.dart';
+import 'package:journeyplus/core/utils/trip_plan_copy.dart';
+import 'package:journeyplus/features/charging/domain/models/charging_station.dart';
+import 'package:journeyplus/features/plan/domain/preference_corridor_insight.dart';
+import 'package:journeyplus/features/plan/presentation/controller/plan_state.dart';
+import 'package:journeyplus/features/pois/presentation/controller/pois_providers.dart';
 
 @immutable
 class RoutePreferenceInsightsKey {

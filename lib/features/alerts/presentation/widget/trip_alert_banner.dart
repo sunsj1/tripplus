@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
-import 'package:tripplus/features/alerts/domain/alert.dart';
-import 'package:tripplus/features/alerts/presentation/controller/alerts_providers.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/features/alerts/domain/alert.dart';
+import 'package:journeyplus/features/alerts/presentation/controller/alerts_providers.dart';
 
 /// In-app banner for the latest predictive alert.
 ///

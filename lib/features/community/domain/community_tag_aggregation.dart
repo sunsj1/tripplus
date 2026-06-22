@@ -1,4 +1,4 @@
-import 'package:tripplus/features/community/domain/models/station_community_report.dart';
+import 'package:journeyplus/features/community/domain/models/station_community_report.dart';
 
 /// P2-023 — Aggregates the mode-relevant boolean tags (baby-friendly,
 /// women-safe, hygienic) across a list of community reports.

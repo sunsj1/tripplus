@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
-import 'package:tripplus/features/alerts/domain/alert.dart';
-import 'package:tripplus/features/settings/domain/app_settings.dart';
-import 'package:tripplus/features/settings/presentation/controller/settings_controller.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/features/alerts/domain/alert.dart';
+import 'package:journeyplus/features/settings/domain/app_settings.dart';
+import 'package:journeyplus/features/settings/presentation/controller/settings_controller.dart';
 
 /// P2-053 — Per-device settings: distance units + notification preferences.
 class SettingsScreen extends ConsumerWidget {
@@ -71,7 +71,7 @@ class SettingsScreen extends ConsumerWidget {
                   contentPadding: EdgeInsets.zero,
                   title: const Text('System notifications'),
                   subtitle: const Text(
-                      'Show alerts even when TripPlus is in the background'),
+                      'Show alerts even when JourneyPlus is in the background'),
                   secondary: const Icon(Icons.system_security_update_good_outlined,
                       color: AppColors.primary),
                   value: settings.systemNotificationsEnabled &&

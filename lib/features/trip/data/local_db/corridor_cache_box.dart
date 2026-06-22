@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:tripplus/features/trip/domain/models/corridor_cache.dart';
+import 'package:journeyplus/features/trip/domain/models/corridor_cache.dart';
 
 /// P1-043 — Hive persistence wrapper for [CorridorCache].
 ///

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tripplus/features/charging/domain/models/charging_station.dart';
+import 'package:journeyplus/features/charging/domain/models/charging_station.dart';
 
 class StationCard extends StatelessWidget {
   final ChargingStation station;

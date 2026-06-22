@@ -1,5 +1,5 @@
 ---
-description: Flutter / Dart style conventions for TripPlus
+description: Flutter / Dart style conventions for JourneyPlus
 globs: **/*.dart
 alwaysApply: false
 ---

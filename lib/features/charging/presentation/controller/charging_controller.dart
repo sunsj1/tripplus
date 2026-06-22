@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
-import 'package:tripplus/core/utils/location_helper.dart';
-import 'package:tripplus/features/charging/data/repository/charging_repository.dart';
-import 'package:tripplus/features/charging/presentation/controller/charging_state.dart';
+import 'package:journeyplus/core/utils/location_helper.dart';
+import 'package:journeyplus/features/charging/data/repository/charging_repository.dart';
+import 'package:journeyplus/features/charging/presentation/controller/charging_state.dart';
 
 class ChargingController extends StateNotifier<ChargingState> {
   final ChargingRepository _repository;

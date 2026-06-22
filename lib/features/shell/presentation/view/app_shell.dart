@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tripplus/core/services/observability_providers.dart';
-import 'package:tripplus/core/widgets/app_bottom_nav.dart';
-import 'package:tripplus/core/widgets/offline_banner.dart';
-import 'package:tripplus/features/alerts/presentation/controller/alerts_providers.dart';
-import 'package:tripplus/features/alerts/presentation/widget/trip_alert_banner.dart';
-import 'package:tripplus/features/discovery/presentation/view/discovery_screen.dart';
-import 'package:tripplus/features/plan/presentation/view/plan_screen.dart';
-import 'package:tripplus/features/profile/presentation/view/profile_tab_screen.dart';
-import 'package:tripplus/features/shell/presentation/controller/shell_providers.dart';
-import 'package:tripplus/features/trip/presentation/view/trip_tab_screen.dart';
+import 'package:journeyplus/core/services/observability_providers.dart';
+import 'package:journeyplus/core/widgets/app_bottom_nav.dart';
+import 'package:journeyplus/core/widgets/offline_banner.dart';
+import 'package:journeyplus/features/alerts/presentation/controller/alerts_providers.dart';
+import 'package:journeyplus/features/alerts/presentation/widget/trip_alert_banner.dart';
+import 'package:journeyplus/features/discovery/presentation/view/discovery_screen.dart';
+import 'package:journeyplus/features/plan/presentation/view/plan_screen.dart';
+import 'package:journeyplus/features/profile/presentation/view/profile_tab_screen.dart';
+import 'package:journeyplus/features/shell/presentation/controller/shell_providers.dart';
+import 'package:journeyplus/features/trip/presentation/view/trip_tab_screen.dart';
 
 class AppShell extends ConsumerWidget {
   const AppShell({super.key});

@@ -1,10 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tripplus/core/domain/poi.dart';
-import 'package:tripplus/core/services/route_poi_service.dart';
-import 'package:tripplus/core/utils/failure.dart';
-import 'package:tripplus/core/utils/location_helper.dart';
-import 'package:tripplus/features/pois/data/repository/poi_repository.dart';
-import 'package:tripplus/features/pois/presentation/controller/poi_category_ui_state.dart';
+import 'package:journeyplus/core/domain/poi.dart';
+import 'package:journeyplus/core/services/route_poi_service.dart';
+import 'package:journeyplus/core/utils/failure.dart';
+import 'package:journeyplus/core/utils/location_helper.dart';
+import 'package:journeyplus/features/pois/data/repository/poi_repository.dart';
+import 'package:journeyplus/features/pois/presentation/controller/poi_category_ui_state.dart';
 
 /// Drives the [PoiCategoryScreen] for one [PoiCategory].
 ///

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:tripplus/core/domain/fuel_brand.dart';
-import 'package:tripplus/core/domain/user_preferences.dart';
-import 'package:tripplus/core/domain/vehicle.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/core/domain/fuel_brand.dart';
+import 'package:journeyplus/core/domain/user_preferences.dart';
+import 'package:journeyplus/core/domain/vehicle.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
 
 /// Shows [FuelBrandPicker] only when the vehicle burns pump fuel (petrol/diesel).
 class FuelBrandSection extends StatelessWidget {

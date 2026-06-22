@@ -1,4 +1,4 @@
-# How to resume TripPlus on a fresh machine / fresh AI
+# How to resume JourneyPlus on a fresh machine / fresh AI
 
 This file is a **paste-target**. Copy the prompt in the next section into any
 AI coding tool (Claude Code, Cursor, Codex CLI, Continue, etc.) opened at the
@@ -16,7 +16,7 @@ chat memory is required.
 
 ```
 ────────────────────────────────────────────────────────────────────────────
-You are resuming work on TripPlus — an EV/road-trip Flutter app being
+You are resuming work on JourneyPlus — an EV/road-trip Flutter app being
 extended into India's Smart Highway Companion. Work is tracked by task IDs
 like `P1-007` from `project_plan/`.
 
@@ -238,7 +238,7 @@ The resume prompt deliberately doesn't tell the model to read:
 - `android/`, `ios/`, `macos/`, `web/`, `windows/`, `linux/` — only needed
   when a specific task touches platform plumbing (`P1-027` notifications,
   `P1-042` foreground location, etc.) — the task description will say so.
-- `Initial idea and current status of project.md`, `tripplus_notion.md`,
+- `Initial idea and current status of project.md`, `journeyplus_notion.md`,
   `RELIABILITY_PHASES.md`, `COMMUNITY_REPORTS.md` — these are pre-Phase-1
   historical context, superseded by `docs/context/`.
 

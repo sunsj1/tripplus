@@ -1,8 +1,8 @@
-import 'package:tripplus/core/domain/poi.dart';
-import 'package:tripplus/features/alerts/domain/alert.dart';
-import 'package:tripplus/features/alerts/domain/alert_engine_input.dart';
-import 'package:tripplus/features/alerts/domain/alert_route_utils.dart';
-import 'package:tripplus/features/alerts/domain/rules/alert_rule.dart';
+import 'package:journeyplus/core/domain/poi.dart';
+import 'package:journeyplus/features/alerts/domain/alert.dart';
+import 'package:journeyplus/features/alerts/domain/alert_engine_input.dart';
+import 'package:journeyplus/features/alerts/domain/alert_route_utils.dart';
+import 'package:journeyplus/features/alerts/domain/rules/alert_rule.dart';
 import 'package:uuid/uuid.dart';
 
 /// **Food window** — surfaces when the next highly rated meal stop (honouring

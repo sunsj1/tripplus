@@ -1,5 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:tripplus/features/auth/domain/user_profile.dart';
+import 'package:journeyplus/features/auth/domain/user_profile.dart';
 
 sealed class AuthUiState {}
 

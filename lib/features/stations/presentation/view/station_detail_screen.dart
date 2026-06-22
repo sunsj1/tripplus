@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
-import 'package:tripplus/core/widgets/app_top_bar.dart';
-import 'package:tripplus/features/charging/domain/models/charging_station.dart';
-import 'package:tripplus/features/community/presentation/widgets/community_reports_section.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/core/widgets/app_top_bar.dart';
+import 'package:journeyplus/features/charging/domain/models/charging_station.dart';
+import 'package:journeyplus/features/community/presentation/widgets/community_reports_section.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class StationDetailScreen extends StatefulWidget {

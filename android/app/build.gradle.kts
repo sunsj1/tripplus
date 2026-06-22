@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "com.tripplus.tripplus"
+    namespace = "com.journeyplus.journeyplus"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -23,7 +23,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.tripplus.tripplus"
+        applicationId = "com.journeyplus.journeyplus"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

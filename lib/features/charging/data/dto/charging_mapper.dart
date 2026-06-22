@@ -1,5 +1,5 @@
-import 'package:tripplus/features/charging/data/dto/charging_dto.dart';
-import 'package:tripplus/features/charging/domain/models/charging_station.dart';
+import 'package:journeyplus/features/charging/data/dto/charging_dto.dart';
+import 'package:journeyplus/features/charging/domain/models/charging_station.dart';
 
 class ChargingMapper {
   ChargingMapper._();

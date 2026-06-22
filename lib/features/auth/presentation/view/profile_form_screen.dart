@@ -4,10 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:intl_phone_field/phone_number.dart' as intl_phone;
 import 'package:phone_numbers_parser/phone_numbers_parser.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
-import 'package:tripplus/features/auth/domain/user_profile.dart';
-import 'package:tripplus/features/auth/presentation/providers/auth_providers.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/features/auth/domain/user_profile.dart';
+import 'package:journeyplus/features/auth/presentation/providers/auth_providers.dart';
 
 String inferAuthProvider(User user) {
   for (final p in user.providerData) {
@@ -133,7 +133,7 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            widget.isEditMode ? 'Profile updated' : 'Welcome to TripPlus!',
+            widget.isEditMode ? 'Profile updated' : 'Welcome to JourneyPlus!',
           ),
         ),
       );

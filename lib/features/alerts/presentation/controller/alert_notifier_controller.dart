@@ -1,26 +1,26 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tripplus/core/domain/poi.dart';
-import 'package:tripplus/core/services/directions_service.dart';
-import 'package:tripplus/core/telemetry/app_telemetry.dart';
-import 'package:tripplus/core/utils/polyline_decoder.dart';
-import 'package:tripplus/features/alerts/domain/alert.dart';
-import 'package:tripplus/features/alerts/domain/alert_engine.dart';
-import 'package:tripplus/features/alerts/domain/alert_engine_input.dart';
-import 'package:tripplus/features/alerts/domain/alert_notifier_state.dart';
-import 'package:tripplus/features/alerts/presentation/controller/alerts_providers.dart';
-import 'package:tripplus/features/plan/presentation/controller/plan_providers.dart';
-import 'package:tripplus/features/pois/presentation/controller/pois_providers.dart';
-import 'package:tripplus/features/profile/presentation/controller/profile_providers.dart';
-import 'package:tripplus/features/settings/domain/app_settings.dart';
-import 'package:tripplus/features/settings/presentation/controller/settings_controller.dart';
-import 'package:tripplus/features/trip/data/local_db/corridor_cache_box.dart';
-import 'package:tripplus/features/trip/domain/models/trip.dart';
-import 'package:tripplus/features/trip/presentation/controller/active_trip_state.dart';
-import 'package:tripplus/features/trip/presentation/controller/trip_providers.dart';
-import 'package:tripplus/features/weather/domain/route_weather_segment.dart';
-import 'package:tripplus/features/weather/presentation/controller/weather_providers.dart';
+import 'package:journeyplus/core/domain/poi.dart';
+import 'package:journeyplus/core/services/directions_service.dart';
+import 'package:journeyplus/core/telemetry/app_telemetry.dart';
+import 'package:journeyplus/core/utils/polyline_decoder.dart';
+import 'package:journeyplus/features/alerts/domain/alert.dart';
+import 'package:journeyplus/features/alerts/domain/alert_engine.dart';
+import 'package:journeyplus/features/alerts/domain/alert_engine_input.dart';
+import 'package:journeyplus/features/alerts/domain/alert_notifier_state.dart';
+import 'package:journeyplus/features/alerts/presentation/controller/alerts_providers.dart';
+import 'package:journeyplus/features/plan/presentation/controller/plan_providers.dart';
+import 'package:journeyplus/features/pois/presentation/controller/pois_providers.dart';
+import 'package:journeyplus/features/profile/presentation/controller/profile_providers.dart';
+import 'package:journeyplus/features/settings/domain/app_settings.dart';
+import 'package:journeyplus/features/settings/presentation/controller/settings_controller.dart';
+import 'package:journeyplus/features/trip/data/local_db/corridor_cache_box.dart';
+import 'package:journeyplus/features/trip/domain/models/trip.dart';
+import 'package:journeyplus/features/trip/presentation/controller/active_trip_state.dart';
+import 'package:journeyplus/features/trip/presentation/controller/trip_providers.dart';
+import 'package:journeyplus/features/weather/domain/route_weather_segment.dart';
+import 'package:journeyplus/features/weather/presentation/controller/weather_providers.dart';
 
 /// Polls location + [AlertEngine] while a trip is active; fires local
 /// notifications and drives the in-app banner.

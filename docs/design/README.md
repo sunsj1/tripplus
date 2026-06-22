@@ -1,4 +1,4 @@
-# TripPlus — Design
+# JourneyPlus — Design
 
 This folder is the **design source-of-truth** for AI UI generators (Stitch by Google, Figma AI, Galileo, v0, Uizard, Lovable, Cursor) and any human designer.
 

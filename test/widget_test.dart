@@ -1,14 +1,14 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:tripplus/main.dart';
+import 'package:journeyplus/main.dart';
 
 void main() {
   testWidgets('App renders without crashing', (WidgetTester tester) async {
     await tester.pumpWidget(
-      const ProviderScope(child: TripPlusApp()),
+      const ProviderScope(child: JourneyPlusApp()),
     );
 
-    expect(find.byType(TripPlusApp), findsOneWidget);
+    expect(find.byType(JourneyPlusApp), findsOneWidget);
   });
 }

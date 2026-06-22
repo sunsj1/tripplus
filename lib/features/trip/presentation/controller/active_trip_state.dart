@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:tripplus/features/trip/domain/models/trip.dart';
+import 'package:journeyplus/features/trip/domain/models/trip.dart';
 
 part 'active_trip_state.freezed.dart';
 

@@ -1,6 +1,6 @@
 # AI Development Onboarding
 
-> **Audience.** *You* — a human who just cloned the TripPlus repo, possibly on
+> **Audience.** *You* — a human who just cloned the JourneyPlus repo, possibly on
 > a brand-new machine, and wants to continue building it with an AI coding
 > tool (Claude Code, Cursor, Codex CLI, Continue, etc.).
 >
@@ -118,8 +118,8 @@ flowchart TD
 ### 1. Clone the repo
 
 ```bash
-git clone <your-repo-url> tripplus
-cd tripplus
+git clone <your-repo-url> journeyplus
+cd journeyplus
 ```
 
 ### 2. Install Flutter

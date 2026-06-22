@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:tripplus/core/domain/poi.dart';
-import 'package:tripplus/core/domain/user_preferences.dart';
-import 'package:tripplus/core/domain/vehicle.dart';
+import 'package:journeyplus/core/domain/poi.dart';
+import 'package:journeyplus/core/domain/user_preferences.dart';
+import 'package:journeyplus/core/domain/vehicle.dart';
 
 /// User-facing strings and icons that depend on [VehicleType].
 class TripPlanCopy {

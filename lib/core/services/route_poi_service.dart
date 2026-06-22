@@ -1,14 +1,14 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:logger/logger.dart';
-import 'package:tripplus/core/domain/poi.dart';
-import 'package:tripplus/core/services/directions_service.dart';
-import 'package:tripplus/core/services/geocoding_service.dart';
-import 'package:tripplus/core/services/route_station_service.dart';
-import 'package:tripplus/core/utils/failure.dart';
-import 'package:tripplus/core/utils/location_helper.dart';
-import 'package:tripplus/core/utils/polyline_decoder.dart';
-import 'package:tripplus/features/charging/domain/models/charging_station.dart';
-import 'package:tripplus/features/pois/data/repository/poi_repository.dart';
+import 'package:journeyplus/core/domain/poi.dart';
+import 'package:journeyplus/core/services/directions_service.dart';
+import 'package:journeyplus/core/services/geocoding_service.dart';
+import 'package:journeyplus/core/services/route_station_service.dart';
+import 'package:journeyplus/core/utils/failure.dart';
+import 'package:journeyplus/core/utils/location_helper.dart';
+import 'package:journeyplus/core/utils/polyline_decoder.dart';
+import 'package:journeyplus/features/charging/domain/models/charging_station.dart';
+import 'package:journeyplus/features/pois/data/repository/poi_repository.dart';
 
 /// Result of a route-aware POI lookup: the resolved route plus a list of
 /// POIs (all in the same category) along its corridor.

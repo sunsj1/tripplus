@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:tripplus/features/community/data/community_telemetry.dart';
-import 'package:tripplus/features/community/data/community_submit_queue.dart';
-import 'package:tripplus/features/community/data/repository/community_report_repository.dart';
-import 'package:tripplus/features/community/domain/models/station_community_report.dart';
-import 'package:tripplus/features/community/domain/models/station_community_submit_input.dart';
-import 'package:tripplus/features/community/domain/models/station_community_ui_state.dart';
+import 'package:journeyplus/features/community/data/community_telemetry.dart';
+import 'package:journeyplus/features/community/data/community_submit_queue.dart';
+import 'package:journeyplus/features/community/data/repository/community_report_repository.dart';
+import 'package:journeyplus/features/community/domain/models/station_community_report.dart';
+import 'package:journeyplus/features/community/domain/models/station_community_submit_input.dart';
+import 'package:journeyplus/features/community/domain/models/station_community_ui_state.dart';
 
 class StationCommunityController extends StateNotifier<StationCommunityUiState> {
   /// `queryByTargetKey: false` (default) → `watchStationReports(targetKey)`,

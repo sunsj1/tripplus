@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:tripplus/core/domain/poi.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
-import 'package:tripplus/core/widgets/poi_photo.dart';
-import 'package:tripplus/core/widgets/source_badge.dart';
+import 'package:journeyplus/core/domain/poi.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/core/widgets/poi_photo.dart';
+import 'package:journeyplus/core/widgets/source_badge.dart';
 
 /// One row in the POI list. Community pulse chip is added in `P1-054`; this
 /// tile leaves a `pulseSlot` placeholder so the future widget can drop in

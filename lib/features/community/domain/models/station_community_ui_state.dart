@@ -1,9 +1,9 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:tripplus/features/community/domain/community_condition.dart';
-import 'package:tripplus/features/community/domain/community_tag_aggregation.dart';
-import 'package:tripplus/features/community/domain/models/station_community_report.dart';
-import 'package:tripplus/features/community/domain/road_condition_aggregation.dart';
-import 'package:tripplus/features/community/domain/trust_level.dart';
+import 'package:journeyplus/features/community/domain/community_condition.dart';
+import 'package:journeyplus/features/community/domain/community_tag_aggregation.dart';
+import 'package:journeyplus/features/community/domain/models/station_community_report.dart';
+import 'package:journeyplus/features/community/domain/road_condition_aggregation.dart';
+import 'package:journeyplus/features/community/domain/trust_level.dart';
 
 part 'station_community_ui_state.freezed.dart';
 

@@ -1,11 +1,11 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:tripplus/core/domain/vehicle.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
-import 'package:tripplus/core/utils/trip_plan_copy.dart';
-import 'package:tripplus/core/widgets/app_top_bar.dart';
+import 'package:journeyplus/core/domain/vehicle.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/core/utils/trip_plan_copy.dart';
+import 'package:journeyplus/core/widgets/app_top_bar.dart';
 
 class CalculatingView extends StatefulWidget {
   final String from;

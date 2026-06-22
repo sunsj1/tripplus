@@ -1,10 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tripplus/core/domain/user_preferences.dart';
-import 'package:tripplus/core/domain/vehicle.dart';
-import 'package:tripplus/core/utils/trip_plan_copy.dart';
-import 'package:tripplus/features/profile/data/repository/profile_repository.dart';
-import 'package:tripplus/features/profile/domain/profile_data.dart';
-import 'package:tripplus/features/profile/presentation/controller/profile_ui_state.dart';
+import 'package:journeyplus/core/domain/user_preferences.dart';
+import 'package:journeyplus/core/domain/vehicle.dart';
+import 'package:journeyplus/core/utils/trip_plan_copy.dart';
+import 'package:journeyplus/features/profile/data/repository/profile_repository.dart';
+import 'package:journeyplus/features/profile/domain/profile_data.dart';
+import 'package:journeyplus/features/profile/presentation/controller/profile_ui_state.dart';
 
 class ProfileController extends StateNotifier<ProfileUiState> {
   ProfileController({

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
 
 /// Shimmer-style placeholder list for POI category loading (`P1-062`).
 class PoiListSkeleton extends StatelessWidget {

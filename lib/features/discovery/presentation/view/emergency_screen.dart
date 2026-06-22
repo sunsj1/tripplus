@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
-import 'package:tripplus/core/utils/failure.dart';
-import 'package:tripplus/core/utils/phone_launcher.dart';
-import 'package:tripplus/core/widgets/horizontal_scroll_row.dart';
-import 'package:tripplus/core/widgets/poi_list_skeleton.dart';
-import 'package:tripplus/features/discovery/domain/emergency_hotline.dart';
-import 'package:tripplus/features/discovery/domain/emergency_service_type.dart';
-import 'package:tripplus/features/discovery/presentation/controller/emergency_providers.dart';
-import 'package:tripplus/features/discovery/presentation/controller/emergency_ui_state.dart';
-import 'package:tripplus/features/pois/presentation/controller/poi_category_ui_state.dart';
-import 'package:tripplus/features/pois/presentation/widget/poi_detail_sheet.dart';
-import 'package:tripplus/features/pois/presentation/widget/poi_list_tile.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/core/utils/failure.dart';
+import 'package:journeyplus/core/utils/phone_launcher.dart';
+import 'package:journeyplus/core/widgets/horizontal_scroll_row.dart';
+import 'package:journeyplus/core/widgets/poi_list_skeleton.dart';
+import 'package:journeyplus/features/discovery/domain/emergency_hotline.dart';
+import 'package:journeyplus/features/discovery/domain/emergency_service_type.dart';
+import 'package:journeyplus/features/discovery/presentation/controller/emergency_providers.dart';
+import 'package:journeyplus/features/discovery/presentation/controller/emergency_ui_state.dart';
+import 'package:journeyplus/features/pois/presentation/controller/poi_category_ui_state.dart';
+import 'package:journeyplus/features/pois/presentation/widget/poi_detail_sheet.dart';
+import 'package:journeyplus/features/pois/presentation/widget/poi_list_tile.dart';
 
 /// Highway emergency hub: hotlines + RSA / ambulance / crane / police / hospitals.
 class EmergencyScreen extends ConsumerWidget {
@@ -21,7 +21,7 @@ class EmergencyScreen extends ConsumerWidget {
   static const _disclaimer =
       'In a life-threatening emergency, call 112 or 108 first. '
       'Place listings are suggestions from Google — verify before you go. '
-      'TripPlus does not dispatch services.';
+      'JourneyPlus does not dispatch services.';
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

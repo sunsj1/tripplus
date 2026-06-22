@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:tripplus/features/community/domain/community_target_type.dart';
+import 'package:journeyplus/features/community/domain/community_target_type.dart';
 
 part 'station_community_submit_input.freezed.dart';
 

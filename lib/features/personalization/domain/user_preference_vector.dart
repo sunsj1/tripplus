@@ -1,5 +1,5 @@
-import 'package:tripplus/core/domain/fuel_brand.dart';
-import 'package:tripplus/core/domain/user_preferences.dart';
+import 'package:journeyplus/core/domain/fuel_brand.dart';
+import 'package:journeyplus/core/domain/user_preferences.dart';
 
 /// P2-010 — Numeric ranking weights derived from a user's [UserPreferences].
 ///

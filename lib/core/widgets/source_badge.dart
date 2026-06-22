@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:tripplus/core/domain/poi.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/core/domain/poi.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
 
 /// P2-032 — Reusable, colour-coded provenance badge.
 ///

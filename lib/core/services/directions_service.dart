@@ -2,8 +2,8 @@ import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:logger/logger.dart';
-import 'package:tripplus/core/constants/api_constants.dart';
-import 'package:tripplus/core/utils/polyline_decoder.dart';
+import 'package:journeyplus/core/constants/api_constants.dart';
+import 'package:journeyplus/core/utils/polyline_decoder.dart';
 
 class RouteInfo {
   final LatLng origin;

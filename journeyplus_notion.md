@@ -1,12 +1,12 @@
-# 🚗 TripPlus — AI Highway Companion
+# 🚗 JourneyPlus — AI Highway Companion
 
 ---
 
 # 🧠 PROJECT OVERVIEW
 
-## What is TripPlus?
+## What is JourneyPlus?
 
-TripPlus is an AI-powered smart highway travel companion designed for Indian road travelers.
+JourneyPlus is an AI-powered smart highway travel companion designed for Indian road travelers.
 
 The app helps users during long-distance travel by providing:
 - Route-aware intelligence
@@ -17,7 +17,7 @@ The app helps users during long-distance travel by providing:
 - Community-powered reliability reports
 - AI-assisted road trip planning
 
-TripPlus is NOT just a maps app.
+JourneyPlus is NOT just a maps app.
 
 It acts like:
 > “AI Copilot for Indian Road Trips”
@@ -91,7 +91,7 @@ Everything should be:
 Google Maps gives:
 - Navigation
 
-TripPlus gives:
+JourneyPlus gives:
 - Highway intelligence
 - Predictive travel alerts
 - Trusted recommendations
@@ -332,7 +332,7 @@ Status:
 
 # 🧠 PRODUCT PRINCIPLES
 
-TripPlus must always:
+JourneyPlus must always:
 - Be route-aware
 - Be predictive
 - Reduce travel anxiety
@@ -415,7 +415,7 @@ AI:
 
 # 🚀 FINAL VISION
 
-TripPlus aims to become:
+JourneyPlus aims to become:
 
 > India’s Smart Highway Intelligence Platform
 

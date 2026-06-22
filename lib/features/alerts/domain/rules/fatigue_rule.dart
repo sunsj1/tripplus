@@ -1,6 +1,6 @@
-import 'package:tripplus/features/alerts/domain/alert.dart';
-import 'package:tripplus/features/alerts/domain/alert_engine_input.dart';
-import 'package:tripplus/features/alerts/domain/rules/alert_rule.dart';
+import 'package:journeyplus/features/alerts/domain/alert.dart';
+import 'package:journeyplus/features/alerts/domain/alert_engine_input.dart';
+import 'package:journeyplus/features/alerts/domain/rules/alert_rule.dart';
 import 'package:uuid/uuid.dart';
 
 /// **P2-004 — Fatigue alert.**

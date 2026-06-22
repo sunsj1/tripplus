@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:tripplus/features/community/domain/community_target_type.dart';
-import 'package:tripplus/features/community/domain/models/station_community_report.dart';
-import 'package:tripplus/features/community/domain/models/station_community_submit_input.dart';
+import 'package:journeyplus/features/community/domain/community_target_type.dart';
+import 'package:journeyplus/features/community/domain/models/station_community_report.dart';
+import 'package:journeyplus/features/community/domain/models/station_community_submit_input.dart';
 
 /// Maps Firestore documents ↔ domain models for community reports.
 /// Schema evolves additively (`P1-050`) — old docs without `targetType` /

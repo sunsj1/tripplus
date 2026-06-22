@@ -1,11 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
-import 'package:tripplus/core/domain/user_preferences.dart';
-import 'package:tripplus/core/domain/vehicle.dart';
-import 'package:tripplus/core/services/route_station_service.dart';
-import 'package:tripplus/core/utils/trip_plan_copy.dart';
-import 'package:tripplus/features/plan/presentation/controller/plan_state.dart';
-import 'package:tripplus/features/tolls/domain/toll_estimator.dart';
+import 'package:journeyplus/core/domain/user_preferences.dart';
+import 'package:journeyplus/core/domain/vehicle.dart';
+import 'package:journeyplus/core/services/route_station_service.dart';
+import 'package:journeyplus/core/utils/trip_plan_copy.dart';
+import 'package:journeyplus/features/plan/presentation/controller/plan_state.dart';
+import 'package:journeyplus/features/tolls/domain/toll_estimator.dart';
 
 // Petrol/diesel price per litre (₹) — rough Indian highway average.
 const _petrolPricePerLitre = 103.0;

@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tripplus/core/services/location_service.dart';
-import 'package:tripplus/features/trip/data/local_db/trip_history_box.dart';
-import 'package:tripplus/features/trip/domain/models/trip.dart';
-import 'package:tripplus/features/trip/presentation/controller/active_trip_controller.dart';
-import 'package:tripplus/features/trip/presentation/controller/active_trip_state.dart';
+import 'package:journeyplus/core/services/location_service.dart';
+import 'package:journeyplus/features/trip/data/local_db/trip_history_box.dart';
+import 'package:journeyplus/features/trip/domain/models/trip.dart';
+import 'package:journeyplus/features/trip/presentation/controller/active_trip_controller.dart';
+import 'package:journeyplus/features/trip/presentation/controller/active_trip_state.dart';
 
 /// Singleton controller for the active trip.
 ///

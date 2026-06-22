@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:tripplus/core/domain/user_preferences.dart';
-import 'package:tripplus/core/domain/vehicle.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
-import 'package:tripplus/core/utils/trip_plan_copy.dart';
-import 'package:tripplus/core/widgets/fuel_brand_picker.dart';
+import 'package:journeyplus/core/domain/user_preferences.dart';
+import 'package:journeyplus/core/domain/vehicle.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/core/utils/trip_plan_copy.dart';
+import 'package:journeyplus/core/widgets/fuel_brand_picker.dart';
 
 /// Vehicle row, optional fuel-brand grid (petrol/diesel), and preference chips.
 /// Changes sync to the saved profile + Firestore via [PlanScreen].

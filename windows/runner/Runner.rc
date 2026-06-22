@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.tripplus" "\0"
-            VALUE "FileDescription", "tripplus" "\0"
+            VALUE "CompanyName", "com.journeyplus" "\0"
+            VALUE "FileDescription", "JourneyPlus" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "tripplus" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2026 com.tripplus. All rights reserved." "\0"
-            VALUE "OriginalFilename", "tripplus.exe" "\0"
-            VALUE "ProductName", "tripplus" "\0"
+            VALUE "InternalName", "journeyplus" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2026 com.journeyplus. All rights reserved." "\0"
+            VALUE "OriginalFilename", "journeyplus.exe" "\0"
+            VALUE "ProductName", "JourneyPlus" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

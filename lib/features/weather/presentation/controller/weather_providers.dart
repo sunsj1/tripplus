@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tripplus/core/utils/polyline_decoder.dart';
-import 'package:tripplus/features/plan/presentation/controller/plan_state.dart';
-import 'package:tripplus/features/weather/data/open_meteo_weather_service.dart';
-import 'package:tripplus/features/weather/domain/route_weather_segment.dart';
+import 'package:journeyplus/core/utils/polyline_decoder.dart';
+import 'package:journeyplus/features/plan/presentation/controller/plan_state.dart';
+import 'package:journeyplus/features/weather/data/open_meteo_weather_service.dart';
+import 'package:journeyplus/features/weather/domain/route_weather_segment.dart';
 
 /// P2-040 — Dedicated Dio for Open-Meteo. Open-Meteo doesn't accept the
 /// browser-style query strings our Google Dio uses; keep them separate.

@@ -1,12 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
-import 'package:tripplus/core/constants/api_constants.dart';
-import 'package:tripplus/core/constants/cache_constants.dart';
-import 'package:tripplus/features/charging/data/local_db/charging_local_db.dart';
-import 'package:tripplus/features/charging/data/repository/charging_repository.dart';
-import 'package:tripplus/features/charging/presentation/controller/charging_controller.dart';
-import 'package:tripplus/features/charging/presentation/controller/charging_state.dart';
+import 'package:journeyplus/core/constants/api_constants.dart';
+import 'package:journeyplus/core/constants/cache_constants.dart';
+import 'package:journeyplus/features/charging/data/local_db/charging_local_db.dart';
+import 'package:journeyplus/features/charging/data/repository/charging_repository.dart';
+import 'package:journeyplus/features/charging/presentation/controller/charging_controller.dart';
+import 'package:journeyplus/features/charging/presentation/controller/charging_state.dart';
 
 final dioProvider = Provider<Dio>((ref) {
   return Dio(
@@ -17,7 +17,7 @@ final dioProvider = Provider<Dio>((ref) {
       headers: {
         'Accept': 'application/json',
         // OCM docs: set a custom User-Agent so the API can identify legitimate clients.
-        'User-Agent': 'TripPlus/1.0 (Flutter; EV charging app)',
+        'User-Agent': 'JourneyPlus/1.0 (Flutter; EV charging app)',
       },
     ),
   );

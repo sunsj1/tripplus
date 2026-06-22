@@ -2,7 +2,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:tripplus/core/domain/poi.dart';
+import 'package:journeyplus/core/domain/poi.dart';
 
 /// P2-074 — Lightweight zoom-based grid clustering for [GoogleMap] markers.
 ///

@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:840443034452:android:04abcc0ecfcdb88f1ba6c1",
         "android_client_info": {
-          "package_name": "com.tripplus.tripplus"
+          "package_name": "com.journeyplus.journeyplus"
         }
       },
       "oauth_client": [
@@ -17,7 +17,7 @@
           "client_id": "840443034452-3trr1un08bcghtme3ke0tej73nru46qq.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.tripplus.tripplus",
+            "package_name": "com.journeyplus.journeyplus",
             "certificate_hash": "3f3faefa34678660604c1b9d87533a591f346504"
           }
         },
@@ -42,7 +42,7 @@
               "client_id": "840443034452-onmuspsi946895fufcf1i3velu3jj8qg.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.tripplus.tripplus"
+                "bundle_id": "com.journeyplus.journeyplus"
               }
             }
           ]

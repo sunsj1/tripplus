@@ -1,14 +1,14 @@
 ---
-description: TripPlus core project conventions — read on every session
+description: JourneyPlus core project conventions — read on every session
 alwaysApply: true
 ---
 
-# TripPlus — core conventions
+# JourneyPlus — core conventions
 
 Always read **`AGENTS.md`** at the repo root first. It is the canonical context.
 
 ## Identity
-- Product: **TripPlus — AI Highway Companion for Indian road trips**.
+- Product: **JourneyPlus — AI Highway Companion for Indian road trips**.
 - We are **not** a maps app.
 - Active plan & task IDs live in `project_plan/`. Use the IDs (e.g. `P1-007`) when discussing work.
 

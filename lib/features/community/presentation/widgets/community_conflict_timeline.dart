@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
-import 'package:tripplus/features/community/domain/community_condition.dart';
-import 'package:tripplus/features/community/domain/models/station_community_report.dart';
-import 'package:tripplus/features/community/presentation/widgets/community_time_ago.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/features/community/domain/community_condition.dart';
+import 'package:journeyplus/features/community/domain/models/station_community_report.dart';
+import 'package:journeyplus/features/community/presentation/widgets/community_time_ago.dart';
 
 /// P2-031 — Conflict-aware vertical timeline.
 ///

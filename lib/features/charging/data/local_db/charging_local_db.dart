@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:hive/hive.dart';
 import 'package:logger/logger.dart';
-import 'package:tripplus/core/constants/cache_constants.dart';
-import 'package:tripplus/core/utils/location_helper.dart';
-import 'package:tripplus/features/charging/domain/models/charging_station.dart';
+import 'package:journeyplus/core/constants/cache_constants.dart';
+import 'package:journeyplus/core/utils/location_helper.dart';
+import 'package:journeyplus/features/charging/domain/models/charging_station.dart';
 
 class ChargingLocalDb {
   final Box _box;

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
 
 /// Draggable-style sheet chrome for the report wizard.
 class StationReportModalContainer extends StatelessWidget {

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:tripplus/features/hidden_gems/domain/hidden_gem.dart';
+import 'package:journeyplus/features/hidden_gems/domain/hidden_gem.dart';
 
 /// P2-060 — Loads the bundled `corridor_gems.json` asset and parses it into a
 /// list of [HiddenGemCorridor]s. Cached in-memory after the first load — the

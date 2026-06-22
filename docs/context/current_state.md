@@ -257,7 +257,7 @@ See `docs/batches/phase_2_batches.md` for the full Phase 2 plan.
 - ✅ `AlertHistoryScreen` linked from Trip tab (`P1-034`).
 - ✅ `AppTelemetry` for trip + alert + POI category events (`P1-060`).
 - ✅ `PoiListSkeleton` shared widget on category screens (`P1-062`).
-- ✅ Brand splash — Android `#1B5E20`, iOS display name `TripPlus` (`P1-030`).
+- ✅ Brand splash — Android `#1B5E20`, iOS display name `JourneyPlus` (`P1-030`).
 - ✅ `PlanResult.encodedRoutePolyline` threaded into corridor cache for alert geometry.
 
 ### Session 11 — Phase 1 verification (2026-05-30)

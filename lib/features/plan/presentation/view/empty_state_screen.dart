@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
 
 class EmptyStateScreen extends StatelessWidget {
   final VoidCallback onSearchAgain;
@@ -200,7 +200,7 @@ class _RoadIllustrationPainter extends CustomPainter {
     final sunPaint = Paint()..color = const Color(0xFFFFF176);
     canvas.drawCircle(Offset(size.width * 0.78, size.height * 0.12), 18, sunPaint);
 
-    // TripPlus icon in sky
+    // JourneyPlus icon in sky
     final iconBg = Paint()..color = AppColors.teal.withValues(alpha: 0.15);
     canvas.drawCircle(Offset(size.width * 0.5, size.height * 0.32), 28, iconBg);
 

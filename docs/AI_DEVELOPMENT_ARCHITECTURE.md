@@ -1,7 +1,7 @@
 # AI Development Architecture
-## Visual Flowchart: How AI Develops TripPlus
+## Visual Flowchart: How AI Develops JourneyPlus
 
-This document provides visual representations of the complete AI-driven development procedure for TripPlus. Use this to understand the decision flow, execution loop, and context hierarchy.
+This document provides visual representations of the complete AI-driven development procedure for JourneyPlus. Use this to understand the decision flow, execution loop, and context hierarchy.
 
 ---
 

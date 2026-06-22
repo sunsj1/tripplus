@@ -6,18 +6,18 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:tripplus/core/constants/cache_constants.dart';
-import 'package:tripplus/core/theme/app_theme.dart';
-import 'package:tripplus/features/auth/presentation/view/auth_gate.dart';
-import 'package:tripplus/features/community/data/community_submit_queue.dart';
-import 'package:tripplus/features/personalization/data/brand_affinity_box.dart';
-import 'package:tripplus/features/profile/data/local_db/profile_box.dart';
-import 'package:tripplus/features/settings/data/local_db/settings_box.dart';
-import 'package:tripplus/core/services/local_notification_service.dart';
-import 'package:tripplus/features/trip/data/local_db/corridor_cache_box.dart';
-import 'package:tripplus/features/trip/data/local_db/trip_box.dart';
-import 'package:tripplus/features/trip/data/local_db/trip_history_box.dart';
-import 'package:tripplus/firebase_options.dart';
+import 'package:journeyplus/core/constants/cache_constants.dart';
+import 'package:journeyplus/core/theme/app_theme.dart';
+import 'package:journeyplus/features/auth/presentation/view/auth_gate.dart';
+import 'package:journeyplus/features/community/data/community_submit_queue.dart';
+import 'package:journeyplus/features/personalization/data/brand_affinity_box.dart';
+import 'package:journeyplus/features/profile/data/local_db/profile_box.dart';
+import 'package:journeyplus/features/settings/data/local_db/settings_box.dart';
+import 'package:journeyplus/core/services/local_notification_service.dart';
+import 'package:journeyplus/features/trip/data/local_db/corridor_cache_box.dart';
+import 'package:journeyplus/features/trip/data/local_db/trip_box.dart';
+import 'package:journeyplus/features/trip/data/local_db/trip_history_box.dart';
+import 'package:journeyplus/firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -67,16 +67,16 @@ void main() async {
   final notifications = LocalNotificationService();
   await notifications.initialize();
 
-  runApp(const ProviderScope(child: TripPlusApp()));
+  runApp(const ProviderScope(child: JourneyPlusApp()));
 }
 
-class TripPlusApp extends StatelessWidget {
-  const TripPlusApp({super.key});
+class JourneyPlusApp extends StatelessWidget {
+  const JourneyPlusApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'TripPlus — Highway Companion',
+      title: 'JourneyPlus — Highway Companion',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       home: const AuthGate(),

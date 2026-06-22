@@ -1,4 +1,4 @@
-# TripPlus — Smart Features
+# JourneyPlus — Smart Features
 
 > Demo + speech cheat sheet. Every bullet is a feature you can point to in
 > the app. Organised by user journey, not by file. No jargon, no task IDs.
@@ -191,7 +191,7 @@
 - **Vehicle quick-edit** — change saved vehicle without leaving settings
 - **Per-alert mutes** — toggle Fuel Low / EV Gap / Food Window / Ghat / Night / Fatigue / Weather on or off independently
 - **All settings Hive-persisted** — survive app restart
-- **Privacy policy + About TripPlus** screens accessible from Profile
+- **Privacy policy + About JourneyPlus** screens accessible from Profile
 
 ---
 
@@ -280,7 +280,7 @@ These shouldn't change without an ADR, and they're worth saying out loud in a te
 
 ## 18. The 30-second pitch
 
-> TripPlus is a predictive highway companion for Indian drivers.
+> JourneyPlus is a predictive highway companion for Indian drivers.
 > Plan a route in two taps — we pull live weather, live traffic, real toll
 > estimates, and merge dual-source charging data automatically.
 > Start the trip and our engine watches the upcoming 100 km of road: it warns

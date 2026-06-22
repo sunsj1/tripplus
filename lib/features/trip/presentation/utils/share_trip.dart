@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:tripplus/features/trip/domain/models/trip.dart';
-import 'package:tripplus/features/trip/domain/trip_share_text.dart';
+import 'package:journeyplus/features/trip/domain/models/trip.dart';
+import 'package:journeyplus/features/trip/domain/trip_share_text.dart';
 
 /// P2-052 — Drops the trip share text into the OS share sheet.
 ///
@@ -15,7 +15,7 @@ Future<void> shareTrip(BuildContext context, Trip trip) async {
   await SharePlus.instance.share(
     ShareParams(
       text: buildTripShareText(trip),
-      subject: '${trip.from} → ${trip.to} on TripPlus',
+      subject: '${trip.from} → ${trip.to} on JourneyPlus',
       sharePositionOrigin: origin,
     ),
   );

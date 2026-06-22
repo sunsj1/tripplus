@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tripplus/features/auth/data/auth_repository.dart';
-import 'package:tripplus/features/auth/data/user_profile_repository.dart';
-import 'package:tripplus/features/auth/domain/user_app_state.dart';
-import 'package:tripplus/features/auth/domain/user_profile.dart';
-import 'package:tripplus/features/auth/presentation/auth_ui_state.dart';
+import 'package:journeyplus/features/auth/data/auth_repository.dart';
+import 'package:journeyplus/features/auth/data/user_profile_repository.dart';
+import 'package:journeyplus/features/auth/domain/user_app_state.dart';
+import 'package:journeyplus/features/auth/domain/user_profile.dart';
+import 'package:journeyplus/features/auth/presentation/auth_ui_state.dart';
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
   return AuthRepository();

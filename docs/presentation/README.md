@@ -1,6 +1,6 @@
 # Presentation materials
 
-Ready-to-use scripts, decks, and demo aids for showing TripPlus to people.
+Ready-to-use scripts, decks, and demo aids for showing JourneyPlus to people.
 
 | File | Audience | Length | What it is |
 |---|---|---|---|

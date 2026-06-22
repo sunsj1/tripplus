@@ -1,5 +1,5 @@
-import 'package:tripplus/core/domain/poi.dart';
-import 'package:tripplus/core/utils/trip_plan_copy.dart';
+import 'package:journeyplus/core/domain/poi.dart';
+import 'package:journeyplus/core/utils/trip_plan_copy.dart';
 
 /// One preference row on the route timeline with corridor POI data.
 class PreferenceCorridorInsight {

@@ -1,6 +1,6 @@
-import 'package:tripplus/core/utils/polyline_decoder.dart';
-import 'package:tripplus/features/alerts/domain/alert_route_utils.dart';
-import 'package:tripplus/features/tolls/domain/toll_corridor.dart';
+import 'package:journeyplus/core/utils/polyline_decoder.dart';
+import 'package:journeyplus/features/alerts/domain/alert_route_utils.dart';
+import 'package:journeyplus/features/tolls/domain/toll_corridor.dart';
 
 /// P2-042 — Result of corridor matching for a single route.
 class TollEstimate {

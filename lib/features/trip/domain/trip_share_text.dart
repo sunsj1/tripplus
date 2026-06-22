@@ -1,4 +1,4 @@
-import 'package:tripplus/features/trip/domain/models/trip.dart';
+import 'package:journeyplus/features/trip/domain/models/trip.dart';
 
 /// P2-052 — Builds the plain-text payload for sharing a trip.
 ///
@@ -20,7 +20,7 @@ String buildTripShareText(Trip trip) {
     ..writeln()
     ..writeln(_mapsUrl(trip))
     ..writeln()
-    ..write('Planned with TripPlus');
+    ..write('Planned with JourneyPlus');
   return buf.toString();
 }
 

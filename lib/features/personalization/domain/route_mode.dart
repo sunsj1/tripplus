@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tripplus/core/domain/poi.dart';
+import 'package:journeyplus/core/domain/poi.dart';
 
 /// P2-020 / P2-021 / P2-022 — Trip "mode" overlay.
 ///

@@ -1,11 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
-import 'package:tripplus/features/auth/presentation/auth_ui_state.dart';
-import 'package:tripplus/features/auth/presentation/providers/auth_providers.dart';
-import 'package:tripplus/features/profile/data/local_db/profile_box.dart';
-import 'package:tripplus/features/profile/data/repository/profile_repository.dart';
-import 'package:tripplus/features/profile/presentation/controller/profile_controller.dart';
-import 'package:tripplus/features/profile/presentation/controller/profile_ui_state.dart';
+import 'package:journeyplus/features/auth/presentation/auth_ui_state.dart';
+import 'package:journeyplus/features/auth/presentation/providers/auth_providers.dart';
+import 'package:journeyplus/features/profile/data/local_db/profile_box.dart';
+import 'package:journeyplus/features/profile/data/repository/profile_repository.dart';
+import 'package:journeyplus/features/profile/presentation/controller/profile_controller.dart';
+import 'package:journeyplus/features/profile/presentation/controller/profile_ui_state.dart';
 
 /// Wraps the already-opened Hive box (`main.dart` opens it at boot).
 final profileBoxProvider = Provider<ProfileBox>((ref) {

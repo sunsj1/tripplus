@@ -1,6 +1,6 @@
 # User Workflow
 
-End-to-end journey of a user using TripPlus. Combines (a) **first-time setup**, (b) **planning a trip**, (c) **on-trip experience**, (d) **post-trip**.
+End-to-end journey of a user using JourneyPlus. Combines (a) **first-time setup**, (b) **planning a trip**, (c) **on-trip experience**, (d) **post-trip**.
 
 > This is the *intended* workflow at end of Phase 1 (Smart Highway Companion MVP). Phase 2/3 enhancements are noted inline.
 

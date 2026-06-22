@@ -1,7 +1,7 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:tripplus/core/domain/poi.dart';
-import 'package:tripplus/core/utils/failure.dart';
-import 'package:tripplus/core/utils/polyline_decoder.dart' show LatLng;
+import 'package:journeyplus/core/domain/poi.dart';
+import 'package:journeyplus/core/utils/failure.dart';
+import 'package:journeyplus/core/utils/polyline_decoder.dart' show LatLng;
 
 /// Source-agnostic contract for fetching POIs.
 ///

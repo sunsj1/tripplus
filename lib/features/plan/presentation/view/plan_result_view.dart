@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tripplus/core/domain/user_preferences.dart';
-import 'package:tripplus/core/domain/vehicle.dart';
-import 'package:tripplus/core/services/route_station_service.dart';
-import 'package:tripplus/core/utils/trip_plan_copy.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
-import 'package:tripplus/core/widgets/animated_list_item.dart';
-import 'package:tripplus/core/widgets/app_top_bar.dart';
-import 'package:tripplus/features/charging/domain/models/charging_station.dart';
-import 'package:tripplus/features/plan/presentation/controller/plan_state.dart';
-import 'package:tripplus/features/plan/presentation/widget/smart_trip_timeline.dart';
-import 'package:tripplus/features/plan/presentation/widget/stat_card.dart';
-import 'package:tripplus/features/profile/presentation/controller/profile_providers.dart';
-import 'package:tripplus/features/stations/presentation/view/station_detail_screen.dart';
-import 'package:tripplus/features/weather/presentation/widget/route_weather_strip.dart';
-import 'package:tripplus/features/stations/presentation/widget/station_list_tile.dart';
-import 'package:tripplus/features/shell/presentation/controller/shell_providers.dart';
-import 'package:tripplus/features/trip/presentation/controller/trip_providers.dart';
-import 'package:tripplus/features/trip/presentation/widget/route_trip_actions.dart';
+import 'package:journeyplus/core/domain/user_preferences.dart';
+import 'package:journeyplus/core/domain/vehicle.dart';
+import 'package:journeyplus/core/services/route_station_service.dart';
+import 'package:journeyplus/core/utils/trip_plan_copy.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/core/widgets/animated_list_item.dart';
+import 'package:journeyplus/core/widgets/app_top_bar.dart';
+import 'package:journeyplus/features/charging/domain/models/charging_station.dart';
+import 'package:journeyplus/features/plan/presentation/controller/plan_state.dart';
+import 'package:journeyplus/features/plan/presentation/widget/smart_trip_timeline.dart';
+import 'package:journeyplus/features/plan/presentation/widget/stat_card.dart';
+import 'package:journeyplus/features/profile/presentation/controller/profile_providers.dart';
+import 'package:journeyplus/features/stations/presentation/view/station_detail_screen.dart';
+import 'package:journeyplus/features/weather/presentation/widget/route_weather_strip.dart';
+import 'package:journeyplus/features/stations/presentation/widget/station_list_tile.dart';
+import 'package:journeyplus/features/shell/presentation/controller/shell_providers.dart';
+import 'package:journeyplus/features/trip/presentation/controller/trip_providers.dart';
+import 'package:journeyplus/features/trip/presentation/widget/route_trip_actions.dart';
 
 /// Converts the current widget's fields into a [PlanResult] for the trip
 /// controller. Helper kept outside the class to keep build() clean.

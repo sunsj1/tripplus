@@ -2,10 +2,10 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
-import 'package:tripplus/features/community/domain/community_target_type.dart';
-import 'package:tripplus/features/community/domain/models/station_community_report.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/features/community/domain/community_target_type.dart';
+import 'package:journeyplus/features/community/domain/models/station_community_report.dart';
 class CommunityReportSnippetCard extends StatelessWidget {
   final StationCommunityReport report;
   final String timeLabel;

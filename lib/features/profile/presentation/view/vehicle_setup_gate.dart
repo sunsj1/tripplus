@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/features/profile/presentation/controller/profile_providers.dart';
-import 'package:tripplus/features/profile/presentation/view/profile_setup_screen.dart';
-import 'package:tripplus/features/shell/presentation/view/app_shell.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/features/profile/presentation/controller/profile_providers.dart';
+import 'package:journeyplus/features/profile/presentation/view/profile_setup_screen.dart';
+import 'package:journeyplus/features/shell/presentation/view/app_shell.dart';
 
 /// Sits between [AuthReady] and [AppShell]. If the user has no vehicle on
 /// file we route them to [ProfileSetupScreen] first; otherwise the shell

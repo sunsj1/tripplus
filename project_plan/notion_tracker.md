@@ -1,4 +1,4 @@
-# TripPlus — Notion Tracker
+# JourneyPlus — Notion Tracker
 
 > Import this file into Notion as a **page** (not a database). The checkboxes will be live and you can tick them off as you progress.
 > The same task IDs are mirrored in `tasks.csv` (for the database view) and in `01_phase_1_mvp.md` etc.

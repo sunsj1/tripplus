@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:tripplus/core/domain/vehicle.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/core/domain/vehicle.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
 
 /// 2x2 grid of vehicle-type tiles. Picks a [VehicleType] and emits the
 /// resulting [Vehicle] (other fields default; EV-specific fields stay null

@@ -1,9 +1,9 @@
-import 'package:tripplus/core/domain/poi.dart';
-import 'package:tripplus/core/domain/user_preferences.dart';
-import 'package:tripplus/core/domain/vehicle.dart';
-import 'package:tripplus/core/services/directions_service.dart';
-import 'package:tripplus/core/utils/polyline_decoder.dart';
-import 'package:tripplus/features/weather/domain/route_weather_segment.dart';
+import 'package:journeyplus/core/domain/poi.dart';
+import 'package:journeyplus/core/domain/user_preferences.dart';
+import 'package:journeyplus/core/domain/vehicle.dart';
+import 'package:journeyplus/core/services/directions_service.dart';
+import 'package:journeyplus/core/utils/polyline_decoder.dart';
+import 'package:journeyplus/features/weather/domain/route_weather_segment.dart';
 
 /// Inputs for a single [AlertEngine.evaluate] pass.
 ///

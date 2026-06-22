@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-/// Thin wrapper around [FlutterLocalNotificationsPlugin] for TripPlus alerts.
+/// Thin wrapper around [FlutterLocalNotificationsPlugin] for JourneyPlus alerts.
 ///
 /// Initialized from [main] (`P1-027`). [AlertNotifier] (`P1-028`) calls
 /// [showTripAlert] when the engine fires a new alert.
@@ -11,7 +11,7 @@ class LocalNotificationService {
 
   final FlutterLocalNotificationsPlugin _plugin;
 
-  static const _androidChannelId = 'tripplus_alerts';
+  static const _androidChannelId = 'journeyplus_alerts';
   static const _androidChannelName = 'Trip alerts';
   static const _androidChannelDescription =
       'Predictive highway alerts during an active trip';

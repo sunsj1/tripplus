@@ -1,4 +1,4 @@
-# TripPlus — 3 Minute Demo Script
+# JourneyPlus — 3 Minute Demo Script
 
 > A ready-to-read walkthrough for live demos, investor pitches, and onboarding
 > sessions. Structured as a single user story so every smart feature surfaces
@@ -14,7 +14,7 @@
 
 > "Meet Priya. She drives a petrol Hyundai Creta and she's planning a Friday
 > evening trip from Mumbai to Pune with her family — about 150 kilometres,
-> three hours. She has TripPlus on her phone.
+> three hours. She has JourneyPlus on her phone.
 >
 > Watch how the app earns its place from the moment she opens it."
 
@@ -144,7 +144,7 @@
 > community trust, personalised ranking — works automatically. Priya never
 > opened a settings menu, never typed a search query, never read a manual.
 >
-> That's TripPlus."
+> That's JourneyPlus."
 
 ---
 
@@ -222,7 +222,7 @@ without dropping the demo flow:
 
 | Audience | One-liner |
 |---|---|
-| **Driver** | "TripPlus warns you about the road ahead 100 km before you get there — fuel, ghats, fatigue, weather, charging gaps." |
+| **Driver** | "JourneyPlus warns you about the road ahead 100 km before you get there — fuel, ghats, fatigue, weather, charging gaps." |
 | **EV owner** | "We merge Open Charge Map with Google EV Stations, predict gaps in your range, and surface community-verified charger reliability." |
 | **Family traveller** | "One tap turns the whole app into Family mode — only family-friendly stops, women-safe places, and the food the community vouches for." |
 | **Investor** | "We've shipped 86 features across two phases, with weather, live traffic, community trust scoring, personalised ranking with transparent explanations, and an alert engine that learned from real Indian highway data." |

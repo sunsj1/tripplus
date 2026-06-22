@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:tripplus/core/domain/fuel_brand.dart';
+import 'package:journeyplus/core/domain/fuel_brand.dart';
 
 /// P2-013 — Hive-backed score map for fuel-brand affinity.
 ///

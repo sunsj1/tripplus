@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:tripplus/core/domain/poi.dart';
-import 'package:tripplus/core/utils/failure.dart';
+import 'package:journeyplus/core/domain/poi.dart';
+import 'package:journeyplus/core/utils/failure.dart';
 
 part 'poi_category_ui_state.freezed.dart';
 

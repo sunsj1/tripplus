@@ -1,6 +1,6 @@
-# TripPlus: Complete Guide for AI Developers
+# JourneyPlus: Complete Guide for AI Developers
 
-> **You just cloned TripPlus on a fresh machine (or switched AI tools). Start here.**
+> **You just cloned JourneyPlus on a fresh machine (or switched AI tools). Start here.**
 
 This document is your roadmap. It tells you which file to read first, what order to read them in, and what to do after each step.
 
@@ -11,7 +11,7 @@ This document is your roadmap. It tells you which file to read first, what order
 Read them in this order on **your first time ever**:
 
 ### 1️⃣ **AI_DEV_ONBOARDING.md** — Setup & Mechanical Steps
-- **Read if:** You've never set up TripPlus on this machine
+- **Read if:** You've never set up JourneyPlus on this machine
 - **What it covers:**
   - Install Flutter
   - `pub get` + `build_runner`
@@ -91,8 +91,8 @@ Keep these bookmarked for daily work:
 
 ```bash
 # 1. Clone the repo
-git clone <your-repo-url> tripplus
-cd tripplus
+git clone <your-repo-url> journeyplus
+cd journeyplus
 
 # 2. Install dependencies (see AI_DEV_ONBOARDING.md for details)
 flutter pub get
@@ -315,7 +315,7 @@ The **batches file** is the source of truth. Everything else is just a different
 - [ ] Wait for the 4-line confirmation
 - [ ] Say "go"
 
-🚀 **You're now developing TripPlus as a team with an AI.**
+🚀 **You're now developing JourneyPlus as a team with an AI.**
 
 ---
 

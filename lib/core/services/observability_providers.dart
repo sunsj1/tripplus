@@ -1,10 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tripplus/core/services/observability_service.dart';
-import 'package:tripplus/features/auth/presentation/providers/auth_providers.dart';
-import 'package:tripplus/features/personalization/presentation/controller/route_mode_provider.dart';
-import 'package:tripplus/features/profile/presentation/controller/profile_providers.dart';
-import 'package:tripplus/features/trip/presentation/controller/active_trip_state.dart';
-import 'package:tripplus/features/trip/presentation/controller/trip_providers.dart';
+import 'package:journeyplus/core/services/observability_service.dart';
+import 'package:journeyplus/features/auth/presentation/providers/auth_providers.dart';
+import 'package:journeyplus/features/personalization/presentation/controller/route_mode_provider.dart';
+import 'package:journeyplus/features/profile/presentation/controller/profile_providers.dart';
+import 'package:journeyplus/features/trip/presentation/controller/active_trip_state.dart';
+import 'package:journeyplus/features/trip/presentation/controller/trip_providers.dart';
 
 /// P2-071 — Single shared [ObservabilityService] instance.
 final observabilityServiceProvider = Provider<ObservabilityService>(

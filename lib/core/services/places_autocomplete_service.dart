@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:logger/logger.dart';
-import 'package:tripplus/core/constants/api_constants.dart';
+import 'package:journeyplus/core/constants/api_constants.dart';
 
 class PlacePrediction {
   final String placeId;
@@ -77,7 +77,7 @@ class PlacesAutocompleteService {
           'countrycodes': 'in',
         },
         options: Options(
-          headers: {'User-Agent': 'TripPlus/1.0'},
+          headers: {'User-Agent': 'JourneyPlus/1.0'},
         ),
       );
 

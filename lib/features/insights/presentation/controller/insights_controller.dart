@@ -2,9 +2,9 @@ import 'dart:math';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
-import 'package:tripplus/core/services/route_station_service.dart';
-import 'package:tripplus/features/charging/domain/models/charging_station.dart';
-import 'package:tripplus/features/insights/presentation/controller/insights_state.dart';
+import 'package:journeyplus/core/services/route_station_service.dart';
+import 'package:journeyplus/features/charging/domain/models/charging_station.dart';
+import 'package:journeyplus/features/insights/presentation/controller/insights_state.dart';
 
 class InsightsController extends StateNotifier<InsightsState> {
   final _logger = Logger();

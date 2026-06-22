@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
-import 'package:tripplus/core/widgets/horizontal_scroll_row.dart';
-import 'package:tripplus/features/hidden_gems/domain/hidden_gem.dart';
-import 'package:tripplus/features/hidden_gems/presentation/controller/hidden_gems_providers.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/core/widgets/horizontal_scroll_row.dart';
+import 'package:journeyplus/features/hidden_gems/domain/hidden_gem.dart';
+import 'package:journeyplus/features/hidden_gems/presentation/controller/hidden_gems_providers.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// P2-061 — Hidden Gems strip on the Discovery screen.

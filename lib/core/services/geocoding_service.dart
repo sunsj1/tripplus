@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:logger/logger.dart';
-import 'package:tripplus/core/constants/api_constants.dart';
-import 'package:tripplus/core/utils/polyline_decoder.dart';
+import 'package:journeyplus/core/constants/api_constants.dart';
+import 'package:journeyplus/core/utils/polyline_decoder.dart';
 
 class GeocodingService {
   final Dio _dio;
@@ -64,7 +64,7 @@ class GeocodingService {
         'limit': 1,
       },
       options: Options(headers: {
-        'User-Agent': 'TripPlus/1.0 (Flutter; EV charging app)',
+        'User-Agent': 'JourneyPlus/1.0 (Flutter; EV charging app)',
       }),
     );
 

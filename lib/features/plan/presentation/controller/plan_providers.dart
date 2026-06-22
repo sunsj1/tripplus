@@ -1,13 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tripplus/core/services/directions_service.dart';
-import 'package:tripplus/core/services/geocoding_service.dart';
-import 'package:tripplus/core/services/google_ev_station_service.dart';
-import 'package:tripplus/core/services/places_autocomplete_service.dart';
-import 'package:tripplus/core/services/route_station_service.dart';
-import 'package:tripplus/features/charging/presentation/controller/charging_providers.dart';
-import 'package:tripplus/features/plan/presentation/controller/plan_controller.dart';
-import 'package:tripplus/features/plan/presentation/controller/plan_state.dart';
+import 'package:journeyplus/core/services/directions_service.dart';
+import 'package:journeyplus/core/services/geocoding_service.dart';
+import 'package:journeyplus/core/services/google_ev_station_service.dart';
+import 'package:journeyplus/core/services/places_autocomplete_service.dart';
+import 'package:journeyplus/core/services/route_station_service.dart';
+import 'package:journeyplus/features/charging/presentation/controller/charging_providers.dart';
+import 'package:journeyplus/features/plan/presentation/controller/plan_controller.dart';
+import 'package:journeyplus/features/plan/presentation/controller/plan_state.dart';
 
 /// Separate Dio instance for Google APIs (no baseUrl, longer timeout for
 /// Directions API on long routes).
@@ -18,7 +18,7 @@ final googleDioProvider = Provider<Dio>((ref) {
       receiveTimeout: const Duration(seconds: 20),
       headers: {
         'Accept': 'application/json',
-        'User-Agent': 'TripPlus/1.0 (Flutter; EV charging app)',
+        'User-Agent': 'JourneyPlus/1.0 (Flutter; EV charging app)',
       },
     ),
   );

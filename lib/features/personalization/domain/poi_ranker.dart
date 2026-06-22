@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:tripplus/core/domain/fuel_brand.dart';
-import 'package:tripplus/core/domain/poi.dart';
-import 'package:tripplus/core/domain/user_preferences.dart';
-import 'package:tripplus/features/personalization/domain/ranking_explanation.dart';
-import 'package:tripplus/features/personalization/domain/user_preference_vector.dart';
+import 'package:journeyplus/core/domain/fuel_brand.dart';
+import 'package:journeyplus/core/domain/poi.dart';
+import 'package:journeyplus/core/domain/user_preferences.dart';
+import 'package:journeyplus/features/personalization/domain/ranking_explanation.dart';
+import 'package:journeyplus/features/personalization/domain/user_preference_vector.dart';
 
 /// P2-011 — Pure scoring function that ranks POIs against a
 /// [UserPreferenceVector]. Higher score = better match. No I/O, fully testable.

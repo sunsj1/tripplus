@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:tripplus/core/constants/api_constants.dart';
-import 'package:tripplus/features/charging/presentation/controller/charging_providers.dart';
-import 'package:tripplus/features/charging/presentation/controller/charging_state.dart';
-import 'package:tripplus/features/charging/presentation/widget/error_view.dart';
-import 'package:tripplus/features/charging/presentation/widget/loading_view.dart';
-import 'package:tripplus/features/charging/presentation/widget/station_card.dart';
-import 'package:tripplus/features/charging/presentation/widget/station_map_view.dart';
+import 'package:journeyplus/core/constants/api_constants.dart';
+import 'package:journeyplus/features/charging/presentation/controller/charging_providers.dart';
+import 'package:journeyplus/features/charging/presentation/controller/charging_state.dart';
+import 'package:journeyplus/features/charging/presentation/widget/error_view.dart';
+import 'package:journeyplus/features/charging/presentation/widget/loading_view.dart';
+import 'package:journeyplus/features/charging/presentation/widget/station_card.dart';
+import 'package:journeyplus/features/charging/presentation/widget/station_map_view.dart';
 
 class ChargingScreen extends ConsumerStatefulWidget {
   const ChargingScreen({super.key});
@@ -51,7 +51,7 @@ class _ChargingScreenState extends ConsumerState<ChargingScreen> {
     final state = ref.watch(chargingControllerProvider);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('TripPlus'),
+        title: const Text('JourneyPlus'),
         actions: [
           if (state is ChargingLoaded)
             IconButton(

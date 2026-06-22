@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tripplus/core/domain/vehicle.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
-import 'package:tripplus/features/shell/presentation/controller/shell_providers.dart';
-import 'package:tripplus/features/trip/domain/models/trip.dart';
-import 'package:tripplus/features/trip/presentation/controller/trip_providers.dart';
-import 'package:tripplus/features/trip/presentation/controller/trip_replan_provider.dart';
-import 'package:tripplus/features/trip/presentation/utils/share_trip.dart';
-import 'package:tripplus/features/trip/presentation/utils/trip_formatters.dart';
+import 'package:journeyplus/core/domain/vehicle.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/features/shell/presentation/controller/shell_providers.dart';
+import 'package:journeyplus/features/trip/domain/models/trip.dart';
+import 'package:journeyplus/features/trip/presentation/controller/trip_providers.dart';
+import 'package:journeyplus/features/trip/presentation/controller/trip_replan_provider.dart';
+import 'package:journeyplus/features/trip/presentation/utils/share_trip.dart';
+import 'package:journeyplus/features/trip/presentation/utils/trip_formatters.dart';
 
 /// On-device trip archive — route labels and estimates only, no GPS trails.
 ///

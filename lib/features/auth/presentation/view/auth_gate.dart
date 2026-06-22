@@ -1,13 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
-import 'package:tripplus/features/auth/presentation/auth_ui_state.dart';
-import 'package:tripplus/features/auth/presentation/providers/auth_providers.dart';
-import 'package:tripplus/features/auth/presentation/view/profile_form_screen.dart';
-import 'package:tripplus/features/onboarding/presentation/view/onboarding_screen.dart';
-import 'package:tripplus/features/profile/presentation/view/vehicle_setup_gate.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/features/auth/presentation/auth_ui_state.dart';
+import 'package:journeyplus/features/auth/presentation/providers/auth_providers.dart';
+import 'package:journeyplus/features/auth/presentation/view/profile_form_screen.dart';
+import 'package:journeyplus/features/onboarding/presentation/view/onboarding_screen.dart';
+import 'package:journeyplus/features/profile/presentation/view/vehicle_setup_gate.dart';
 
 class AuthGate extends ConsumerWidget {
   const AuthGate({super.key});

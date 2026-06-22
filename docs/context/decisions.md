@@ -24,12 +24,12 @@ What else was on the table and why we rejected it.
 
 ---
 
-## ADR-001 — Extend the existing `tripplus` project instead of restarting
+## ADR-001 — Extend the existing `journeyplus` project instead of restarting
 Date: 2026-05-27
 Status: Accepted
 
 ### Context
-The PDF `Smart_Highway_Companion_Idea.pdf` describes a product (multi-vehicle AI highway companion) that is a *superset* of the current `tripplus` (EV charging assistant). Question: rewrite from scratch or extend?
+The PDF `Smart_Highway_Companion_Idea.pdf` describes a product (multi-vehicle AI highway companion) that is a *superset* of the current `journeyplus` (EV charging assistant). Question: rewrite from scratch or extend?
 
 ### Decision
 **Extend.** Build new feature slices and generalize two existing concepts (`ChargingStation` → `Poi`, `stationKey` → `targetKey`).

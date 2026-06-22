@@ -1,6 +1,6 @@
 # System Overview
 
-High-level system architecture of TripPlus — what runs where, what talks to what.
+High-level system architecture of JourneyPlus — what runs where, what talks to what.
 
 > Two views below: **(A) the current architecture** as it exists today and **(B) the target Phase-3 architecture** after the AI copilot ships. Phase 4 backend-at-scale variant is a footnote.
 

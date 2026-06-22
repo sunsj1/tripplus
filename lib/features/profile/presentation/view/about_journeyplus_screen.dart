@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
-import 'package:tripplus/features/profile/presentation/view/privacy_policy_screen.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/features/profile/presentation/view/privacy_policy_screen.dart';
 
-class AboutTripPlusScreen extends StatelessWidget {
-  const AboutTripPlusScreen({super.key});
+class AboutJourneyPlusScreen extends StatelessWidget {
+  const AboutJourneyPlusScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class AboutTripPlusScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         foregroundColor: AppColors.textPrimary,
-        title: Text('About TripPlus', style: AppTextStyles.titleMedium),
+        title: Text('About JourneyPlus', style: AppTextStyles.titleMedium),
       ),
       body: SafeArea(
         child: ListView(
@@ -37,7 +37,7 @@ class AboutTripPlusScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Center(
-              child: Text('TripPlus', style: AppTextStyles.h3),
+              child: Text('JourneyPlus', style: AppTextStyles.h3),
             ),
             Center(
               child: Text(

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
-import 'package:tripplus/core/widgets/animated_list_item.dart';
-import 'package:tripplus/core/widgets/app_top_bar.dart';
-import 'package:tripplus/features/charging/domain/models/charging_station.dart';
-import 'package:tripplus/features/charging/presentation/controller/charging_providers.dart';
-import 'package:tripplus/features/plan/presentation/controller/plan_providers.dart';
-import 'package:tripplus/features/plan/presentation/controller/plan_state.dart';
-import 'package:tripplus/features/stations/presentation/view/station_detail_screen.dart';
-import 'package:tripplus/features/stations/presentation/view/station_map_screen.dart';
-import 'package:tripplus/features/stations/presentation/widget/station_list_tile.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/core/widgets/animated_list_item.dart';
+import 'package:journeyplus/core/widgets/app_top_bar.dart';
+import 'package:journeyplus/features/charging/domain/models/charging_station.dart';
+import 'package:journeyplus/features/charging/presentation/controller/charging_providers.dart';
+import 'package:journeyplus/features/plan/presentation/controller/plan_providers.dart';
+import 'package:journeyplus/features/plan/presentation/controller/plan_state.dart';
+import 'package:journeyplus/features/stations/presentation/view/station_detail_screen.dart';
+import 'package:journeyplus/features/stations/presentation/view/station_map_screen.dart';
+import 'package:journeyplus/features/stations/presentation/widget/station_list_tile.dart';
 
 // TODO(phase2-cleanup): StationsScreen is orphan code — not mounted in AppShell nav
 // since Session 6 (P1-016). The Stations tab was replaced by Discovery + Trip.

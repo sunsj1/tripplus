@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/widgets/horizontal_scroll_row.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
-import 'package:tripplus/features/plan/presentation/controller/plan_state.dart';
-import 'package:tripplus/features/weather/domain/route_weather_segment.dart';
-import 'package:tripplus/features/weather/presentation/controller/weather_providers.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/widgets/horizontal_scroll_row.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/features/plan/presentation/controller/plan_state.dart';
+import 'package:journeyplus/features/weather/domain/route_weather_segment.dart';
+import 'package:journeyplus/features/weather/presentation/controller/weather_providers.dart';
 
 /// P2-040 — Horizontal weather card row showing conditions at each sample
 /// point along the trip. Renders nothing until the future resolves to a

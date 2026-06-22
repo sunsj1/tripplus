@@ -5,21 +5,21 @@ import 'package:fpdart/fpdart.dart' hide State;
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
-import 'package:tripplus/features/charging/domain/models/charging_station.dart';
-import 'package:tripplus/features/community/data/community_photo_compress.dart';
-import 'package:tripplus/features/community/domain/models/station_community_submit_input.dart';
-import 'package:tripplus/features/community/presentation/widgets/station_report_handle_bar.dart';
-import 'package:tripplus/features/community/presentation/widgets/station_report_modal_container.dart';
-import 'package:tripplus/features/community/presentation/widgets/station_report_step_amenities.dart';
-import 'package:tripplus/features/community/presentation/widgets/station_report_step_intro.dart';
-import 'package:tripplus/features/community/presentation/widgets/station_report_step_photo.dart';
-import 'package:tripplus/features/community/presentation/widgets/station_report_step_pulse.dart';
-import 'package:tripplus/features/community/presentation/widgets/station_report_step_rating.dart';
-import 'package:tripplus/features/community/presentation/widgets/station_report_step_review.dart';
-import 'package:tripplus/features/community/presentation/widgets/station_report_step_washroom.dart';
-import 'package:tripplus/features/community/presentation/widgets/station_report_wizard_footer.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/features/charging/domain/models/charging_station.dart';
+import 'package:journeyplus/features/community/data/community_photo_compress.dart';
+import 'package:journeyplus/features/community/domain/models/station_community_submit_input.dart';
+import 'package:journeyplus/features/community/presentation/widgets/station_report_handle_bar.dart';
+import 'package:journeyplus/features/community/presentation/widgets/station_report_modal_container.dart';
+import 'package:journeyplus/features/community/presentation/widgets/station_report_step_amenities.dart';
+import 'package:journeyplus/features/community/presentation/widgets/station_report_step_intro.dart';
+import 'package:journeyplus/features/community/presentation/widgets/station_report_step_photo.dart';
+import 'package:journeyplus/features/community/presentation/widgets/station_report_step_pulse.dart';
+import 'package:journeyplus/features/community/presentation/widgets/station_report_step_rating.dart';
+import 'package:journeyplus/features/community/presentation/widgets/station_report_step_review.dart';
+import 'package:journeyplus/features/community/presentation/widgets/station_report_step_washroom.dart';
+import 'package:journeyplus/features/community/presentation/widgets/station_report_wizard_footer.dart';
 
 /// Opens the multi-step report flow. Returns `true` if a report was stored.
 Future<bool?> showStationReportSheet({

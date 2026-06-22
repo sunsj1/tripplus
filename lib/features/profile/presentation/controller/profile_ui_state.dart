@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:tripplus/core/utils/failure.dart';
-import 'package:tripplus/features/profile/domain/profile_data.dart';
+import 'package:journeyplus/core/utils/failure.dart';
+import 'package:journeyplus/features/profile/domain/profile_data.dart';
 
 part 'profile_ui_state.freezed.dart';
 

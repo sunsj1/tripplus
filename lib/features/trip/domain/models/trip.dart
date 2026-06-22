@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:tripplus/core/domain/vehicle.dart';
-import 'package:tripplus/features/alerts/domain/alert.dart';
-import 'package:tripplus/features/trip/domain/models/trip_status.dart';
+import 'package:journeyplus/core/domain/vehicle.dart';
+import 'package:journeyplus/features/alerts/domain/alert.dart';
+import 'package:journeyplus/features/trip/domain/models/trip_status.dart';
 
 part 'trip.freezed.dart';
 part 'trip.g.dart';

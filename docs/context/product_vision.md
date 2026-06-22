@@ -1,6 +1,6 @@
 # Product Vision
 
-> **TripPlus is India's Smart Highway Companion — an AI copilot for road trips.**
+> **JourneyPlus is India's Smart Highway Companion — an AI copilot for road trips.**
 > Not a maps app. A travel-intelligence ecosystem for the journey, not just the route.
 
 ## North star

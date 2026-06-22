@@ -1,7 +1,7 @@
 # AI Development Workflow Guide
-## Master Reference for AI-Driven Development on TripPlus
+## Master Reference for AI-Driven Development on JourneyPlus
 
-> **Audience:** Any AI coding tool (Claude Code, Cursor, Codex, Continue, etc.) starting work on the TripPlus project—whether it's your first session or resuming after a break.
+> **Audience:** Any AI coding tool (Claude Code, Cursor, Codex, Continue, etc.) starting work on the JourneyPlus project—whether it's your first session or resuming after a break.
 >
 > **Purpose:** This document defines the complete AI decision-making architecture: where to read information, what rules to follow, how to execute work, and how to maintain project continuity across machines and AI tools.
 
@@ -475,7 +475,7 @@ START
 
 ### First Time on This Machine
 
-- [ ] Clone the repo: `git clone <url> tripplus && cd tripplus`
+- [ ] Clone the repo: `git clone <url> journeyplus && cd journeyplus`
 - [ ] Install Flutter: `flutter --version` (need ^3.11.4)
 - [ ] `flutter pub get`
 - [ ] `dart run build_runner build --delete-conflicting-outputs`

@@ -1,4 +1,4 @@
-# AGENTS.md — TripPlus
+# AGENTS.md — JourneyPlus
 
 > Canonical context file for AI coding agents (Cursor, Claude, Codex, etc.) working on this repository.
 > Read this **first** before doing any work. Following these rules saves tokens (no need to re-discover patterns) and keeps the codebase consistent.
@@ -7,7 +7,7 @@
 
 ## 1. What this project is
 
-**TripPlus** = *India's Smart Highway Companion / AI Copilot for Road Trips*.
+**JourneyPlus** = *India's Smart Highway Companion / AI Copilot for Road Trips*.
 
 Flutter mobile app (Android + iOS first, Windows scaffold present) that helps road travelers:
 
@@ -20,8 +20,8 @@ Flutter mobile app (Android + iOS first, Windows scaffold present) that helps ro
 We are **not** a maps app. We position as `"AI Copilot for Indian Road Trips"`.
 
 The product vision and the canonical source for *what* we're building is the PDF at:
-`/Users/surajjadhav/Documents/Work/trippluse docs/Smart_Highway_Companion_Idea.pdf`
-mirrored and elaborated in `project_plan/00_overview.md` and `tripplus_notion.md`.
+`/Users/surajjadhav/Documents/Work/journeypluse docs/Smart_Highway_Companion_Idea.pdf`
+mirrored and elaborated in `project_plan/00_overview.md` and `journeyplus_notion.md`.
 
 ---
 

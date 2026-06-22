@@ -1,8 +1,8 @@
-import 'package:tripplus/core/domain/poi.dart';
-import 'package:tripplus/core/utils/failure.dart';
-import 'package:tripplus/features/discovery/domain/emergency_hotline.dart';
-import 'package:tripplus/features/discovery/domain/emergency_service_type.dart';
-import 'package:tripplus/features/pois/presentation/controller/poi_category_ui_state.dart';
+import 'package:journeyplus/core/domain/poi.dart';
+import 'package:journeyplus/core/utils/failure.dart';
+import 'package:journeyplus/features/discovery/domain/emergency_hotline.dart';
+import 'package:journeyplus/features/discovery/domain/emergency_service_type.dart';
+import 'package:journeyplus/features/pois/presentation/controller/poi_category_ui_state.dart';
 
 /// One emergency help section (ambulance, RSA, crane, …) with fetched places.
 class EmergencySectionData {

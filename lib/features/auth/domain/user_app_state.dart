@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
-import 'package:tripplus/features/auth/domain/user_profile.dart';
+import 'package:journeyplus/features/auth/domain/user_profile.dart';
 
 String? _pickPhoto(String? fromProfile, String? fromAuth) {
   if (fromProfile != null && fromProfile.isNotEmpty) return fromProfile;

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:tripplus/features/trip/domain/models/trip.dart';
+import 'package:journeyplus/features/trip/domain/models/trip.dart';
 
 /// Local-only archive of completed trips. Stores route labels, estimates, and
 /// timestamps — never GPS coordinates or location trails.

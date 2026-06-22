@@ -4,11 +4,11 @@ import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:logger/logger.dart';
-import 'package:tripplus/core/constants/api_constants.dart';
-import 'package:tripplus/core/domain/poi.dart';
-import 'package:tripplus/core/utils/failure.dart';
-import 'package:tripplus/core/utils/polyline_decoder.dart' show LatLng;
-import 'package:tripplus/features/pois/data/repository/poi_repository.dart';
+import 'package:journeyplus/core/constants/api_constants.dart';
+import 'package:journeyplus/core/domain/poi.dart';
+import 'package:journeyplus/core/utils/failure.dart';
+import 'package:journeyplus/core/utils/polyline_decoder.dart' show LatLng;
+import 'package:journeyplus/features/pois/data/repository/poi_repository.dart';
 
 /// Concrete [PoiRepository] backed by Google Places (Nearby Search +
 /// Place Details). EV charging is **not** served here — that path stays on the

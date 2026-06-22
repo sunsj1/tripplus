@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:tripplus/features/alerts/domain/alert.dart';
+import 'package:journeyplus/features/alerts/domain/alert.dart';
 
 part 'app_settings.freezed.dart';
 part 'app_settings.g.dart';

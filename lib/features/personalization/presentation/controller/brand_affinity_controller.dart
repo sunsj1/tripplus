@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tripplus/core/domain/fuel_brand.dart';
-import 'package:tripplus/core/domain/poi.dart';
-import 'package:tripplus/features/personalization/data/brand_affinity_box.dart';
+import 'package:journeyplus/core/domain/fuel_brand.dart';
+import 'package:journeyplus/core/domain/poi.dart';
+import 'package:journeyplus/features/personalization/data/brand_affinity_box.dart';
 
 /// P2-013 — Learned affinity weights for fuel brands.
 ///

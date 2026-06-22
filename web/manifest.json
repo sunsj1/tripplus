@@ -1,6 +1,6 @@
 {
-    "name": "tripplus",
-    "short_name": "tripplus",
+    "name": "JourneyPlus",
+    "short_name": "JourneyPlus",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

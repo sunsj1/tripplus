@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tripplus/core/domain/user_preferences.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
-import 'package:tripplus/features/plan/domain/preference_corridor_insight.dart';
-import 'package:tripplus/features/plan/domain/timeline_stop.dart';
-import 'package:tripplus/features/plan/presentation/controller/plan_state.dart';
-import 'package:tripplus/features/plan/presentation/controller/route_preference_insights_provider.dart';
-import 'package:tripplus/features/plan/presentation/controller/trip_timeline_controller.dart';
-import 'package:tripplus/features/plan/presentation/view/preference_stops_screen.dart';
+import 'package:journeyplus/core/domain/user_preferences.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/features/plan/domain/preference_corridor_insight.dart';
+import 'package:journeyplus/features/plan/domain/timeline_stop.dart';
+import 'package:journeyplus/features/plan/presentation/controller/plan_state.dart';
+import 'package:journeyplus/features/plan/presentation/controller/route_preference_insights_provider.dart';
+import 'package:journeyplus/features/plan/presentation/controller/trip_timeline_controller.dart';
+import 'package:journeyplus/features/plan/presentation/view/preference_stops_screen.dart';
 
 /// Collapsible corridor timeline: origin → preferences → (EV) chargers → destination.
 class SmartTripTimeline extends ConsumerStatefulWidget {

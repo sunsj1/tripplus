@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:logger/logger.dart';
-import 'package:tripplus/core/constants/api_constants.dart';
-import 'package:tripplus/features/charging/domain/models/charging_station.dart';
+import 'package:journeyplus/core/constants/api_constants.dart';
+import 'package:journeyplus/features/charging/domain/models/charging_station.dart';
 
 /// Fetches EV charging POIs from Google Places, then re-checks each candidate
 /// with Place Details so we only keep listings whose description or name/address

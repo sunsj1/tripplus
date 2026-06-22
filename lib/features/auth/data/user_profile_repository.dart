@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:tripplus/features/auth/domain/user_profile.dart';
+import 'package:journeyplus/features/auth/domain/user_profile.dart';
 
 /// Persists user profile in Firestore only (no Firebase Storage — MVP / free tier).
 class UserProfileRepository {

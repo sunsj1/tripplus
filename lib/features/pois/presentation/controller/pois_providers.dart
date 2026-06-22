@@ -1,23 +1,23 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tripplus/core/domain/poi.dart';
-import 'package:tripplus/core/services/route_poi_service.dart';
-import 'package:tripplus/core/utils/polyline_decoder.dart';
-import 'package:tripplus/features/alerts/domain/alert_route_utils.dart';
-import 'package:tripplus/features/plan/presentation/controller/plan_providers.dart'
+import 'package:journeyplus/core/domain/poi.dart';
+import 'package:journeyplus/core/services/route_poi_service.dart';
+import 'package:journeyplus/core/utils/polyline_decoder.dart';
+import 'package:journeyplus/features/alerts/domain/alert_route_utils.dart';
+import 'package:journeyplus/features/plan/presentation/controller/plan_providers.dart'
     show
         directionsServiceProvider,
         geocodingServiceProvider,
         googleDioProvider,
         planControllerProvider,
         routeStationServiceProvider;
-import 'package:tripplus/features/plan/presentation/controller/plan_state.dart';
-import 'package:tripplus/features/pois/data/repository/google_places_poi_source.dart';
-import 'package:tripplus/features/pois/data/repository/poi_repository.dart';
-import 'package:tripplus/features/pois/presentation/controller/poi_category_controller.dart';
-import 'package:tripplus/features/pois/presentation/controller/poi_category_ui_state.dart';
-import 'package:tripplus/features/trip/data/local_db/corridor_cache_box.dart';
-import 'package:tripplus/features/trip/presentation/controller/active_trip_state.dart';
-import 'package:tripplus/features/trip/presentation/controller/trip_providers.dart';
+import 'package:journeyplus/features/plan/presentation/controller/plan_state.dart';
+import 'package:journeyplus/features/pois/data/repository/google_places_poi_source.dart';
+import 'package:journeyplus/features/pois/data/repository/poi_repository.dart';
+import 'package:journeyplus/features/pois/presentation/controller/poi_category_controller.dart';
+import 'package:journeyplus/features/pois/presentation/controller/poi_category_ui_state.dart';
+import 'package:journeyplus/features/trip/data/local_db/corridor_cache_box.dart';
+import 'package:journeyplus/features/trip/presentation/controller/active_trip_state.dart';
+import 'package:journeyplus/features/trip/presentation/controller/trip_providers.dart';
 
 /// Public seam for the POI feature. Bound to [GooglePlacesPoiSource].
 final poiRepositoryProvider = Provider<PoiRepository>((ref) {

@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:tripplus/features/community/data/community_submit_queue.dart';
-import 'package:tripplus/features/community/data/repository/community_report_repository.dart';
-import 'package:tripplus/features/community/domain/models/station_community_ui_state.dart';
-import 'package:tripplus/features/community/presentation/controller/station_community_controller.dart';
+import 'package:journeyplus/features/community/data/community_submit_queue.dart';
+import 'package:journeyplus/features/community/data/repository/community_report_repository.dart';
+import 'package:journeyplus/features/community/domain/models/station_community_ui_state.dart';
+import 'package:journeyplus/features/community/presentation/controller/station_community_controller.dart';
 
 final communityReportRepositoryProvider =
     Provider<CommunityReportRepository>((ref) {

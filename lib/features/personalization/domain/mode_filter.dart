@@ -1,5 +1,5 @@
-import 'package:tripplus/core/domain/poi.dart';
-import 'package:tripplus/features/personalization/domain/route_mode.dart';
+import 'package:journeyplus/core/domain/poi.dart';
+import 'package:journeyplus/features/personalization/domain/route_mode.dart';
 
 /// P2-020 / 021 / 022 — Pure filtering logic for active [RouteMode].
 ///

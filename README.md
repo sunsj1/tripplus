@@ -1,6 +1,6 @@
-# TripPlus — AI Highway Companion for Indian Road Trips
+# JourneyPlus — AI Highway Companion for Indian Road Trips
 
-> **TripPlus is not a maps app.** It's a travel-intelligence ecosystem for the journey, not just the route — an AI copilot that plans, predicts, and watches over every kilometer.
+> **JourneyPlus is not a maps app.** It's a travel-intelligence ecosystem for the journey, not just the route — an AI copilot that plans, predicts, and watches over every kilometer.
 
 A driver enters origin + destination + vehicle + preferences, and gets a **trip control center** that:
 

@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:tripplus/features/community/data/community_photo_compress.dart';
-import 'package:tripplus/features/community/data/dto/station_community_report_dto.dart';
-import 'package:tripplus/features/community/domain/models/station_community_report.dart';
-import 'package:tripplus/features/community/domain/models/station_community_submit_input.dart';
+import 'package:journeyplus/features/community/data/community_photo_compress.dart';
+import 'package:journeyplus/features/community/data/dto/station_community_report_dto.dart';
+import 'package:journeyplus/features/community/domain/models/station_community_report.dart';
+import 'package:journeyplus/features/community/domain/models/station_community_submit_input.dart';
 
 class CommunityReportRepository {
   CommunityReportRepository({FirebaseFirestore? firestore})

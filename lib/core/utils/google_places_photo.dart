@@ -1,5 +1,5 @@
-import 'package:tripplus/core/constants/api_constants.dart';
-import 'package:tripplus/core/domain/poi.dart';
+import 'package:journeyplus/core/constants/api_constants.dart';
+import 'package:journeyplus/core/domain/poi.dart';
 
 /// Builds Google Places Photo API URLs from [photo_reference] tokens returned
 /// by Nearby Search / Place Details. Requires Places API (Photos) enabled.

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
-import 'package:tripplus/core/widgets/horizontal_scroll_row.dart';
-import 'package:tripplus/features/personalization/domain/route_mode.dart';
-import 'package:tripplus/features/personalization/presentation/controller/route_mode_provider.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/core/widgets/horizontal_scroll_row.dart';
+import 'package:journeyplus/features/personalization/domain/route_mode.dart';
+import 'package:journeyplus/features/personalization/presentation/controller/route_mode_provider.dart';
 
 /// P2-020 / 021 / 022 — Horizontal mode selector shown above POI lists.
 ///

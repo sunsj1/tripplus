@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
 
 /// In-app privacy & location intelligence disclosure (App Store / Play checklist).
 class PrivacyPolicyScreen extends StatelessWidget {
@@ -23,7 +23,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             _Section(
               title: 'Our promise',
               body:
-                  'TripPlus is a highway companion — not a location tracker. '
+                  'JourneyPlus is a highway companion — not a location tracker. '
                   'We help you plan routes and surface predictive stops using '
                   'intelligence for your current drive. We do not build or sell '
                   'a history of where you have been.',
@@ -35,7 +35,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                   'power predictive alerts (fuel gaps, food windows, chargers). '
                   'That position is used in real time for calculations and Google '
                   'Maps / Places requests during the session.\n\n'
-                  'We do not upload GPS coordinates or location trails to TripPlus '
+                  'We do not upload GPS coordinates or location trails to JourneyPlus '
                   'servers. Firebase stores your profile, preferences, and '
                   'community reports — not your movement history.',
             ),
@@ -45,7 +45,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                   'Routing, places, and corridor search use Google Maps Platform '
                   'APIs. When you plan or drive, route queries and nearby-place '
                   'lookups may send origin/destination or current position to Google '
-                  'under their terms. TripPlus does not store those coordinates in '
+                  'under their terms. JourneyPlus does not store those coordinates in '
                   'our database.',
             ),
             _Section(
@@ -76,7 +76,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             _Section(
               title: 'Contact',
               body:
-                  'Questions before publishing or while driving? Reach the TripPlus '
+                  'Questions before publishing or while driving? Reach the JourneyPlus '
                   'team through the support channel listed on the store listing.',
             ),
           ],

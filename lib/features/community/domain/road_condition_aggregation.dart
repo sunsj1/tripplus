@@ -1,4 +1,4 @@
-import 'package:tripplus/features/community/domain/models/station_community_report.dart';
+import 'package:journeyplus/features/community/domain/models/station_community_report.dart';
 
 /// P2-043 — Aggregated road-condition signal for the road near a POI.
 ///

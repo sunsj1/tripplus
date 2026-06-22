@@ -1,10 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tripplus/core/utils/polyline_decoder.dart';
-import 'package:tripplus/features/alerts/domain/alert_route_utils.dart';
-import 'package:tripplus/features/hidden_gems/data/hidden_gem_dataset.dart';
-import 'package:tripplus/features/hidden_gems/domain/hidden_gem.dart';
-import 'package:tripplus/features/plan/presentation/controller/plan_providers.dart';
-import 'package:tripplus/features/plan/presentation/controller/plan_state.dart';
+import 'package:journeyplus/core/utils/polyline_decoder.dart';
+import 'package:journeyplus/features/alerts/domain/alert_route_utils.dart';
+import 'package:journeyplus/features/hidden_gems/data/hidden_gem_dataset.dart';
+import 'package:journeyplus/features/hidden_gems/domain/hidden_gem.dart';
+import 'package:journeyplus/features/plan/presentation/controller/plan_providers.dart';
+import 'package:journeyplus/features/plan/presentation/controller/plan_state.dart';
 
 /// P2-060 — Raw curated dataset, loaded once from asset.
 final hiddenGemCorridorsProvider =

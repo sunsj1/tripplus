@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:tripplus/features/community/domain/models/station_community_report.dart';
-import 'package:tripplus/features/community/presentation/widgets/community_report_snippet_card.dart';
-import 'package:tripplus/features/community/presentation/widgets/community_time_ago.dart';
+import 'package:journeyplus/features/community/domain/models/station_community_report.dart';
+import 'package:journeyplus/features/community/presentation/widgets/community_report_snippet_card.dart';
+import 'package:journeyplus/features/community/presentation/widgets/community_time_ago.dart';
 
 /// Vertical auto-advancing peek at the latest community voices.
 class CommunityRecentReportsCarousel extends StatefulWidget {

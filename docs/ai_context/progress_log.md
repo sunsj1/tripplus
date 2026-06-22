@@ -187,7 +187,7 @@ Apply: `phase-2-intelligence-complete` after the per-device verification checkli
 
 - `P2-052` — Trip share:
   - New `share_plus: ^11.0.0` dependency.
-  - **`buildTripShareText(trip)`** (pure Dart, in `domain/trip_share_text.dart`) — emoji-prefixed text with origin → destination, distance, ETA, cost line (fuel or charging), tolls, Google Maps directions URL, "Planned with TripPlus" footer.
+  - **`buildTripShareText(trip)`** (pure Dart, in `domain/trip_share_text.dart`) — emoji-prefixed text with origin → destination, distance, ETA, cost line (fuel or charging), tolls, Google Maps directions URL, "Planned with JourneyPlus" footer.
   - **`shareTrip(context, trip)`** wrapper (in `presentation/utils/share_trip.dart`) hands the text to `SharePlus.instance.share(...)` and supplies `sharePositionOrigin` for iPad.
   - Share button mounted on `_TripDetailScreen` (history) app-bar actions + new outlined "Share this trip" button on `_CompletedView` (Trip tab).
 
@@ -641,7 +641,7 @@ docs(phase1): complete session 11 verification + phase 2 batch plan
 
 - `P1-062` — `lib/core/widgets/poi_list_skeleton.dart`; replaces inline skeleton in `PoiCategoryScreen`.
 
-- `P1-030` — Android splash `#1B5E20`; iOS `CFBundleDisplayName` → TripPlus (launcher icon asset swap deferred).
+- `P1-030` — Android splash `#1B5E20`; iOS `CFBundleDisplayName` → JourneyPlus (launcher icon asset swap deferred).
 
 ### Validation
 - `flutter analyze` — clean
@@ -691,7 +691,7 @@ history, telemetry, POI skeletons, and brand splash placeholders.
 - `P1-027` — `LocalNotificationService`:
   - `lib/core/services/local_notification_service.dart` — `initialize()`, `requestPermissions()`, `showTripAlert()`.
   - `main.dart` calls `initialize()` at startup.
-  - Android: `POST_NOTIFICATIONS`, boot receivers, high-importance channel `tripplus_alerts`.
+  - Android: `POST_NOTIFICATIONS`, boot receivers, high-importance channel `journeyplus_alerts`.
   - iOS: runtime permission via `DarwinInitializationSettings` / `requestPermissions`.
 
 ### Files changed (new)
@@ -1281,7 +1281,7 @@ P1-005 plan input adds vehicle row + preference chips (per-trip overrides)
 ### Per-task notes
 
 - `P1-001` — `pubspec.yaml` description set to `"AI Highway Companion for Indian road trips"`.
-- `P1-002` — `MaterialApp.title` in `lib/main.dart` set to `"TripPlus — Highway Companion"`.
+- `P1-002` — `MaterialApp.title` in `lib/main.dart` set to `"JourneyPlus — Highway Companion"`.
 - `P1-063` — Added `flutter_local_notifications: ^17.2.4` and `connectivity_plus: ^6.1.0`. `flutter pub get` succeeded; lockfile committed. **Native Android/iOS wiring still owed to `P1-027`.**
 - `P1-003` — `lib/core/domain/vehicle.dart`: `VehicleType { petrol, diesel, ev, bike }` + `Vehicle` freezed (`type`, `nickname?`, `fuelEfficiencyKmpl?`, `batteryKwh?`, `connectorTypes[]`, `fastChargeOnly`). Convenience getters `isElectric`, `burnsFuel`. Full JSON support.
 - `P1-031` — `lib/core/domain/user_preferences.dart`: all flag fields per spec + `BudgetTier { low, mid, high }`. Convenience getter `hasSafetyOverlay`.
@@ -1330,7 +1330,7 @@ M  windows/flutter/generated_plugins.cmake         (auto from pub get)
 feat(phase1): foundation models + rebrand (session 1)
 
 P1-001 pubspec description → AI Highway Companion
-P1-002 MaterialApp title → TripPlus — Highway Companion
+P1-002 MaterialApp title → JourneyPlus — Highway Companion
 P1-063 add flutter_local_notifications + connectivity_plus
 P1-003 lib/core/domain/vehicle.dart (VehicleType, Vehicle)
 P1-031 lib/core/domain/user_preferences.dart (UserPreferences, BudgetTier)

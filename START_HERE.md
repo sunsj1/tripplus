@@ -1,4 +1,4 @@
-# 🚀 START HERE — TripPlus AI Development
+# 🚀 START HERE — JourneyPlus AI Development
 
 > **You just cloned the repo or opened it in an AI tool. This file tells you exactly what to do.**
 
@@ -128,7 +128,7 @@ AGENTS.md                                  ← Project + team context
 
 ### "I'm setting up for the first time"
 ```
-1. $ git clone <url> tripplus
+1. $ git clone <url> journeyplus
 2. Read: docs/AI_DEV_ONBOARDING.md (setup section)
 3. Do: Install Flutter, pub get, build_runner, .env, Firebase
 4. Run: flutter analyze
@@ -200,7 +200,7 @@ Done ✓ Back tomorrow.
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│ How AI Development Works on TripPlus                   │
+│ How AI Development Works on JourneyPlus                   │
 └─────────────────────────────────────────────────────────┘
 
 Every session follows this loop:

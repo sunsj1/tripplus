@@ -1,8 +1,8 @@
-# TripPlus — Initial idea and current status
+# JourneyPlus — Initial idea and current status
 
 ## What this project is
 
-**TripPlus** is a Flutter application described in `pubspec.yaml` as an **EV Charging Station Assistant**. It helps drivers discover charging stations, plan routes with charging stops, and stay informed during a trip through insights and community-sourced station conditions.
+**JourneyPlus** is a Flutter application described in `pubspec.yaml` as an **EV Charging Station Assistant**. It helps drivers discover charging stations, plan routes with charging stops, and stay informed during a trip through insights and community-sourced station conditions.
 
 The app targets **iOS**, **Android**, **Windows**, and uses a typical layered structure under `lib/features/` (auth, charging, stations, plan, insights, community, alerts, onboarding, shell).
 
@@ -44,7 +44,7 @@ Environment secrets load from `.env` (not committed in typical setups).
 
 ### Work in progress / active branch of development
 
-From the current repository state, **community and reliability** are the most active areas: new or updated files include submit queue, telemetry hooks, DTOs and domain models for community reports, controllers/providers, and several presentation widgets (e.g. report sheet, pulse steps, list screen, plan/station integration touchpoints). The root `README.md` is still the default Flutter template and does not yet describe TripPlus-specific behavior.
+From the current repository state, **community and reliability** are the most active areas: new or updated files include submit queue, telemetry hooks, DTOs and domain models for community reports, controllers/providers, and several presentation widgets (e.g. report sheet, pulse steps, list screen, plan/station integration touchpoints). The root `README.md` is still the default Flutter template and does not yet describe JourneyPlus-specific behavior.
 
 ### Roadmap note (internal doc)
 
@@ -61,7 +61,7 @@ From the current repository state, **community and reliability** are the most ac
 | Reliability UX phases | Phase 1 documented as done; Phase 2 documented as follow-on |
 | Public README / marketing docs | Minimal (default Flutter README) |
 
-**Bottom line:** TripPlus is a functional EV charging assistant app with auth, navigation shell, stations, planning, and insights. Current momentum is on **community station reports**, **offline-safe submission**, and **reliability-minded presentation** of community data, with a written roadmap for deeper trust and planning integration.
+**Bottom line:** JourneyPlus is a functional EV charging assistant app with auth, navigation shell, stations, planning, and insights. Current momentum is on **community station reports**, **offline-safe submission**, and **reliability-minded presentation** of community data, with a written roadmap for deeper trust and planning integration.
 
 ---
 

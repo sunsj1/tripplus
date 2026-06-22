@@ -1,15 +1,15 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tripplus/core/domain/poi.dart';
-import 'package:tripplus/core/services/directions_service.dart';
-import 'package:tripplus/core/services/geocoding_service.dart';
-import 'package:tripplus/core/utils/failure.dart';
-import 'package:tripplus/core/utils/location_helper.dart';
-import 'package:tripplus/core/utils/polyline_decoder.dart';
-import 'package:tripplus/features/discovery/domain/emergency_hotline.dart';
-import 'package:tripplus/features/discovery/domain/emergency_service_type.dart';
-import 'package:tripplus/features/discovery/presentation/controller/emergency_ui_state.dart';
-import 'package:tripplus/features/pois/data/repository/poi_repository.dart';
-import 'package:tripplus/features/pois/presentation/controller/poi_category_ui_state.dart';
+import 'package:journeyplus/core/domain/poi.dart';
+import 'package:journeyplus/core/services/directions_service.dart';
+import 'package:journeyplus/core/services/geocoding_service.dart';
+import 'package:journeyplus/core/utils/failure.dart';
+import 'package:journeyplus/core/utils/location_helper.dart';
+import 'package:journeyplus/core/utils/polyline_decoder.dart';
+import 'package:journeyplus/features/discovery/domain/emergency_hotline.dart';
+import 'package:journeyplus/features/discovery/domain/emergency_service_type.dart';
+import 'package:journeyplus/features/discovery/presentation/controller/emergency_ui_state.dart';
+import 'package:journeyplus/features/pois/data/repository/poi_repository.dart';
+import 'package:journeyplus/features/pois/presentation/controller/poi_category_ui_state.dart';
 
 class EmergencyController extends StateNotifier<EmergencyUiState> {
   EmergencyController({

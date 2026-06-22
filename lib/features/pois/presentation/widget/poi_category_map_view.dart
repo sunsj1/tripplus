@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:tripplus/core/constants/api_constants.dart';
-import 'package:tripplus/core/domain/poi.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
-import 'package:tripplus/features/pois/presentation/widget/poi_marker_clustering.dart';
+import 'package:journeyplus/core/constants/api_constants.dart';
+import 'package:journeyplus/core/domain/poi.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/features/pois/presentation/widget/poi_marker_clustering.dart';
 
 /// Google Maps view for [PoiCategoryScreen] (`P1-015`). Mirrors the structure
 /// of `station_map_screen.dart` so look-and-feel stays consistent.

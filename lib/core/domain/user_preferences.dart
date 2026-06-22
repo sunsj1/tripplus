@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:tripplus/core/domain/fuel_brand.dart';
+import 'package:journeyplus/core/domain/fuel_brand.dart';
 
 part 'user_preferences.freezed.dart';
 part 'user_preferences.g.dart';

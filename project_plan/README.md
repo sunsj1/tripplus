@@ -1,8 +1,8 @@
-# TripPlus — Project Plan
+# JourneyPlus — Project Plan
 
 This folder is the **single source of truth** for what we are building, in what order, and how progress is tracked.
 
-> Product positioning: **TripPlus — India's Smart Highway Companion / AI Copilot for Road Trips**
+> Product positioning: **JourneyPlus — India's Smart Highway Companion / AI Copilot for Road Trips**
 > (Built on top of the existing EV-charging-assistant Flutter app, *not* a rewrite.)
 
 ---

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tripplus/core/domain/poi.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
-import 'package:tripplus/core/utils/google_places_photo.dart';
-import 'package:tripplus/core/widgets/poi_photo.dart';
-import 'package:tripplus/core/widgets/source_badge.dart';
-import 'package:tripplus/features/community/presentation/widgets/poi_community_reports_section.dart';
-import 'package:tripplus/features/personalization/presentation/controller/brand_affinity_controller.dart';
-import 'package:tripplus/features/personalization/presentation/widget/ranking_why_panel.dart';
-import 'package:tripplus/features/pois/presentation/controller/pois_providers.dart';
+import 'package:journeyplus/core/domain/poi.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/core/utils/google_places_photo.dart';
+import 'package:journeyplus/core/widgets/poi_photo.dart';
+import 'package:journeyplus/core/widgets/source_badge.dart';
+import 'package:journeyplus/features/community/presentation/widgets/poi_community_reports_section.dart';
+import 'package:journeyplus/features/personalization/presentation/controller/brand_affinity_controller.dart';
+import 'package:journeyplus/features/personalization/presentation/widget/ranking_why_panel.dart';
+import 'package:journeyplus/features/pois/presentation/controller/pois_providers.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// Modal bottom sheet shown when the user taps a POI tile. Wraps the POI

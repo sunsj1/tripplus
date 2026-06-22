@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tripplus/core/domain/poi.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
-import 'package:tripplus/features/auth/presentation/providers/auth_providers.dart';
-import 'package:tripplus/features/community/domain/community_target_type.dart';
-import 'package:tripplus/features/community/domain/models/station_community_submit_input.dart';
-import 'package:tripplus/features/community/presentation/controller/community_providers.dart';
-import 'package:tripplus/features/personalization/presentation/controller/brand_affinity_controller.dart';
-import 'package:tripplus/features/pois/domain/community_poi_key.dart';
+import 'package:journeyplus/core/domain/poi.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/features/auth/presentation/providers/auth_providers.dart';
+import 'package:journeyplus/features/community/domain/community_target_type.dart';
+import 'package:journeyplus/features/community/domain/models/station_community_submit_input.dart';
+import 'package:journeyplus/features/community/presentation/controller/community_providers.dart';
+import 'package:journeyplus/features/personalization/presentation/controller/brand_affinity_controller.dart';
+import 'package:journeyplus/features/pois/domain/community_poi_key.dart';
 
 /// Opens a lightweight pulse sheet for any [Poi].
 ///

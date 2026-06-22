@@ -1,6 +1,6 @@
 import 'package:logger/logger.dart';
-import 'package:tripplus/features/alerts/domain/alert.dart';
-import 'package:tripplus/core/domain/poi.dart';
+import 'package:journeyplus/features/alerts/domain/alert.dart';
+import 'package:journeyplus/core/domain/poi.dart';
 
 /// Lightweight structured logs for new Phase 1 flows (`P1-060`).
 ///

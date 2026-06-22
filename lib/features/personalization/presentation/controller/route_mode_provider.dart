@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tripplus/features/personalization/domain/route_mode.dart';
+import 'package:journeyplus/features/personalization/domain/route_mode.dart';
 
 /// P2-020 / P2-021 / P2-022 — Globally active [RouteMode].
 ///

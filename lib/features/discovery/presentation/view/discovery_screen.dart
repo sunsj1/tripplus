@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tripplus/core/domain/poi.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
-import 'package:tripplus/features/discovery/presentation/view/emergency_screen.dart';
-import 'package:tripplus/features/discovery/presentation/widget/emergency_pinned_tile.dart';
-import 'package:tripplus/features/hidden_gems/presentation/widget/hidden_gems_carousel.dart';
-import 'package:tripplus/features/plan/presentation/controller/plan_providers.dart';
-import 'package:tripplus/features/plan/presentation/controller/plan_state.dart';
-import 'package:tripplus/features/pois/presentation/view/poi_category_screen.dart';
-import 'package:tripplus/features/shell/presentation/controller/shell_providers.dart';
+import 'package:journeyplus/core/domain/poi.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/features/discovery/presentation/view/emergency_screen.dart';
+import 'package:journeyplus/features/discovery/presentation/widget/emergency_pinned_tile.dart';
+import 'package:journeyplus/features/hidden_gems/presentation/widget/hidden_gems_carousel.dart';
+import 'package:journeyplus/features/plan/presentation/controller/plan_providers.dart';
+import 'package:journeyplus/features/plan/presentation/controller/plan_state.dart';
+import 'package:journeyplus/features/pois/presentation/view/poi_category_screen.dart';
+import 'package:journeyplus/features/shell/presentation/controller/shell_providers.dart';
 
 /// The iconic 3-column "Smart Intelligence Grid" (`P1-011`).
 /// Each tile pushes [PoiCategoryScreen] for the tapped category (`P1-013`).

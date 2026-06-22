@@ -1,11 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:logger/logger.dart';
-import 'package:tripplus/core/constants/api_constants.dart';
-import 'package:tripplus/core/utils/result.dart';
-import 'package:tripplus/features/charging/data/dto/charging_dto.dart';
-import 'package:tripplus/features/charging/data/dto/charging_mapper.dart';
-import 'package:tripplus/features/charging/data/local_db/charging_local_db.dart';
-import 'package:tripplus/features/charging/domain/models/charging_station.dart';
+import 'package:journeyplus/core/constants/api_constants.dart';
+import 'package:journeyplus/core/utils/result.dart';
+import 'package:journeyplus/features/charging/data/dto/charging_dto.dart';
+import 'package:journeyplus/features/charging/data/dto/charging_mapper.dart';
+import 'package:journeyplus/features/charging/data/local_db/charging_local_db.dart';
+import 'package:journeyplus/features/charging/domain/models/charging_station.dart';
 
 class ChargingRepository {
   final Dio _dio;
@@ -200,7 +200,7 @@ class ChargingRepository {
   }) {
     final key = ApiConstants.openChargeMapApiKey.trim();
     return {
-      'client': 'tripplus',
+      'client': 'journeyplus',
       'output': 'json',
       'key': key,
       'latitude': latitude,

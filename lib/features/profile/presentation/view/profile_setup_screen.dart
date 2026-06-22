@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
-import 'package:tripplus/core/widgets/fuel_brand_picker.dart';
-import 'package:tripplus/features/profile/presentation/controller/profile_providers.dart';
-import 'package:tripplus/features/profile/presentation/controller/profile_ui_state.dart';
-import 'package:tripplus/features/profile/presentation/widget/preferences_chips.dart';
-import 'package:tripplus/features/profile/presentation/widget/vehicle_picker.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/core/widgets/fuel_brand_picker.dart';
+import 'package:journeyplus/features/profile/presentation/controller/profile_providers.dart';
+import 'package:journeyplus/features/profile/presentation/controller/profile_ui_state.dart';
+import 'package:journeyplus/features/profile/presentation/widget/preferences_chips.dart';
+import 'package:journeyplus/features/profile/presentation/widget/vehicle_picker.dart';
 
 /// First-time setup. Shown by [VehicleSetupGate] when a signed-in user has no
 /// vehicle yet. On save, the gate flips to render the AppShell.
@@ -40,7 +40,7 @@ class ProfileSetupScreen extends ConsumerWidget {
               Text('Set up your trip profile', style: AppTextStyles.h2),
               const SizedBox(height: 8),
               Text(
-                'TripPlus uses this to plan smarter routes, surface the right stops, and warn you ahead.',
+                'JourneyPlus uses this to plan smarter routes, surface the right stops, and warn you ahead.',
                 style: AppTextStyles.bodyMedium.copyWith(
                   color: AppColors.textSecondary,
                 ),

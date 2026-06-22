@@ -1,12 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tripplus/core/domain/poi.dart';
-import 'package:tripplus/core/domain/user_preferences.dart';
-import 'package:tripplus/core/domain/vehicle.dart';
-import 'package:tripplus/core/services/directions_service.dart';
-import 'package:tripplus/core/utils/polyline_decoder.dart';
-import 'package:tripplus/features/alerts/domain/alert.dart';
-import 'package:tripplus/features/alerts/domain/alert_engine.dart';
-import 'package:tripplus/features/alerts/domain/alert_engine_input.dart';
+import 'package:journeyplus/core/domain/poi.dart';
+import 'package:journeyplus/core/domain/user_preferences.dart';
+import 'package:journeyplus/core/domain/vehicle.dart';
+import 'package:journeyplus/core/services/directions_service.dart';
+import 'package:journeyplus/core/utils/polyline_decoder.dart';
+import 'package:journeyplus/features/alerts/domain/alert.dart';
+import 'package:journeyplus/features/alerts/domain/alert_engine.dart';
+import 'package:journeyplus/features/alerts/domain/alert_engine_input.dart';
 
 void main() {
   final route = RouteInfo(

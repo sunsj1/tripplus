@@ -2,7 +2,7 @@
 
 This document answers the four strategic questions before the task lists:
 
-1. How do we align the existing `tripplus` project with the **Smart Highway Companion** vision from the PDF?
+1. How do we align the existing `journeyplus` project with the **Smart Highway Companion** vision from the PDF?
 2. Should we **restart from scratch** or **extend** the existing codebase?
 3. What is the **execution plan**?
 4. **Where do we start**?
@@ -11,7 +11,7 @@ This document answers the four strategic questions before the task lists:
 
 ## 1. Alignment between the existing project and the PDF idea
 
-The PDF describes a product that is essentially a **superset** of what `tripplus` already is. Today's app is positioned narrowly (EV charging assistant). The PDF positions it broadly (AI copilot for Indian road trips, every vehicle type, every amenity).
+The PDF describes a product that is essentially a **superset** of what `journeyplus` already is. Today's app is positioned narrowly (EV charging assistant). The PDF positions it broadly (AI copilot for Indian road trips, every vehicle type, every amenity).
 
 ### What already exists that maps directly to the PDF
 

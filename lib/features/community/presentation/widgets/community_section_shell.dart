@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
 
 /// Rounded surface card used by the community block on station detail.
 class CommunitySectionShell extends StatelessWidget {

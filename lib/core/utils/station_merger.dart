@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:tripplus/features/charging/domain/models/charging_station.dart';
+import 'package:journeyplus/features/charging/domain/models/charging_station.dart';
 
 class StationMerger {
   StationMerger._();

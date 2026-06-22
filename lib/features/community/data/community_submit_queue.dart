@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:tripplus/features/community/domain/models/station_community_submit_input.dart';
+import 'package:journeyplus/features/community/domain/models/station_community_submit_input.dart';
 
 class CommunitySubmitQueue {
   CommunitySubmitQueue(this._box);

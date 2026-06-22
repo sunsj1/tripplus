@@ -1,9 +1,9 @@
-import 'package:tripplus/core/utils/polyline_decoder.dart';
-import 'package:tripplus/features/alerts/domain/alert.dart';
-import 'package:tripplus/features/alerts/domain/alert_engine_input.dart';
-import 'package:tripplus/features/alerts/domain/alert_route_utils.dart';
-import 'package:tripplus/features/alerts/domain/ghat_dataset.dart';
-import 'package:tripplus/features/alerts/domain/rules/alert_rule.dart';
+import 'package:journeyplus/core/utils/polyline_decoder.dart';
+import 'package:journeyplus/features/alerts/domain/alert.dart';
+import 'package:journeyplus/features/alerts/domain/alert_engine_input.dart';
+import 'package:journeyplus/features/alerts/domain/alert_route_utils.dart';
+import 'package:journeyplus/features/alerts/domain/ghat_dataset.dart';
+import 'package:journeyplus/features/alerts/domain/rules/alert_rule.dart';
 import 'package:uuid/uuid.dart';
 
 /// **P2-002 — Ghat / risk alert.**

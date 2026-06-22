@@ -34,7 +34,7 @@ A fresh AI needs to answer these questions **in order**:
 flowchart TD
     AI["🤖 Fresh AI opens repo"] --> Q1["<b>Question 1:</b><br/>What is this project?"]
     
-    Q1 --> A1["📖 Read: AGENTS.md<br/><br/>Output:<br/>- TripPlus = Smart Highway Companion<br/>- Flutter app for Indian road trips<br/>- Stack: Riverpod, Freezed, Firebase<br/>- Folder structure: feature-slice<br/>- Tech stack constraints"]
+    Q1 --> A1["📖 Read: AGENTS.md<br/><br/>Output:<br/>- JourneyPlus = Smart Highway Companion<br/>- Flutter app for Indian road trips<br/>- Stack: Riverpod, Freezed, Firebase<br/>- Folder structure: feature-slice<br/>- Tech stack constraints"]
     
     A1 --> Q2["<b>Question 2:</b><br/>What rules must I follow?"]
     

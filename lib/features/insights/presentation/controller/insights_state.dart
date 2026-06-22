@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:tripplus/core/services/route_station_service.dart';
-import 'package:tripplus/features/charging/domain/models/charging_station.dart';
+import 'package:journeyplus/core/services/route_station_service.dart';
+import 'package:journeyplus/features/charging/domain/models/charging_station.dart';
 
 part 'insights_state.freezed.dart';
 

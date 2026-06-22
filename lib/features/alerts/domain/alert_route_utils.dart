@@ -1,8 +1,8 @@
 import 'dart:math';
 
-import 'package:tripplus/core/domain/poi.dart';
-import 'package:tripplus/core/utils/location_helper.dart';
-import 'package:tripplus/core/utils/polyline_decoder.dart';
+import 'package:journeyplus/core/domain/poi.dart';
+import 'package:journeyplus/core/utils/location_helper.dart';
+import 'package:journeyplus/core/utils/polyline_decoder.dart';
 
 /// Shared geometry helpers for distance-based alert rules.
 class AlertRouteUtils {

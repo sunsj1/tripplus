@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:tripplus/core/domain/poi.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
-import 'package:tripplus/features/community/presentation/widgets/poi_community_rating_pulse.dart';
-import 'package:tripplus/features/plan/domain/preference_corridor_insight.dart';
-import 'package:tripplus/features/pois/presentation/widget/poi_detail_sheet.dart';
-import 'package:tripplus/features/pois/presentation/widget/poi_list_tile.dart';
+import 'package:journeyplus/core/domain/poi.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/features/community/presentation/widgets/poi_community_rating_pulse.dart';
+import 'package:journeyplus/features/plan/domain/preference_corridor_insight.dart';
+import 'package:journeyplus/features/pois/presentation/widget/poi_detail_sheet.dart';
+import 'package:journeyplus/features/pois/presentation/widget/poi_list_tile.dart';
 
 /// Full list of corridor POIs for one trip preference (from route details).
 class PreferenceStopsScreen extends StatelessWidget {

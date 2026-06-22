@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
-import 'package:tripplus/features/shell/presentation/controller/shell_providers.dart';
-import 'package:tripplus/features/trip/domain/models/trip.dart';
-import 'package:tripplus/features/trip/domain/models/trip_status.dart';
-import 'package:tripplus/features/trip/presentation/controller/active_trip_controller.dart';
-import 'package:tripplus/features/trip/presentation/controller/active_trip_state.dart';
-import 'package:tripplus/features/trip/presentation/controller/trip_providers.dart';
-import 'package:tripplus/features/trip/presentation/utils/trip_formatters.dart';
-import 'package:tripplus/features/trip/presentation/widget/trip_elapsed_panel.dart';
-import 'package:tripplus/features/trip/presentation/widget/trip_end_dialog.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/features/shell/presentation/controller/shell_providers.dart';
+import 'package:journeyplus/features/trip/domain/models/trip.dart';
+import 'package:journeyplus/features/trip/domain/models/trip_status.dart';
+import 'package:journeyplus/features/trip/presentation/controller/active_trip_controller.dart';
+import 'package:journeyplus/features/trip/presentation/controller/active_trip_state.dart';
+import 'package:journeyplus/features/trip/presentation/controller/trip_providers.dart';
+import 'package:journeyplus/features/trip/presentation/utils/trip_formatters.dart';
+import 'package:journeyplus/features/trip/presentation/widget/trip_elapsed_panel.dart';
+import 'package:journeyplus/features/trip/presentation/widget/trip_end_dialog.dart';
 
 /// Trip lifecycle controls on the Route Details screen — mirrors the Trip tab.
 class RouteTripActions extends ConsumerWidget {

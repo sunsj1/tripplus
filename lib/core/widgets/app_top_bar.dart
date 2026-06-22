@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/features/auth/presentation/providers/auth_providers.dart';
-import 'package:tripplus/features/auth/presentation/view/profile_form_screen.dart';
-import 'package:tripplus/features/profile/presentation/view/profile_edit_screen.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/features/auth/presentation/providers/auth_providers.dart';
+import 'package:journeyplus/features/auth/presentation/view/profile_form_screen.dart';
+import 'package:journeyplus/features/profile/presentation/view/profile_edit_screen.dart';
 
 enum _ProfileAction { edit, tripPreferences, logout }
 
@@ -17,7 +17,7 @@ class AppTopBar extends ConsumerWidget implements PreferredSizeWidget {
 
   const AppTopBar({
     super.key,
-    this.title = 'TripPlus',
+    this.title = 'JourneyPlus',
     @Deprecated('No drawer is wired — parameter is ignored') this.showMenu = false,
     this.showBack = false,
     this.showProfileMenu = true,

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:tripplus/features/trip/domain/models/trip.dart';
+import 'package:journeyplus/features/trip/domain/models/trip.dart';
 
 /// Thin wrapper around the Hive `active_trip` box.
 ///

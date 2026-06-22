@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tripplus/features/discovery/presentation/controller/emergency_controller.dart';
-import 'package:tripplus/features/discovery/presentation/controller/emergency_ui_state.dart';
-import 'package:tripplus/features/plan/presentation/controller/plan_providers.dart';
-import 'package:tripplus/features/plan/presentation/controller/plan_state.dart';
-import 'package:tripplus/features/pois/presentation/controller/pois_providers.dart';
+import 'package:journeyplus/features/discovery/presentation/controller/emergency_controller.dart';
+import 'package:journeyplus/features/discovery/presentation/controller/emergency_ui_state.dart';
+import 'package:journeyplus/features/plan/presentation/controller/plan_providers.dart';
+import 'package:journeyplus/features/plan/presentation/controller/plan_state.dart';
+import 'package:journeyplus/features/pois/presentation/controller/pois_providers.dart';
 
 final emergencyControllerProvider = StateNotifierProvider.autoDispose<
     EmergencyController, EmergencyUiState>((ref) {

@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:tripplus/core/domain/user_preferences.dart';
-import 'package:tripplus/core/domain/vehicle.dart';
-import 'package:tripplus/core/utils/failure.dart';
-import 'package:tripplus/features/profile/data/local_db/profile_box.dart';
-import 'package:tripplus/features/profile/domain/profile_data.dart';
+import 'package:journeyplus/core/domain/user_preferences.dart';
+import 'package:journeyplus/core/domain/vehicle.dart';
+import 'package:journeyplus/core/utils/failure.dart';
+import 'package:journeyplus/features/profile/data/local_db/profile_box.dart';
+import 'package:journeyplus/features/profile/domain/profile_data.dart';
 
 /// Persists [ProfileData] to Hive (instant) and mirrors to Firestore
 /// `users/{uid}` (cross-device sync). Hive is treated as the source of truth

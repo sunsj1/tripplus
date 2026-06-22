@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
-import 'package:tripplus/core/widgets/app_top_bar.dart';
-import 'package:tripplus/features/auth/presentation/providers/auth_providers.dart';
-import 'package:tripplus/features/profile/presentation/view/about_tripplus_screen.dart';
-import 'package:tripplus/features/profile/presentation/view/privacy_policy_screen.dart';
-import 'package:tripplus/features/profile/presentation/view/profile_preferences_screen.dart';
-import 'package:tripplus/features/profile/presentation/view/trip_history_screen.dart';
-import 'package:tripplus/features/settings/presentation/view/settings_screen.dart';
-import 'package:tripplus/features/trip/presentation/controller/trip_providers.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/core/widgets/app_top_bar.dart';
+import 'package:journeyplus/features/auth/presentation/providers/auth_providers.dart';
+import 'package:journeyplus/features/profile/presentation/view/about_journeyplus_screen.dart';
+import 'package:journeyplus/features/profile/presentation/view/privacy_policy_screen.dart';
+import 'package:journeyplus/features/profile/presentation/view/profile_preferences_screen.dart';
+import 'package:journeyplus/features/profile/presentation/view/trip_history_screen.dart';
+import 'package:journeyplus/features/settings/presentation/view/settings_screen.dart';
+import 'package:journeyplus/features/trip/presentation/controller/trip_providers.dart';
 
 /// Profile hub — menus for preferences, history, and privacy disclosures.
 class ProfileTabScreen extends ConsumerWidget {
@@ -106,11 +106,11 @@ class ProfileTabScreen extends ConsumerWidget {
                   ),
                   _MenuTile(
                     icon: Icons.info_outline,
-                    title: 'About TripPlus',
+                    title: 'About JourneyPlus',
                     subtitle: 'Product overview & data practices',
                     onTap: () => Navigator.of(context).push(
                       MaterialPageRoute<void>(
-                        builder: (_) => const AboutTripPlusScreen(),
+                        builder: (_) => const AboutJourneyPlusScreen(),
                       ),
                     ),
                   ),

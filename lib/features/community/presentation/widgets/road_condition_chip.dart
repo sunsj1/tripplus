@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tripplus/core/domain/poi.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
-import 'package:tripplus/features/community/domain/models/station_community_ui_state.dart';
-import 'package:tripplus/features/community/presentation/controller/community_providers.dart';
-import 'package:tripplus/features/pois/domain/community_poi_key.dart';
+import 'package:journeyplus/core/domain/poi.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/features/community/domain/models/station_community_ui_state.dart';
+import 'package:journeyplus/features/community/presentation/controller/community_providers.dart';
+import 'package:journeyplus/features/pois/domain/community_poi_key.dart';
 
 /// P2-043 — Road-condition badge for a POI. Renders nothing unless the
 /// community's recent reports converge on a non-good condition near the

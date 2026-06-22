@@ -1,15 +1,15 @@
 import 'dart:math';
 
 import 'package:logger/logger.dart';
-import 'package:tripplus/core/services/directions_service.dart';
-import 'package:tripplus/core/services/geocoding_service.dart';
-import 'package:tripplus/core/services/google_ev_station_service.dart';
-import 'package:tripplus/core/utils/location_helper.dart';
-import 'package:tripplus/core/utils/polyline_decoder.dart';
-import 'package:tripplus/core/utils/result.dart';
-import 'package:tripplus/core/utils/station_merger.dart';
-import 'package:tripplus/features/charging/data/repository/charging_repository.dart';
-import 'package:tripplus/features/charging/domain/models/charging_station.dart';
+import 'package:journeyplus/core/services/directions_service.dart';
+import 'package:journeyplus/core/services/geocoding_service.dart';
+import 'package:journeyplus/core/services/google_ev_station_service.dart';
+import 'package:journeyplus/core/utils/location_helper.dart';
+import 'package:journeyplus/core/utils/polyline_decoder.dart';
+import 'package:journeyplus/core/utils/result.dart';
+import 'package:journeyplus/core/utils/station_merger.dart';
+import 'package:journeyplus/features/charging/data/repository/charging_repository.dart';
+import 'package:journeyplus/features/charging/domain/models/charging_station.dart';
 
 class RouteAnalysis {
   final RouteInfo route;

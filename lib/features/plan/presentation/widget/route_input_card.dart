@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:tripplus/core/domain/user_preferences.dart';
-import 'package:tripplus/core/domain/vehicle.dart';
-import 'package:tripplus/core/services/places_autocomplete_service.dart';
-import 'package:tripplus/core/theme/app_colors.dart';
-import 'package:tripplus/core/theme/app_text_styles.dart';
-import 'package:tripplus/core/widgets/autocomplete_location_field.dart';
-import 'package:tripplus/features/plan/presentation/widget/trip_context_row.dart';
+import 'package:journeyplus/core/domain/user_preferences.dart';
+import 'package:journeyplus/core/domain/vehicle.dart';
+import 'package:journeyplus/core/services/places_autocomplete_service.dart';
+import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/core/widgets/autocomplete_location_field.dart';
+import 'package:journeyplus/features/plan/presentation/widget/trip_context_row.dart';
 
 class RouteInputCard extends StatelessWidget {
   final TextEditingController fromController;

@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:logger/logger.dart';
-import 'package:tripplus/core/utils/polyline_decoder.dart';
-import 'package:tripplus/features/weather/domain/route_weather_segment.dart';
+import 'package:journeyplus/core/utils/polyline_decoder.dart';
+import 'package:journeyplus/features/weather/domain/route_weather_segment.dart';
 
 /// P2-040 — Lightweight wrapper around Open-Meteo's free current-weather API.
 ///

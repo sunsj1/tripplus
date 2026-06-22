@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tripplus/core/domain/fuel_brand.dart';
-import 'package:tripplus/features/personalization/domain/poi_ranker.dart';
-import 'package:tripplus/features/personalization/domain/user_preference_vector.dart';
-import 'package:tripplus/features/personalization/presentation/controller/brand_affinity_controller.dart';
-import 'package:tripplus/features/profile/presentation/controller/profile_providers.dart';
+import 'package:journeyplus/core/domain/fuel_brand.dart';
+import 'package:journeyplus/features/personalization/domain/poi_ranker.dart';
+import 'package:journeyplus/features/personalization/domain/user_preference_vector.dart';
+import 'package:journeyplus/features/personalization/presentation/controller/brand_affinity_controller.dart';
+import 'package:journeyplus/features/profile/presentation/controller/profile_providers.dart';
 
 /// P2-010 — Live preference vector derived from the saved profile.
 ///

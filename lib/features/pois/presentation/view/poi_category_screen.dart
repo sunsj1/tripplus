@@ -4,6 +4,7 @@ import 'package:tripplus/core/domain/fuel_brand.dart';
 import 'package:tripplus/core/domain/poi.dart';
 import 'package:tripplus/core/theme/app_colors.dart';
 import 'package:tripplus/core/theme/app_text_styles.dart';
+import 'package:tripplus/core/widgets/horizontal_scroll_row.dart';
 import 'package:tripplus/core/utils/failure.dart';
 import 'package:tripplus/features/community/presentation/widgets/poi_community_rating_pulse.dart';
 import 'package:tripplus/features/community/presentation/widgets/road_condition_chip.dart';
@@ -470,48 +471,58 @@ class _ListState extends ConsumerState<_List> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(
-                height: 36,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  itemCount: _SortMode.values.length,
-                  separatorBuilder: (_, _) => const SizedBox(width: 8),
-                  itemBuilder: (_, i) {
-                    final mode = _SortMode.values[i];
-                    final active = _sort == mode;
-                    final isOpenNow = mode == _SortMode.openNow;
-                    // Dim "Open now" chip when no live-hours data exists yet.
-                    final dataAbsent = isOpenNow && !hasOpenNowData;
+              HorizontalScrollRow(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                itemCount: _SortMode.values.length,
+                separator: 8,
+                itemBuilder: (_, i) {
+                  final mode = _SortMode.values[i];
+                  final active = _sort == mode;
+                  final isOpenNow = mode == _SortMode.openNow;
+                  // Dim "Open now" chip when no live-hours data exists yet.
+                  final dataAbsent = isOpenNow && !hasOpenNowData;
 
-                    return Tooltip(
-                      message: dataAbsent
-                          ? 'Tap a place to load live hours'
-                          : '',
-                      preferBelow: true,
-                      child: GestureDetector(
-                        onTap: () => setState(() => _sort = mode),
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 180),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 6),
-                          decoration: BoxDecoration(
+                  return Tooltip(
+                    message: dataAbsent
+                        ? 'Tap a place to load live hours'
+                        : '',
+                    preferBelow: true,
+                    child: GestureDetector(
+                      onTap: () => setState(() => _sort = mode),
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 180),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: active
+                              ? AppColors.primarySurface
+                              : AppColors.surface,
+                          borderRadius: BorderRadius.circular(999),
+                          border: Border.all(
                             color: active
-                                ? AppColors.primarySurface
-                                : AppColors.surface,
-                            borderRadius: BorderRadius.circular(999),
-                            border: Border.all(
-                              color: active
-                                  ? AppColors.primary.withValues(alpha: 0.4)
-                                  : AppColors.borderLight,
-                            ),
+                                ? AppColors.primary.withValues(alpha: 0.4)
+                                : AppColors.borderLight,
                           ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                mode.icon,
-                                size: 13,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              mode.icon,
+                              size: 13,
+                              color: dataAbsent
+                                  ? AppColors.textTertiary
+                                      .withValues(alpha: 0.4)
+                                  : active
+                                      ? AppColors.primary
+                                      : AppColors.textTertiary,
+                            ),
+                            const SizedBox(width: 5),
+                            Text(
+                              mode.label,
+                              style: AppTextStyles.bodySmall.copyWith(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 12,
                                 color: dataAbsent
                                     ? AppColors.textTertiary
                                         .withValues(alpha: 0.4)
@@ -519,27 +530,15 @@ class _ListState extends ConsumerState<_List> {
                                         ? AppColors.primary
                                         : AppColors.textTertiary,
                               ),
-                              const SizedBox(width: 5),
-                              Text(
-                                mode.label,
-                                style: AppTextStyles.bodySmall.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 12,
-                                  color: dataAbsent
-                                      ? AppColors.textTertiary
-                                          .withValues(alpha: 0.4)
-                                      : active
-                                          ? AppColors.primary
-                                          : AppColors.textTertiary,
-                                ),
-                              ),
-                            ],
-                          ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
                         ),
                       ),
-                    );
-                  },
-                ),
+                    ),
+                  );
+                },
               ),
               // Contextual hint when "Open now" is selected but no data loaded yet.
               if (_sort == _SortMode.openNow && !hasOpenNowData)

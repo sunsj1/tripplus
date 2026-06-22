@@ -37,14 +37,17 @@ class StatCard extends StatelessWidget {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 28, color: iconColor),
-            const SizedBox(height: 14),
+            Icon(icon, size: compact ? 22 : 28, color: iconColor),
+            SizedBox(height: compact ? 10 : 14),
             Text(
               label.toUpperCase(),
               style: AppTextStyles.caption.copyWith(
                 color: AppColors.textTertiary,
               ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 4),
             FittedBox(

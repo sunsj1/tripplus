@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tripplus/core/theme/app_colors.dart';
 import 'package:tripplus/core/theme/app_text_styles.dart';
+import 'package:tripplus/core/widgets/horizontal_scroll_row.dart';
 import 'package:tripplus/features/hidden_gems/domain/hidden_gem.dart';
 import 'package:tripplus/features/hidden_gems/presentation/controller/hidden_gems_providers.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -56,15 +57,11 @@ class _Strip extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(
-          height: 168,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            itemCount: match.gems.length,
-            separatorBuilder: (_, _) => const SizedBox(width: 10),
-            itemBuilder: (_, i) => _GemCard(gem: match.gems[i]),
-          ),
+        HorizontalScrollRow(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          itemCount: match.gems.length,
+          separator: 10,
+          itemBuilder: (_, i) => _GemCard(gem: match.gems[i]),
         ),
       ],
     );
@@ -108,6 +105,7 @@ class _GemCard extends StatelessWidget {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Row(
               children: [
@@ -130,6 +128,8 @@ class _GemCard extends StatelessWidget {
                       fontWeight: FontWeight.w800,
                       fontSize: 10,
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 const Icon(Icons.open_in_new,
@@ -144,17 +144,15 @@ class _GemCard extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 4),
-            Expanded(
-              child: Text(
-                gem.description,
-                style: AppTextStyles.bodySmall.copyWith(
-                  color: AppColors.textSecondary,
-                  fontSize: 11,
-                  height: 1.35,
-                ),
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
+            Text(
+              gem.description,
+              style: AppTextStyles.bodySmall.copyWith(
+                color: AppColors.textSecondary,
+                fontSize: 11,
+                height: 1.35,
               ),
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
             ),
             if (gem.tags.isNotEmpty)
               Padding(

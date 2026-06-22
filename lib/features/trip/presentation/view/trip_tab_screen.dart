@@ -574,35 +574,51 @@ class _TripEstimateCards extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Row(
-        children: [
-          if (trip.etaMinutes != null)
-            StatCard(
-              icon: Icons.schedule_outlined,
-              iconColor: AppColors.primary,
-              label: 'ETA',
-              value: _fmtDuration(trip.etaMinutes!),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minWidth: constraints.maxWidth),
+              child: Row(
+                children: [
+                  if (trip.etaMinutes != null) ...[
+                    StatCard(
+                      compact: true,
+                      icon: Icons.schedule_outlined,
+                      iconColor: AppColors.primary,
+                      label: 'ETA',
+                      value: _fmtDuration(trip.etaMinutes!),
+                    ),
+                    const SizedBox(width: 10),
+                  ],
+                  if (toll != null) ...[
+                    StatCard(
+                      compact: true,
+                      icon: Icons.toll_outlined,
+                      iconColor: AppColors.warning,
+                      label: 'Tolls',
+                      value: '₹${toll.round()}',
+                    ),
+                    const SizedBox(width: 10),
+                  ],
+                  if (cost != null)
+                    StatCard(
+                      compact: true,
+                      icon: trip.isCostCharging
+                          ? Icons.electric_bolt_outlined
+                          : Icons.local_gas_station_outlined,
+                      iconColor: trip.isCostCharging
+                          ? AppColors.success
+                          : AppColors.primary,
+                      label: trip.isCostCharging ? 'Charging' : 'Fuel',
+                      value: '₹${cost.round()}',
+                    ),
+                ],
+              ),
             ),
-          if (trip.etaMinutes != null) const SizedBox(width: 10),
-          if (toll != null)
-            StatCard(
-              icon: Icons.toll_outlined,
-              iconColor: AppColors.warning,
-              label: 'Tolls',
-              value: '₹${toll.round()}',
-            ),
-          if (toll != null) const SizedBox(width: 10),
-          if (cost != null)
-            StatCard(
-              icon: trip.isCostCharging
-                  ? Icons.electric_bolt_outlined
-                  : Icons.local_gas_station_outlined,
-              iconColor:
-                  trip.isCostCharging ? AppColors.success : AppColors.primary,
-              label: trip.isCostCharging ? 'Charging' : 'Fuel',
-              value: '₹${cost.round()}',
-            ),
-        ],
+          );
+        },
       ),
     );
   }

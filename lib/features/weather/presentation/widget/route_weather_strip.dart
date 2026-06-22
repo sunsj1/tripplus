@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tripplus/core/theme/app_colors.dart';
+import 'package:tripplus/core/widgets/horizontal_scroll_row.dart';
 import 'package:tripplus/core/theme/app_text_styles.dart';
 import 'package:tripplus/features/plan/presentation/controller/plan_state.dart';
 import 'package:tripplus/features/weather/domain/route_weather_segment.dart';
@@ -76,15 +77,10 @@ class _Strip extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 8),
-          SizedBox(
-            height: 78,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              padding: EdgeInsets.zero,
-              itemCount: segments.length,
-              separatorBuilder: (_, _) => const SizedBox(width: 10),
-              itemBuilder: (_, i) => _SegmentCard(segment: segments[i]),
-            ),
+          HorizontalScrollRow(
+            itemCount: segments.length,
+            separator: 10,
+            itemBuilder: (_, i) => _SegmentCard(segment: segments[i]),
           ),
         ],
       ),
@@ -115,7 +111,7 @@ class _SegmentCard extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Row(
             children: [
@@ -135,10 +131,25 @@ class _SegmentCard extends StatelessWidget {
               ),
             ],
           ),
-          Text(
-            '${segment.temperatureC.round()}°  ${segment.conditionLabel}',
-            style: AppTextStyles.titleSmall.copyWith(fontSize: 12.5),
+          const SizedBox(height: 6),
+          Row(
+            children: [
+              Text(
+                '${segment.temperatureC.round()}°',
+                style: AppTextStyles.titleSmall.copyWith(fontSize: 12.5),
+              ),
+              const SizedBox(width: 4),
+              Expanded(
+                child: Text(
+                  segment.conditionLabel,
+                  style: AppTextStyles.titleSmall.copyWith(fontSize: 12.5),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
           ),
+          const SizedBox(height: 2),
           Text(
             segment.precipitationMm > 0
                 ? '${segment.precipitationMm.toStringAsFixed(1)}mm · '
@@ -148,6 +159,8 @@ class _SegmentCard extends StatelessWidget {
               fontSize: 10,
               color: AppColors.textTertiary,
             ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),

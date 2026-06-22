@@ -223,16 +223,21 @@ class _CategoryTile extends StatelessWidget {
               ),
               child: Icon(icon, size: 22, color: accent),
             ),
-            const Spacer(),
-            Text(
-              category.label,
-              style: AppTextStyles.titleSmall.copyWith(
-                color: AppColors.textPrimary,
-                fontSize: 13,
-                height: 1.2,
+            const SizedBox(height: 8),
+            Expanded(
+              child: Align(
+                alignment: Alignment.bottomLeft,
+                child: Text(
+                  category.label,
+                  style: AppTextStyles.titleSmall.copyWith(
+                    color: AppColors.textPrimary,
+                    fontSize: 13,
+                    height: 1.2,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
             ),
           ],
         ),

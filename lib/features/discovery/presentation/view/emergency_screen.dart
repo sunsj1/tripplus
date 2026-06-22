@@ -4,6 +4,7 @@ import 'package:tripplus/core/theme/app_colors.dart';
 import 'package:tripplus/core/theme/app_text_styles.dart';
 import 'package:tripplus/core/utils/failure.dart';
 import 'package:tripplus/core/utils/phone_launcher.dart';
+import 'package:tripplus/core/widgets/horizontal_scroll_row.dart';
 import 'package:tripplus/core/widgets/poi_list_skeleton.dart';
 import 'package:tripplus/features/discovery/domain/emergency_hotline.dart';
 import 'package:tripplus/features/discovery/domain/emergency_service_type.dart';
@@ -143,17 +144,13 @@ class _EmergencyBody extends StatelessWidget {
           ),
         ),
         SliverToBoxAdapter(
-          child: SizedBox(
-            height: 118,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              itemCount: hotlines.length,
-              separatorBuilder: (context, index) => const SizedBox(width: 10),
-              itemBuilder: (context, index) {
-                return _HotlineCard(hotline: hotlines[index]);
-              },
-            ),
+          child: HorizontalScrollRow(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            itemCount: hotlines.length,
+            separator: 10,
+            itemBuilder: (context, index) {
+              return _HotlineCard(hotline: hotlines[index]);
+            },
           ),
         ),
         SliverToBoxAdapter(
@@ -261,15 +258,18 @@ class _HotlineCard extends StatelessWidget {
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Icon(hotline.icon, color: AppColors.error, size: 22),
-              const Spacer(),
+              const SizedBox(height: 10),
               Text(
                 hotline.label,
                 style: AppTextStyles.h4.copyWith(
                   color: AppColors.error,
                   fontWeight: FontWeight.w900,
                 ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
               Text(
                 hotline.subtitle,

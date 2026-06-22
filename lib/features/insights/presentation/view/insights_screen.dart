@@ -555,9 +555,16 @@ class _EstimateLine extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label, style: AppTextStyles.bodyMedium),
+        Expanded(
+          child: Text(
+            label,
+            style: AppTextStyles.bodyMedium,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        const SizedBox(width: 8),
         RichText(
           text: TextSpan(
             text: value,

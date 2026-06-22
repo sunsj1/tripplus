@@ -7,6 +7,7 @@ import 'package:tripplus/core/domain/vehicle.dart';
 import 'package:tripplus/core/theme/app_colors.dart';
 import 'package:tripplus/core/theme/app_text_styles.dart';
 import 'package:tripplus/core/widgets/app_top_bar.dart';
+import 'package:tripplus/core/widgets/horizontal_scroll_row.dart';
 import 'package:tripplus/features/plan/presentation/controller/plan_providers.dart';
 import 'package:tripplus/features/plan/presentation/controller/plan_state.dart';
 import 'package:tripplus/features/plan/presentation/view/calculating_screen.dart';
@@ -425,85 +426,82 @@ class _PopularRoutes extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 92,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        itemCount: _routes.length,
-        separatorBuilder: (_, index) => const SizedBox(width: 12),
-        itemBuilder: (_, i) {
-          final r = _routes[i];
-          return GestureDetector(
-            onTap: () => onTap(r['from']!, r['to']!),
-            child: Container(
-              width: 160,
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    AppColors.primarySurface,
-                    AppColors.primarySurfaceLight,
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: AppColors.primary.withValues(alpha: 0.1),
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.route,
-                        size: 14,
-                        color: AppColors.primary,
-                      ),
-                      const SizedBox(width: 6),
-                      Expanded(
-                        child: Text(
-                          '${r['from']} → ${r['to']}',
-                          style: AppTextStyles.titleSmall.copyWith(
-                            fontSize: 12,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Spacer(),
-                  Row(
-                    children: [
-                      Text(
-                        '~${r['km']} km',
-                        style: AppTextStyles.bodySmall.copyWith(
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                      const Spacer(),
-                      Container(
-                        padding: const EdgeInsets.all(4),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: const Icon(
-                          Icons.arrow_forward,
-                          size: 12,
-                          color: AppColors.primary,
-                        ),
-                      ),
-                    ],
-                  ),
+    return HorizontalScrollRow(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      itemCount: _routes.length,
+      separator: 12,
+      itemBuilder: (_, i) {
+        final r = _routes[i];
+        return GestureDetector(
+          onTap: () => onTap(r['from']!, r['to']!),
+          child: Container(
+            width: 160,
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  AppColors.primarySurface,
+                  AppColors.primarySurfaceLight,
                 ],
               ),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: AppColors.primary.withValues(alpha: 0.1),
+              ),
             ),
-          );
-        },
-      ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.route,
+                      size: 14,
+                      color: AppColors.primary,
+                    ),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        '${r['from']} → ${r['to']}',
+                        style: AppTextStyles.titleSmall.copyWith(
+                          fontSize: 12,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Text(
+                      '~${r['km']} km',
+                      style: AppTextStyles.bodySmall.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                    const Spacer(),
+                    Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: const Icon(
+                        Icons.arrow_forward,
+                        size: 12,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tripplus/core/theme/app_colors.dart';
 import 'package:tripplus/core/theme/app_text_styles.dart';
+import 'package:tripplus/core/widgets/horizontal_scroll_row.dart';
 import 'package:tripplus/features/personalization/domain/route_mode.dart';
 import 'package:tripplus/features/personalization/presentation/controller/route_mode_provider.dart';
 
@@ -54,27 +55,22 @@ class RouteModeBar extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 6),
-          SizedBox(
-            height: 34,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              padding: EdgeInsets.zero,
-              itemCount: RouteMode.values.length,
-              separatorBuilder: (_, _) => const SizedBox(width: 8),
-              itemBuilder: (_, i) {
-                final mode = RouteMode.values[i];
-                final isActive = mode == active;
-                return _ModeChip(
-                  mode: mode,
-                  isActive: isActive,
-                  onTap: () {
-                    // Tap active mode again → clear back to "off".
-                    final next = isActive ? RouteMode.off : mode;
-                    ref.read(routeModeProvider.notifier).state = next;
-                  },
-                );
-              },
-            ),
+          HorizontalScrollRow(
+            itemCount: RouteMode.values.length,
+            separator: 8,
+            itemBuilder: (_, i) {
+              final mode = RouteMode.values[i];
+              final isActive = mode == active;
+              return _ModeChip(
+                mode: mode,
+                isActive: isActive,
+                onTap: () {
+                  // Tap active mode again → clear back to "off".
+                  final next = isActive ? RouteMode.off : mode;
+                  ref.read(routeModeProvider.notifier).state = next;
+                },
+              );
+            },
           ),
         ],
       ),
@@ -129,6 +125,8 @@ class _ModeChip extends StatelessWidget {
                 fontWeight: FontWeight.w700,
                 fontSize: 11.5,
               ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ],
         ),

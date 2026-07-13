@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:journeyplus/core/domain/route_option.dart';
 import 'package:journeyplus/core/domain/user_preferences.dart';
 import 'package:journeyplus/core/domain/vehicle.dart';
 import 'package:journeyplus/core/services/route_station_service.dart';
@@ -26,8 +27,8 @@ sealed class PlanState with _$PlanState {
     // P1-018: cost / time picture ------------------------------------------------
     /// Total journey time including estimated charging/fuel stops (minutes).
     int? etaMinutes,
-    /// Estimated toll cost for the route (₹). Null for bikes.
-    double? tollsEstimate,
+    /// Toll roads on route. Null for bikes; true/false for cars.
+    bool? hasTolls,
     /// Estimated fuel cost (₹) using vehicle.fuelEfficiencyKmpl. Null for EVs.
     double? fuelEstimateCost,
     /// Estimated charging cost (₹) based on station count. Null for ICE vehicles.
@@ -38,13 +39,18 @@ sealed class PlanState with _$PlanState {
     String? trafficLevel,
     /// Google-encoded route polyline for corridor cache + alert engine (P1-028).
     String? encodedRoutePolyline,
-    /// P2-042 — Matched toll corridor name (e.g. "Mumbai–Pune Expressway").
-    /// Null when the estimate comes from Google or no tolls were found.
+    /// P2-042 — Matched toll corridor name when [hasTolls] is true.
     String? tollCorridorName,
-    /// True when no tolls were detected on the route (non-bike only).
-    @Default(false) bool noTollsOnRoute,
     /// km/l used for the fuel estimate (profile override or vehicle default).
     double? fuelEfficiencyKmpl,
+    /// Driving alternatives from Google (Batch 3).
+    @Default(<RouteOption>[]) List<RouteOption> routeOptions,
+    @Default(0) int selectedRouteIndex,
+    @Default(false) bool isUpdatingRoute,
+    /// Vehicle used for fuel estimates; preserved across route switches.
+    Vehicle? vehicle,
+    /// True when [selectedRouteIndex] was chosen via GPS corridor match.
+    @Default(false) bool routeMatchedToGps,
     // ---------------------------------------------------------------------------
   }) = PlanResult;
   const factory PlanState.empty({

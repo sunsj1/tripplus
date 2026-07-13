@@ -63,24 +63,27 @@ class ActiveTripController extends StateNotifier<ActiveTripState> {
   // Public API
   // ---------------------------------------------------------------------------
 
-  /// Creates a [Trip] from a completed [PlanResult] and [vehicle], places it
-  /// in [ActiveTripState.ready].
+  /// Creates a [Trip] from a completed [PlanResult], places it in
+  /// [ActiveTripState.ready].
   ///
+  /// Uses [PlanResult.vehicle] when set (per-trip override from plan analyze).
   /// Also builds and persists a [CorridorCache] for offline resilience (P1-043).
   Future<void> prepareTrip({
     required PlanResult plan,
-    required Vehicle vehicle,
+    Vehicle? vehicle,
   }) async {
+    final tripVehicle =
+        plan.vehicle ?? vehicle ?? const Vehicle(type: VehicleType.petrol);
     final trip = Trip(
       id: const Uuid().v4(),
       from: plan.from,
       to: plan.to,
-      vehicle: vehicle,
+      vehicle: tripVehicle,
       status: TripStatus.notStarted,
       totalDistanceKm: plan.totalDistanceKm,
       drivingMinutes: plan.durationMinutes,
       etaMinutes: plan.etaMinutes,
-      tollsEstimate: plan.tollsEstimate,
+      hasTolls: plan.hasTolls,
       tripCostEstimate: plan.fuelEstimateCost ?? plan.chargingEstimate,
       isCostCharging: plan.chargingEstimate != null,
       stationCount: plan.stations.length,

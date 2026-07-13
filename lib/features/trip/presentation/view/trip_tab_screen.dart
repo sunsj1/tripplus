@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:journeyplus/core/utils/polyline_decoder.dart';
 import 'package:journeyplus/core/theme/app_colors.dart';
+import 'package:journeyplus/features/alerts/domain/alert_route_utils.dart';
+import 'package:journeyplus/features/trip/data/local_db/corridor_cache_box.dart';
 import 'package:journeyplus/core/theme/app_text_styles.dart';
 import 'package:journeyplus/features/alerts/presentation/view/alert_history_screen.dart';
 import 'package:journeyplus/features/plan/presentation/widget/stat_card.dart';
@@ -29,8 +32,10 @@ class TripTabScreen extends ConsumerWidget {
         child: switch (tripState) {
           ActiveTripIdle() => _IdleView(onPlanTrip: onPlanTrip),
           ActiveTripReady(:final trip) => _ReadyView(trip: trip),
-          ActiveTripRunning(:final trip) => _ActiveDashboard(trip: trip),
-          ActiveTripPaused(:final trip) => _ActiveDashboard(trip: trip),
+          ActiveTripRunning(:final trip) =>
+            _ActiveDashboard(trip: trip, onPlanTrip: onPlanTrip),
+          ActiveTripPaused(:final trip) =>
+            _ActiveDashboard(trip: trip, onPlanTrip: onPlanTrip),
           ActiveTripCompleted(:final trip) => _CompletedView(trip: trip),
         },
       ),
@@ -196,8 +201,10 @@ class _ReadyView extends ConsumerWidget {
 // Active Dashboard — running or paused
 // ---------------------------------------------------------------------------
 class _ActiveDashboard extends ConsumerWidget {
-  const _ActiveDashboard({required this.trip});
+  const _ActiveDashboard({required this.trip, required this.onPlanTrip});
+
   final Trip trip;
+  final VoidCallback onPlanTrip;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -216,7 +223,9 @@ class _ActiveDashboard extends ConsumerWidget {
             badge: isRunning ? '● LIVE' : '⏸ PAUSED',
             badgeColor: isRunning ? AppColors.success : AppColors.warning,
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 12),
+          _RouteDriftBanner(onReviewRoutes: onPlanTrip),
+          const SizedBox(height: 8),
 
           // Elapsed time card
           Padding(
@@ -409,15 +418,15 @@ class _CompletedView extends ConsumerWidget {
                   label: trip.isCostCharging ? 'Charging~' : 'Fuel~',
                   value: '₹${trip.tripCostEstimate!.round()}',
                 ),
-              if (trip.tollsEstimate != null) ...[
+              if (trip.displayHasTolls != null) ...[
                 if (trip.tripCostEstimate != null ||
                     trip.stationCount > 0)
                   const SizedBox(width: 12),
                 StatCard(
                   icon: Icons.toll_outlined,
                   iconColor: AppColors.accentAmber,
-                  label: 'Tolls~',
-                  value: '₹${trip.tollsEstimate!.round()}',
+                  label: 'Tolls',
+                  value: trip.displayHasTolls! ? 'Yes' : 'No',
                 ),
               ],
             ],
@@ -570,7 +579,7 @@ class _TripEstimateCards extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cost = trip.tripCostEstimate;
-    final toll = trip.tollsEstimate;
+    final toll = trip.displayHasTolls;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -598,7 +607,7 @@ class _TripEstimateCards extends StatelessWidget {
                       icon: Icons.toll_outlined,
                       iconColor: AppColors.warning,
                       label: 'Tolls',
-                      value: '₹${toll.round()}',
+                      value: toll ? 'Yes' : 'No',
                     ),
                     const SizedBox(width: 10),
                   ],
@@ -682,6 +691,73 @@ class _EtaComparisonBanner extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Route drift — GPS far from cached corridor polyline
+// ---------------------------------------------------------------------------
+
+class _RouteDriftBanner extends ConsumerWidget {
+  const _RouteDriftBanner({required this.onReviewRoutes});
+
+  final VoidCallback onReviewRoutes;
+
+  static const _driftThresholdKm = 3.0;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final position =
+        ref.read(activeTripControllerProvider.notifier).lastPosition;
+    final cache = CorridorCacheBox.read();
+    if (position == null ||
+        cache == null ||
+        cache.encodedPolyline.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    final polyline = PolylineDecoder.decode(cache.encodedPolyline);
+    if (polyline.length < 2) return const SizedBox.shrink();
+
+    final point = LatLng(position.latitude, position.longitude);
+    final driftKm = AlertRouteUtils.nearestApproachKm(polyline, point);
+    if (driftKm <= _driftThresholdKm) return const SizedBox.shrink();
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        decoration: BoxDecoration(
+          color: AppColors.warningSurface,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppColors.warning.withValues(alpha: 0.35)),
+        ),
+        child: Row(
+          children: [
+            const Icon(Icons.alt_route, color: AppColors.warning, size: 20),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                'You may be on a different route — review alternatives on Plan.',
+                style: AppTextStyles.bodySmall.copyWith(
+                  color: AppColors.textPrimary,
+                  height: 1.35,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: onReviewRoutes,
+              style: TextButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                minimumSize: Size.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              child: const Text('Plan'),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:dio/dio.dart';
 import 'package:logger/logger.dart';
 import 'package:journeyplus/core/constants/api_constants.dart';
+import 'package:journeyplus/core/domain/route_option.dart';
+import 'package:journeyplus/core/services/directions_route_parser.dart';
 import 'package:journeyplus/core/utils/polyline_decoder.dart';
 
 class RouteInfo {
@@ -77,6 +79,118 @@ class DirectionsService {
       }
     }
     return _straightLineFallback(origin, destination);
+  }
+
+  /// Returns 2–3 driving alternatives with traffic-aware durations.
+  ///
+  /// Prefers Routes API v2; falls back to Directions `alternatives=true`,
+  /// then a single-route fallback.
+  Future<List<RouteOption>> getRouteAlternatives(
+    LatLng origin,
+    LatLng destination,
+  ) async {
+    if (ApiConstants.isGoogleMapsKeyConfigured) {
+      try {
+        final fromRoutes = await _getRoutesApiAlternatives(origin, destination);
+        if (fromRoutes.isNotEmpty) return fromRoutes;
+      } catch (e) {
+        _logger.w('Routes API alternatives failed ($e)');
+      }
+      try {
+        final fromDirections =
+            await _getDirectionsApiAlternatives(origin, destination);
+        if (fromDirections.isNotEmpty) return fromDirections;
+      } catch (e) {
+        _logger.w('Directions alternatives failed ($e)');
+      }
+    }
+
+    final single = await getRoute(origin, destination);
+    return [
+      RouteOption(
+        id: '0',
+        summary: 'Fastest route',
+        distanceKm: single.distanceKm,
+        durationMinutes: single.durationMinutes,
+        durationInTrafficMinutes: single.durationInTrafficMinutes,
+        encodedPolyline: single.encodedPolyline ?? '',
+        polylinePoints: single.polylinePoints,
+        isSuggested: true,
+      ),
+    ];
+  }
+
+  Future<List<RouteOption>> _getRoutesApiAlternatives(
+    LatLng origin,
+    LatLng destination,
+  ) async {
+    _logger.d('Fetching route alternatives via Google Routes API');
+    final response = await _dio.post<Map<String, dynamic>>(
+      'https://routes.googleapis.com/directions/v2:computeRoutes',
+      options: Options(
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Goog-Api-Key': ApiConstants.googleMapsApiKey,
+          'X-Goog-FieldMask':
+              'routes.description,routes.distanceMeters,routes.duration,'
+              'routes.staticDuration,routes.polyline.encodedPolyline,'
+              'routes.travelAdvisory.tollInfo',
+        },
+      ),
+      data: {
+        'origin': {
+          'location': {
+            'latLng': {
+              'latitude': origin.latitude,
+              'longitude': origin.longitude,
+            },
+          },
+        },
+        'destination': {
+          'location': {
+            'latLng': {
+              'latitude': destination.latitude,
+              'longitude': destination.longitude,
+            },
+          },
+        },
+        'travelMode': 'DRIVE',
+        'routingPreference': 'TRAFFIC_AWARE',
+        'computeAlternativeRoutes': true,
+        'extraComputations': ['TOLLS'],
+      },
+    );
+
+    final data = response.data;
+    if (data == null) return const [];
+    final options = DirectionsRouteParser.parseRoutesApiAlternatives(data);
+    _logger.i('Routes API returned ${options.length} alternatives');
+    return options;
+  }
+
+  Future<List<RouteOption>> _getDirectionsApiAlternatives(
+    LatLng origin,
+    LatLng destination,
+  ) async {
+    _logger.d('Fetching route alternatives via Google Directions API');
+    final response = await _dio.get<Map<String, dynamic>>(
+      'https://maps.googleapis.com/maps/api/directions/json',
+      queryParameters: {
+        'origin': '${origin.latitude},${origin.longitude}',
+        'destination': '${destination.latitude},${destination.longitude}',
+        'mode': 'driving',
+        'alternatives': 'true',
+        'departure_time': 'now',
+        'traffic_model': 'best_guess',
+        'key': ApiConstants.googleMapsApiKey,
+      },
+    );
+
+    final data = response.data;
+    if (data == null) return const [];
+    final options = DirectionsRouteParser.parseDirectionsAlternatives(data);
+    _logger.i('Directions API returned ${options.length} alternatives');
+    return options;
   }
 
   /// Queries Google Routes API v2 for toll presence and optional INR pricing.

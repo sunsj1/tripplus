@@ -3,7 +3,24 @@
 > **Update this file** whenever a task materially changes the user-visible surface or the architecture.
 > AI agents read this first to avoid re-discovering what's already built.
 
-**Last updated:** 2026-06-02 (**Phase 2 complete** — verification signed off in `docs/PHASE_2_E2E_VERIFICATION.md`; rollup recorded in `docs/PHASE_REPORTS.md`. Planning for Phase 3 — AI Travel Copilot — opens next).
+**Last updated:** 2026-06-24 (Hotline fixes Batches 1–8 — multi-route, toll Yes/No, GPS match, map preview, fuel polish).
+
+---
+
+## Hotline fixes (2026-06-24) — Batches 1–8 ✅
+
+Production-critical plan/trip UX shipped from `docs/Hotline fixes.md`:
+
+| Area | What shipped |
+|------|----------------|
+| **Tolls** | Yes/No only — no ₹ toll estimates anywhere |
+| **Multi-route** | Google-style route alternatives list; per-route recompute (km, ETA, fuel, traffic, weather, EV stations) |
+| **GPS match** | Auto-selects route closest to current position; "Matched to your current road" label |
+| **Map preview** | Optional full-screen map with all polylines; tap to select |
+| **Fuel / vehicle** | Bike vs car defaults (50 vs 14 km/l); profile optional custom mileage; "Using default X km/l" hint on plan dashboard |
+| **Trip lifecycle** | Plan tab resets to input after trip end; drift banner when GPS leaves corridor |
+
+**Remaining before Play push:** Batch 0 (release AAB / stale `GeneratedPluginRegistrant`), device checklist in Hotline fixes §Batch 8, Routes API billing on Google Cloud.
 
 ---
 

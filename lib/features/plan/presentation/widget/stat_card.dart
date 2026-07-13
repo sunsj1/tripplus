@@ -8,6 +8,7 @@ class StatCard extends StatelessWidget {
   final String label;
   final String value;
   final String? unit;
+  final String? subtitle;
   final bool compact;
 
   const StatCard({
@@ -17,6 +18,7 @@ class StatCard extends StatelessWidget {
     required this.label,
     required this.value,
     this.unit,
+    this.subtitle,
     this.compact = false,
   });
 
@@ -69,6 +71,19 @@ class StatCard extends StatelessWidget {
                 ),
               ),
             ),
+            if (subtitle != null) ...[
+              const SizedBox(height: 4),
+              Text(
+                subtitle!,
+                style: AppTextStyles.caption.copyWith(
+                  color: AppColors.textTertiary,
+                  fontSize: 9,
+                  height: 1.2,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
           ],
         ),
     );

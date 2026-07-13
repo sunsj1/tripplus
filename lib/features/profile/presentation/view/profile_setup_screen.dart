@@ -5,6 +5,7 @@ import 'package:journeyplus/core/theme/app_text_styles.dart';
 import 'package:journeyplus/core/widgets/fuel_brand_picker.dart';
 import 'package:journeyplus/features/profile/presentation/controller/profile_providers.dart';
 import 'package:journeyplus/features/profile/presentation/controller/profile_ui_state.dart';
+import 'package:journeyplus/features/profile/presentation/widget/fuel_mileage_field.dart';
 import 'package:journeyplus/features/profile/presentation/widget/preferences_chips.dart';
 import 'package:journeyplus/features/profile/presentation/widget/vehicle_picker.dart';
 
@@ -48,6 +49,10 @@ class ProfileSetupScreen extends ConsumerWidget {
               const SizedBox(height: 32),
               VehiclePicker(
                 selected: data.vehicle,
+                onChanged: controller.updateDraftVehicle,
+              ),
+              FuelMileageField(
+                vehicle: data.vehicle,
                 onChanged: controller.updateDraftVehicle,
               ),
               FuelBrandSection(

@@ -373,11 +373,11 @@ class _DetailGrid extends StatelessWidget {
           label: 'Planned ETA',
           value: _fmtMinutes(trip.etaMinutes!),
         ),
-      if (trip.tollsEstimate != null)
+      if (trip.displayHasTolls != null)
         _Cell(
           icon: Icons.toll_outlined,
-          label: 'Tolls~',
-          value: '₹${trip.tollsEstimate!.round()}',
+          label: 'Tolls',
+          value: trip.displayHasTolls! ? 'Yes' : 'No',
         ),
       if (trip.tripCostEstimate != null)
         _Cell(

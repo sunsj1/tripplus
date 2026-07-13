@@ -6,6 +6,58 @@
 
 ---
 
+## Hotline fixes · Batches 7–8 — Fuel polish + verification
+
+- **Started:** 2026-06-24
+- **Finished:** 2026-06-24
+- **Tasks completed:** H7-01–H7-04, H8-03–H8-06 (automated gates + docs). H8-01/02/07 and device checklist remain manual before Play push.
+- **Theme:** Close R1 fuel gaps; sign off Hotline fixes with tests and doc updates.
+
+### Batch 7 — Fuel & vehicle polish
+
+- `FuelMileageField` — optional km/l on profile setup + edit (petrol / diesel / bike).
+- Plan dashboard fuel stat shows **"Using default X km/l"** subtitle when no custom mileage.
+- `prepareTrip` uses `PlanResult.vehicle` as source of truth; plan screen merges `_tripVehicle` override.
+- `test/core/vehicle_fuel_estimate_test.dart` — bike ≪ car on 150 km; custom mileage overrides default.
+
+### Batch 8 — Verification & docs
+
+- `flutter analyze` clean; `flutter test` 12/12 pass.
+- Updated `docs/context/current_state.md` (Hotline fixes summary).
+- Marked Batches 7–8 ✅ in `docs/Hotline fixes.md`.
+
+### Files changed (new)
+
+- `lib/features/profile/presentation/widget/fuel_mileage_field.dart`
+- `test/core/vehicle_fuel_estimate_test.dart`
+
+### Files changed (modified)
+
+- `lib/features/profile/presentation/view/profile_edit_screen.dart`
+- `lib/features/profile/presentation/view/profile_setup_screen.dart`
+- `lib/features/profile/presentation/controller/profile_controller.dart`
+- `lib/features/plan/presentation/widget/stat_card.dart`
+- `lib/features/plan/presentation/view/plan_result_view.dart`
+- `lib/features/plan/presentation/view/plan_screen.dart`
+- `lib/features/trip/presentation/controller/active_trip_controller.dart`
+- `docs/Hotline fixes.md`
+- `docs/context/current_state.md`
+
+### Follow-ups
+
+- Batch 0: release AAB + fix stale Android registrant if still blocking install.
+- Manual device checklist (Mumbai → Pune routes, trip end reset, map preview) before internal track push.
+- Enable Routes API billing on Google Cloud project if not already done.
+
+---
+
+## Hotline fixes · Batches 5–6 — GPS match + map preview
+
+- **Finished:** 2026-06-24 (prior session)
+- **Theme:** `RouteOptionMatcher`, drift banner on Trip tab, `RouteMapPreviewScreen`, Map button on route list.
+
+---
+
 ## Phase 2 · Session 13 — Verification + phase rollup docs
 
 - **Started:** 2026-06-02

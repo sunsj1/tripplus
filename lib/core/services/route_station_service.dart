@@ -52,26 +52,43 @@ class RouteStationService {
         _repository = repository,
         _googleEvService = googleEvService;
 
+  /// Resolves [from] / [to] labels to coordinates (geocoding + GPS).
+  Future<({LatLng origin, LatLng destination})> resolveEndpoints({
+    required String from,
+    required String to,
+  }) async {
+    final origin = await _resolveLocation(from);
+    final destination = await _geocoding.geocode(to);
+    return (origin: origin, destination: destination);
+  }
+
   /// Analyzes a route for charging station coverage.
   ///
-  /// 1. Geocodes [from] and [to] into coordinates
-  /// 2. Gets the driving route between them
-  /// 3. Samples points along the route
-  /// 4. Fetches stations near each sample point
-  /// 5. Deduplicates and sorts by distance from start
+  /// When [presetRoute] is supplied (multi-route picker), skips geocoding and
+  /// Directions fetch and samples stations along that polyline instead.
   Future<Result<RouteAnalysis>> analyzeRoute({
     required String from,
     required String to,
     bool includeEvStations = true,
+    RouteInfo? presetRoute,
   }) async {
     try {
-      // 1. Geocode locations
-      final origin = await _resolveLocation(from);
-      final destination = await _geocoding.geocode(to);
-      _logger.i('Route: $from ($origin) → $to ($destination)');
-
-      // 2. Get driving route
-      final route = await _directions.getRoute(origin, destination);
+      final RouteInfo route;
+      if (presetRoute != null) {
+        route = presetRoute;
+        _logger.i(
+          'Route (preset): $from → $to | ${route.distanceKm.round()} km',
+        );
+      } else {
+        final endpoints = await resolveEndpoints(from: from, to: to);
+        _logger.i(
+          'Route: $from (${endpoints.origin}) → $to (${endpoints.destination})',
+        );
+        route = await _directions.getRoute(
+          endpoints.origin,
+          endpoints.destination,
+        );
+      }
       _logger.i('Route distance: ${route.distanceKm.round()} km');
 
       if (!includeEvStations) {

@@ -32,15 +32,20 @@ class ProfileController extends StateNotifier<ProfileUiState> {
 
   void updateDraftVehicle(Vehicle vehicle) {
     if (!mounted) return;
+    var nextVehicle = vehicle;
+    if (nextVehicle.type.isElectric) {
+      nextVehicle = nextVehicle.copyWith(fuelEfficiencyKmpl: null);
+    }
     var prefs = state.data.preferences;
-    if (!TripPlanCopy.isEv(vehicle.type) && prefs.fastChargersOnly) {
+    if (!TripPlanCopy.isEv(nextVehicle.type) && prefs.fastChargersOnly) {
       prefs = prefs.copyWith(fastChargersOnly: false);
     }
-    if (vehicle.type == VehicleType.ev || vehicle.type == VehicleType.bike) {
+    if (nextVehicle.type == VehicleType.ev ||
+        nextVehicle.type == VehicleType.bike) {
       prefs = prefs.copyWith(preferredFuelBrands: const []);
     }
     state = ProfileUiState.idle(
-      state.data.copyWith(vehicle: vehicle, preferences: prefs),
+      state.data.copyWith(vehicle: nextVehicle, preferences: prefs),
     );
   }
 

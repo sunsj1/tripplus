@@ -12,8 +12,8 @@ String buildTripShareText(Trip trip) {
 
   final cost = _costLine(trip);
   if (cost != null) buf.writeln(cost);
-  if (trip.tollsEstimate != null) {
-    buf.writeln('Tolls ~₹${trip.tollsEstimate!.round()}');
+  if (trip.displayHasTolls != null) {
+    buf.writeln('Tolls: ${trip.displayHasTolls! ? 'Yes' : 'No'}');
   }
 
   buf

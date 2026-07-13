@@ -9,10 +9,13 @@ import 'package:journeyplus/core/theme/app_text_styles.dart';
 import 'package:journeyplus/core/widgets/animated_list_item.dart';
 import 'package:journeyplus/core/widgets/app_top_bar.dart';
 import 'package:journeyplus/features/charging/domain/models/charging_station.dart';
+import 'package:journeyplus/core/domain/route_option.dart';
+import 'package:journeyplus/features/plan/presentation/controller/plan_providers.dart';
 import 'package:journeyplus/features/plan/presentation/controller/plan_state.dart';
+import 'package:journeyplus/features/plan/presentation/view/route_map_preview_screen.dart';
+import 'package:journeyplus/features/plan/presentation/widget/route_options_list.dart';
 import 'package:journeyplus/features/plan/presentation/widget/smart_trip_timeline.dart';
 import 'package:journeyplus/features/plan/presentation/widget/stat_card.dart';
-import 'package:journeyplus/features/profile/presentation/controller/profile_providers.dart';
 import 'package:journeyplus/features/stations/presentation/view/station_detail_screen.dart';
 import 'package:journeyplus/features/weather/presentation/widget/route_weather_strip.dart';
 import 'package:journeyplus/features/stations/presentation/widget/station_list_tile.dart';
@@ -30,15 +33,18 @@ PlanResult _toPlanResult(PlanResultView v) => PlanResult(
       durationMinutes: v.durationMinutes,
       gaps: v.gaps,
       etaMinutes: v.etaMinutes,
-      tollsEstimate: v.tollsEstimate,
+      hasTolls: v.hasTolls,
       fuelEstimateCost: v.fuelEstimateCost,
       chargingEstimate: v.chargingEstimate,
       weatherTag: v.weatherTag,
       trafficLevel: v.trafficLevel,
       encodedRoutePolyline: v.encodedRoutePolyline,
       tollCorridorName: v.tollCorridorName,
-      noTollsOnRoute: v.noTollsOnRoute,
       fuelEfficiencyKmpl: v.fuelEfficiencyKmpl,
+      routeOptions: v.routeOptions,
+      selectedRouteIndex: v.selectedRouteIndex,
+      routeMatchedToGps: v.routeMatchedToGps,
+      vehicle: v.vehicle,
     );
 
 class PlanResultView extends ConsumerWidget {
@@ -54,7 +60,7 @@ class PlanResultView extends ConsumerWidget {
 
   // P1-018 / P1-019 — cost/time estimates
   final int? etaMinutes;
-  final double? tollsEstimate;
+  final bool? hasTolls;
   final double? fuelEstimateCost;
   final double? chargingEstimate;
   final String? weatherTag;
@@ -62,17 +68,19 @@ class PlanResultView extends ConsumerWidget {
   final String? encodedRoutePolyline;
   /// P2-042 — Matched toll corridor name; null on Google estimate / no tolls.
   final String? tollCorridorName;
-  final bool noTollsOnRoute;
   final double? fuelEfficiencyKmpl;
+  final List<RouteOption> routeOptions;
+  final int selectedRouteIndex;
+  final bool isUpdatingRoute;
+  final bool routeMatchedToGps;
+  final Vehicle? vehicle;
 
   bool get _isEv => TripPlanCopy.isEv(vehicleType);
+  bool get _isBike => vehicleType == VehicleType.bike;
 
   String _tollContextLine(String corridorName) {
-    if (corridorName == 'Google Maps estimate') {
-      return 'Toll estimate from Google Maps';
-    }
-    if (corridorName.startsWith('Tolls likely')) {
-      return corridorName;
+    if (corridorName == 'Google Maps') {
+      return 'Tolls detected via Google Maps';
     }
     return 'Via $corridorName';
   }
@@ -89,15 +97,19 @@ class PlanResultView extends ConsumerWidget {
     this.gaps = const [],
     required this.onBack,
     this.etaMinutes,
-    this.tollsEstimate,
+    this.hasTolls,
     this.fuelEstimateCost,
     this.chargingEstimate,
     this.weatherTag,
     this.trafficLevel,
     this.encodedRoutePolyline,
     this.tollCorridorName,
-    this.noTollsOnRoute = false,
     this.fuelEfficiencyKmpl,
+    this.routeOptions = const [],
+    this.selectedRouteIndex = 0,
+    this.isUpdatingRoute = false,
+    this.routeMatchedToGps = false,
+    this.vehicle,
   });
 
   ChargingStation? get _nearestStation {
@@ -125,108 +137,47 @@ class PlanResultView extends ConsumerWidget {
               AppTopBar(title: 'Route Details', showBack: true, onBack: onBack),
               const SizedBox(height: 12),
 
-              _RouteSummaryCard(
-                from: from,
-                to: to,
-                vehicleType: vehicleType,
-                stationCount: stations.length,
-                totalDistanceKm: totalDistanceKm,
-                durationMinutes: durationMinutes,
+              RouteOptionsList(
+                options: routeOptions,
+                selectedIndex: selectedRouteIndex,
+                isBike: _isBike,
+                routeMatchedToGps: routeMatchedToGps,
+                onSelected: (index) => ref
+                    .read(planControllerProvider.notifier)
+                    .selectRoute(index),
+                onOpenMap: routeOptions.length > 1
+                    ? () => _openRouteMap(context, ref)
+                    : null,
               ),
-              const SizedBox(height: 16),
+              if (routeOptions.length > 1) const SizedBox(height: 16),
 
-              // P1-019 — Trip Dashboard stat-card row
-              _TripDashboardStatRow(
-                etaMinutes: etaMinutes,
-                tollsEstimate: tollsEstimate,
-                noTollsOnRoute: noTollsOnRoute,
-                costEstimate: fuelEstimateCost ?? chargingEstimate,
-                isCharging: chargingEstimate != null,
-                trafficLevel: trafficLevel,
-                fuelEfficiencyKmpl: fuelEfficiencyKmpl,
-              ),
-              // P2-042 — Toll context beneath the stat row.
-              if (tollCorridorName != null || noTollsOnRoute) ...[
-                const SizedBox(height: 6),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.toll_outlined,
-                          size: 12, color: AppColors.textTertiary),
-                      const SizedBox(width: 4),
-                      Expanded(
-                        child: Text(
-                          noTollsOnRoute
-                              ? 'No tolls detected on this route'
-                              : _tollContextLine(tollCorridorName!),
-                          style: AppTextStyles.bodySmall.copyWith(
-                            fontSize: 10.5,
-                            color: AppColors.textTertiary,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
+              Stack(
+                children: [
+                  AnimatedOpacity(
+                    opacity: isUpdatingRoute ? 0.45 : 1,
+                    duration: const Duration(milliseconds: 200),
+                    child: IgnorePointer(
+                      ignoring: isUpdatingRoute,
+                      child: _buildDetailsBody(
+                        context,
+                        ref,
+                        plan,
+                        maxGap,
+                        nearest,
+                      ),
+                    ),
+                  ),
+                  if (isUpdatingRoute)
+                    const Positioned.fill(
+                      child: Center(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(vertical: 48),
+                          child: CircularProgressIndicator(),
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ],
-              const SizedBox(height: 18),
-
-              // P2-040 — Per-segment weather strip from Open-Meteo.
-              RouteWeatherStrip(plan: plan),
-              const SizedBox(height: 18),
-
-              RouteTripActions(
-                from: from,
-                to: to,
-                onPrepareTrip: () async {
-                  final profile = ref.read(profileControllerProvider).data;
-                  final vehicle = profile.vehicle ??
-                      const Vehicle(type: VehicleType.petrol);
-                  await ref
-                      .read(activeTripControllerProvider.notifier)
-                      .prepareTrip(plan: plan, vehicle: vehicle);
-                  navigateToShellTab(ref, 1);
-                },
+                    ),
+                ],
               ),
-              const SizedBox(height: 24),
-
-              SmartTripTimeline(
-                plan: plan,
-                isEv: _isEv,
-                preferences: tripPreferences,
-              ),
-              const SizedBox(height: 20),
-
-              if (_isEv && nearest != null) ...[
-                _NearestStationCard(station: nearest),
-                const SizedBox(height: 16),
-              ],
-
-              if (_isEv && gaps.isNotEmpty) ...[
-                _GapWarningBanner(
-                  gapKm: gaps.first.gapKm,
-                  afterStation: gaps.first.afterStation,
-                ),
-                const SizedBox(height: 16),
-              ],
-
-              if (_isEv) ...[
-                _RouteStatsRow(
-                  stationCount: stations.length,
-                  maxGapKm: maxGap,
-                  coveragePercent: _coveragePercent(),
-                ),
-                const SizedBox(height: 12),
-                _RouteRiskPanel(
-                  maxGapKm: maxGap,
-                  stationCount: stations.length,
-                  totalDistanceKm: totalDistanceKm,
-                ),
-              ],
             ],
           ),
         ),
@@ -236,6 +187,121 @@ class PlanResultView extends ConsumerWidget {
             child: _EvStationListSection(stations: stations),
           ),
         const SliverToBoxAdapter(child: SizedBox(height: 24)),
+      ],
+    );
+  }
+
+  Future<void> _openRouteMap(BuildContext context, WidgetRef ref) async {
+    final picked = await Navigator.of(context).push<int>(
+      MaterialPageRoute(
+        builder: (_) => RouteMapPreviewScreen(
+          options: routeOptions,
+          initialIndex: selectedRouteIndex,
+        ),
+      ),
+    );
+    if (picked != null && picked != selectedRouteIndex) {
+      await ref.read(planControllerProvider.notifier).selectRoute(picked);
+    }
+  }
+
+  Widget _buildDetailsBody(
+    BuildContext context,
+    WidgetRef ref,
+    PlanResult plan,
+    double maxGap,
+    ChargingStation? nearest,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _RouteSummaryCard(
+          from: from,
+          to: to,
+          vehicleType: vehicleType,
+          stationCount: stations.length,
+          totalDistanceKm: totalDistanceKm,
+          durationMinutes: durationMinutes,
+        ),
+        const SizedBox(height: 16),
+        _TripDashboardStatRow(
+          etaMinutes: etaMinutes,
+          hasTolls: hasTolls,
+          costEstimate: fuelEstimateCost ?? chargingEstimate,
+          isCharging: chargingEstimate != null,
+          trafficLevel: trafficLevel,
+          fuelEfficiencyKmpl: fuelEfficiencyKmpl,
+          vehicle: vehicle,
+        ),
+        if (hasTolls == true && tollCorridorName != null) ...[
+          const SizedBox(height: 6),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              children: [
+                const Icon(Icons.toll_outlined,
+                    size: 12, color: AppColors.textTertiary),
+                const SizedBox(width: 4),
+                Expanded(
+                  child: Text(
+                    _tollContextLine(tollCorridorName!),
+                    style: AppTextStyles.bodySmall.copyWith(
+                      fontSize: 10.5,
+                      color: AppColors.textTertiary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+        const SizedBox(height: 18),
+        RouteWeatherStrip(plan: plan),
+        const SizedBox(height: 18),
+        RouteTripActions(
+          from: from,
+          to: to,
+          onPrepareTrip: () async {
+            await ref
+                .read(activeTripControllerProvider.notifier)
+                .prepareTrip(plan: plan);
+            navigateToShellTab(ref, 1);
+          },
+        ),
+        const SizedBox(height: 24),
+        SmartTripTimeline(
+          plan: plan,
+          isEv: _isEv,
+          preferences: tripPreferences,
+        ),
+        const SizedBox(height: 20),
+        if (_isEv && nearest != null) ...[
+          _NearestStationCard(station: nearest),
+          const SizedBox(height: 16),
+        ],
+        if (_isEv && gaps.isNotEmpty) ...[
+          _GapWarningBanner(
+            gapKm: gaps.first.gapKm,
+            afterStation: gaps.first.afterStation,
+          ),
+          const SizedBox(height: 16),
+        ],
+        if (_isEv) ...[
+          _RouteStatsRow(
+            stationCount: stations.length,
+            maxGapKm: maxGap,
+            coveragePercent: _coveragePercent(),
+          ),
+          const SizedBox(height: 12),
+          _RouteRiskPanel(
+            maxGapKm: maxGap,
+            stationCount: stations.length,
+            totalDistanceKm: totalDistanceKm,
+          ),
+        ],
       ],
     );
   }
@@ -762,21 +828,21 @@ String _fmtRupees(double amount) {
 
 class _TripDashboardStatRow extends StatelessWidget {
   final int? etaMinutes;
-  final double? tollsEstimate;
-  final bool noTollsOnRoute;
+  final bool? hasTolls;
   final double? costEstimate;
   final bool isCharging;
   final String? trafficLevel;
   final double? fuelEfficiencyKmpl;
+  final Vehicle? vehicle;
 
   const _TripDashboardStatRow({
     this.etaMinutes,
-    this.tollsEstimate,
-    this.noTollsOnRoute = false,
+    this.hasTolls,
     this.costEstimate,
     required this.isCharging,
     this.trafficLevel,
     this.fuelEfficiencyKmpl,
+    this.vehicle,
   });
 
   Color _trafficColor(String? level) => switch (level) {
@@ -850,29 +916,23 @@ class _TripDashboardStatRow extends StatelessWidget {
         ),
       );
     }
-    if (tollsEstimate != null) {
+    if (hasTolls != null) {
       add(
         StatCard(
           compact: true,
           icon: Icons.toll_outlined,
-          iconColor: AppColors.accentAmber,
+          iconColor: hasTolls! ? AppColors.accentAmber : AppColors.textTertiary,
           label: 'Tolls',
-          value: '~${_fmtRupees(tollsEstimate!)}',
-        ),
-      );
-    } else if (noTollsOnRoute) {
-      add(
-        StatCard(
-          compact: true,
-          icon: Icons.toll_outlined,
-          iconColor: AppColors.textTertiary,
-          label: 'Tolls',
-          value: 'None',
+          value: hasTolls! ? 'Yes' : 'No',
         ),
       );
     }
     if (costEstimate != null) {
-      final fuelLabel = !isCharging && fuelEfficiencyKmpl != null
+      final usesDefault = !isCharging &&
+          vehicle != null &&
+          vehicle!.burnsFuel &&
+          vehicle!.fuelEfficiencyKmpl == null;
+      final fuelLabel = !isCharging && fuelEfficiencyKmpl != null && !usesDefault
           ? 'Fuel · ${fuelEfficiencyKmpl!.round()} km/l'
           : (isCharging ? 'Charging' : 'Fuel');
       add(
@@ -884,6 +944,9 @@ class _TripDashboardStatRow extends StatelessWidget {
           iconColor: isCharging ? AppColors.accentTeal : AppColors.primary,
           label: fuelLabel,
           value: '~${_fmtRupees(costEstimate!)}',
+          subtitle: usesDefault && fuelEfficiencyKmpl != null
+              ? 'Using default ${fuelEfficiencyKmpl!.round()} km/l'
+              : null,
         ),
       );
     }

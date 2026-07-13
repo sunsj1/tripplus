@@ -41,7 +41,10 @@ abstract class Trip with _$Trip {
     /// Total ETA including stop time (minutes). Null only if estimator failed.
     int? etaMinutes,
 
-    /// Estimated toll cost (₹). Null for bikes.
+    /// Toll roads on route. Null for bikes.
+    bool? hasTolls,
+
+    /// Legacy toll ₹ — Hive back-compat for trips saved before Hotline Batch 1.
     double? tollsEstimate,
 
     /// Estimated fuel or charging cost (₹).
@@ -82,6 +85,14 @@ abstract class Trip with _$Trip {
 
   /// Whether the trip is currently tracking (active but not paused).
   bool get isTracking => status == TripStatus.active;
+
+  /// Display toll presence; falls back for trips saved before [hasTolls].
+  bool? get displayHasTolls {
+    if (hasTolls != null) return hasTolls;
+    if (tollsEstimate != null) return true;
+    if (vehicle.type == VehicleType.bike) return null;
+    return null;
+  }
 
   /// Wall-clock elapsed time since start, excluding paused intervals.
   Duration get elapsed {

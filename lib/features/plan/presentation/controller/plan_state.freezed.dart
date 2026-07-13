@@ -32,15 +32,19 @@ mixin _$PlanState {
       int durationMinutes,
       List<ChargingGap> gaps,
       int? etaMinutes,
-      double? tollsEstimate,
+      bool? hasTolls,
       double? fuelEstimateCost,
       double? chargingEstimate,
       String? weatherTag,
       String? trafficLevel,
       String? encodedRoutePolyline,
       String? tollCorridorName,
-      bool noTollsOnRoute,
       double? fuelEfficiencyKmpl,
+      List<RouteOption> routeOptions,
+      int selectedRouteIndex,
+      bool isUpdatingRoute,
+      Vehicle? vehicle,
+      bool routeMatchedToGps,
     )
     result,
     required TResult Function(String from, String to, VehicleType? vehicleType)
@@ -62,15 +66,19 @@ mixin _$PlanState {
       int durationMinutes,
       List<ChargingGap> gaps,
       int? etaMinutes,
-      double? tollsEstimate,
+      bool? hasTolls,
       double? fuelEstimateCost,
       double? chargingEstimate,
       String? weatherTag,
       String? trafficLevel,
       String? encodedRoutePolyline,
       String? tollCorridorName,
-      bool noTollsOnRoute,
       double? fuelEfficiencyKmpl,
+      List<RouteOption> routeOptions,
+      int selectedRouteIndex,
+      bool isUpdatingRoute,
+      Vehicle? vehicle,
+      bool routeMatchedToGps,
     )?
     result,
     TResult? Function(String from, String to, VehicleType? vehicleType)? empty,
@@ -91,15 +99,19 @@ mixin _$PlanState {
       int durationMinutes,
       List<ChargingGap> gaps,
       int? etaMinutes,
-      double? tollsEstimate,
+      bool? hasTolls,
       double? fuelEstimateCost,
       double? chargingEstimate,
       String? weatherTag,
       String? trafficLevel,
       String? encodedRoutePolyline,
       String? tollCorridorName,
-      bool noTollsOnRoute,
       double? fuelEfficiencyKmpl,
+      List<RouteOption> routeOptions,
+      int selectedRouteIndex,
+      bool isUpdatingRoute,
+      Vehicle? vehicle,
+      bool routeMatchedToGps,
     )?
     result,
     TResult Function(String from, String to, VehicleType? vehicleType)? empty,
@@ -209,15 +221,19 @@ class _$PlanIdleImpl implements PlanIdle {
       int durationMinutes,
       List<ChargingGap> gaps,
       int? etaMinutes,
-      double? tollsEstimate,
+      bool? hasTolls,
       double? fuelEstimateCost,
       double? chargingEstimate,
       String? weatherTag,
       String? trafficLevel,
       String? encodedRoutePolyline,
       String? tollCorridorName,
-      bool noTollsOnRoute,
       double? fuelEfficiencyKmpl,
+      List<RouteOption> routeOptions,
+      int selectedRouteIndex,
+      bool isUpdatingRoute,
+      Vehicle? vehicle,
+      bool routeMatchedToGps,
     )
     result,
     required TResult Function(String from, String to, VehicleType? vehicleType)
@@ -243,15 +259,19 @@ class _$PlanIdleImpl implements PlanIdle {
       int durationMinutes,
       List<ChargingGap> gaps,
       int? etaMinutes,
-      double? tollsEstimate,
+      bool? hasTolls,
       double? fuelEstimateCost,
       double? chargingEstimate,
       String? weatherTag,
       String? trafficLevel,
       String? encodedRoutePolyline,
       String? tollCorridorName,
-      bool noTollsOnRoute,
       double? fuelEfficiencyKmpl,
+      List<RouteOption> routeOptions,
+      int selectedRouteIndex,
+      bool isUpdatingRoute,
+      Vehicle? vehicle,
+      bool routeMatchedToGps,
     )?
     result,
     TResult? Function(String from, String to, VehicleType? vehicleType)? empty,
@@ -276,15 +296,19 @@ class _$PlanIdleImpl implements PlanIdle {
       int durationMinutes,
       List<ChargingGap> gaps,
       int? etaMinutes,
-      double? tollsEstimate,
+      bool? hasTolls,
       double? fuelEstimateCost,
       double? chargingEstimate,
       String? weatherTag,
       String? trafficLevel,
       String? encodedRoutePolyline,
       String? tollCorridorName,
-      bool noTollsOnRoute,
       double? fuelEfficiencyKmpl,
+      List<RouteOption> routeOptions,
+      int selectedRouteIndex,
+      bool isUpdatingRoute,
+      Vehicle? vehicle,
+      bool routeMatchedToGps,
     )?
     result,
     TResult Function(String from, String to, VehicleType? vehicleType)? empty,
@@ -451,15 +475,19 @@ class _$PlanCalculatingImpl implements PlanCalculating {
       int durationMinutes,
       List<ChargingGap> gaps,
       int? etaMinutes,
-      double? tollsEstimate,
+      bool? hasTolls,
       double? fuelEstimateCost,
       double? chargingEstimate,
       String? weatherTag,
       String? trafficLevel,
       String? encodedRoutePolyline,
       String? tollCorridorName,
-      bool noTollsOnRoute,
       double? fuelEfficiencyKmpl,
+      List<RouteOption> routeOptions,
+      int selectedRouteIndex,
+      bool isUpdatingRoute,
+      Vehicle? vehicle,
+      bool routeMatchedToGps,
     )
     result,
     required TResult Function(String from, String to, VehicleType? vehicleType)
@@ -485,15 +513,19 @@ class _$PlanCalculatingImpl implements PlanCalculating {
       int durationMinutes,
       List<ChargingGap> gaps,
       int? etaMinutes,
-      double? tollsEstimate,
+      bool? hasTolls,
       double? fuelEstimateCost,
       double? chargingEstimate,
       String? weatherTag,
       String? trafficLevel,
       String? encodedRoutePolyline,
       String? tollCorridorName,
-      bool noTollsOnRoute,
       double? fuelEfficiencyKmpl,
+      List<RouteOption> routeOptions,
+      int selectedRouteIndex,
+      bool isUpdatingRoute,
+      Vehicle? vehicle,
+      bool routeMatchedToGps,
     )?
     result,
     TResult? Function(String from, String to, VehicleType? vehicleType)? empty,
@@ -518,15 +550,19 @@ class _$PlanCalculatingImpl implements PlanCalculating {
       int durationMinutes,
       List<ChargingGap> gaps,
       int? etaMinutes,
-      double? tollsEstimate,
+      bool? hasTolls,
       double? fuelEstimateCost,
       double? chargingEstimate,
       String? weatherTag,
       String? trafficLevel,
       String? encodedRoutePolyline,
       String? tollCorridorName,
-      bool noTollsOnRoute,
       double? fuelEfficiencyKmpl,
+      List<RouteOption> routeOptions,
+      int selectedRouteIndex,
+      bool isUpdatingRoute,
+      Vehicle? vehicle,
+      bool routeMatchedToGps,
     )?
     result,
     TResult Function(String from, String to, VehicleType? vehicleType)? empty,
@@ -615,18 +651,23 @@ abstract class _$$PlanResultImplCopyWith<$Res> {
     int durationMinutes,
     List<ChargingGap> gaps,
     int? etaMinutes,
-    double? tollsEstimate,
+    bool? hasTolls,
     double? fuelEstimateCost,
     double? chargingEstimate,
     String? weatherTag,
     String? trafficLevel,
     String? encodedRoutePolyline,
     String? tollCorridorName,
-    bool noTollsOnRoute,
     double? fuelEfficiencyKmpl,
+    List<RouteOption> routeOptions,
+    int selectedRouteIndex,
+    bool isUpdatingRoute,
+    Vehicle? vehicle,
+    bool routeMatchedToGps,
   });
 
   $UserPreferencesCopyWith<$Res>? get tripPreferences;
+  $VehicleCopyWith<$Res>? get vehicle;
 }
 
 /// @nodoc
@@ -652,15 +693,19 @@ class __$$PlanResultImplCopyWithImpl<$Res>
     Object? durationMinutes = null,
     Object? gaps = null,
     Object? etaMinutes = freezed,
-    Object? tollsEstimate = freezed,
+    Object? hasTolls = freezed,
     Object? fuelEstimateCost = freezed,
     Object? chargingEstimate = freezed,
     Object? weatherTag = freezed,
     Object? trafficLevel = freezed,
     Object? encodedRoutePolyline = freezed,
     Object? tollCorridorName = freezed,
-    Object? noTollsOnRoute = null,
     Object? fuelEfficiencyKmpl = freezed,
+    Object? routeOptions = null,
+    Object? selectedRouteIndex = null,
+    Object? isUpdatingRoute = null,
+    Object? vehicle = freezed,
+    Object? routeMatchedToGps = null,
   }) {
     return _then(
       _$PlanResultImpl(
@@ -700,10 +745,10 @@ class __$$PlanResultImplCopyWithImpl<$Res>
             ? _value.etaMinutes
             : etaMinutes // ignore: cast_nullable_to_non_nullable
                   as int?,
-        tollsEstimate: freezed == tollsEstimate
-            ? _value.tollsEstimate
-            : tollsEstimate // ignore: cast_nullable_to_non_nullable
-                  as double?,
+        hasTolls: freezed == hasTolls
+            ? _value.hasTolls
+            : hasTolls // ignore: cast_nullable_to_non_nullable
+                  as bool?,
         fuelEstimateCost: freezed == fuelEstimateCost
             ? _value.fuelEstimateCost
             : fuelEstimateCost // ignore: cast_nullable_to_non_nullable
@@ -728,14 +773,30 @@ class __$$PlanResultImplCopyWithImpl<$Res>
             ? _value.tollCorridorName
             : tollCorridorName // ignore: cast_nullable_to_non_nullable
                   as String?,
-        noTollsOnRoute: null == noTollsOnRoute
-            ? _value.noTollsOnRoute
-            : noTollsOnRoute // ignore: cast_nullable_to_non_nullable
-                  as bool,
         fuelEfficiencyKmpl: freezed == fuelEfficiencyKmpl
             ? _value.fuelEfficiencyKmpl
             : fuelEfficiencyKmpl // ignore: cast_nullable_to_non_nullable
                   as double?,
+        routeOptions: null == routeOptions
+            ? _value._routeOptions
+            : routeOptions // ignore: cast_nullable_to_non_nullable
+                  as List<RouteOption>,
+        selectedRouteIndex: null == selectedRouteIndex
+            ? _value.selectedRouteIndex
+            : selectedRouteIndex // ignore: cast_nullable_to_non_nullable
+                  as int,
+        isUpdatingRoute: null == isUpdatingRoute
+            ? _value.isUpdatingRoute
+            : isUpdatingRoute // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        vehicle: freezed == vehicle
+            ? _value.vehicle
+            : vehicle // ignore: cast_nullable_to_non_nullable
+                  as Vehicle?,
+        routeMatchedToGps: null == routeMatchedToGps
+            ? _value.routeMatchedToGps
+            : routeMatchedToGps // ignore: cast_nullable_to_non_nullable
+                  as bool,
       ),
     );
   }
@@ -753,6 +814,20 @@ class __$$PlanResultImplCopyWithImpl<$Res>
       return _then(_value.copyWith(tripPreferences: value));
     });
   }
+
+  /// Create a copy of PlanState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $VehicleCopyWith<$Res>? get vehicle {
+    if (_value.vehicle == null) {
+      return null;
+    }
+
+    return $VehicleCopyWith<$Res>(_value.vehicle!, (value) {
+      return _then(_value.copyWith(vehicle: value));
+    });
+  }
 }
 
 /// @nodoc
@@ -768,17 +843,22 @@ class _$PlanResultImpl implements PlanResult {
     required this.durationMinutes,
     final List<ChargingGap> gaps = const [],
     this.etaMinutes,
-    this.tollsEstimate,
+    this.hasTolls,
     this.fuelEstimateCost,
     this.chargingEstimate,
     this.weatherTag,
     this.trafficLevel,
     this.encodedRoutePolyline,
     this.tollCorridorName,
-    this.noTollsOnRoute = false,
     this.fuelEfficiencyKmpl,
+    final List<RouteOption> routeOptions = const <RouteOption>[],
+    this.selectedRouteIndex = 0,
+    this.isUpdatingRoute = false,
+    this.vehicle,
+    this.routeMatchedToGps = false,
   }) : _stations = stations,
-       _gaps = gaps;
+       _gaps = gaps,
+       _routeOptions = routeOptions;
 
   @override
   final String from;
@@ -814,9 +894,9 @@ class _$PlanResultImpl implements PlanResult {
   @override
   final int? etaMinutes;
 
-  /// Estimated toll cost for the route (₹). Null for bikes.
+  /// Toll roads on route. Null for bikes; true/false for cars.
   @override
-  final double? tollsEstimate;
+  final bool? hasTolls;
 
   /// Estimated fuel cost (₹) using vehicle.fuelEfficiencyKmpl. Null for EVs.
   @override
@@ -838,23 +918,45 @@ class _$PlanResultImpl implements PlanResult {
   @override
   final String? encodedRoutePolyline;
 
-  /// P2-042 — Matched toll corridor name (e.g. "Mumbai–Pune Expressway").
-  /// Null when the estimate comes from Google or no tolls were found.
+  /// P2-042 — Matched toll corridor name when [hasTolls] is true.
   @override
   final String? tollCorridorName;
-
-  /// True when no tolls were detected on the route (non-bike only).
-  @override
-  @JsonKey()
-  final bool noTollsOnRoute;
 
   /// km/l used for the fuel estimate (profile override or vehicle default).
   @override
   final double? fuelEfficiencyKmpl;
 
+  /// Driving alternatives from Google (Batch 3).
+  final List<RouteOption> _routeOptions;
+
+  /// Driving alternatives from Google (Batch 3).
+  @override
+  @JsonKey()
+  List<RouteOption> get routeOptions {
+    if (_routeOptions is EqualUnmodifiableListView) return _routeOptions;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_routeOptions);
+  }
+
+  @override
+  @JsonKey()
+  final int selectedRouteIndex;
+  @override
+  @JsonKey()
+  final bool isUpdatingRoute;
+
+  /// Vehicle used for fuel estimates; preserved across route switches.
+  @override
+  final Vehicle? vehicle;
+
+  /// True when [selectedRouteIndex] was chosen via GPS corridor match.
+  @override
+  @JsonKey()
+  final bool routeMatchedToGps;
+
   @override
   String toString() {
-    return 'PlanState.result(from: $from, to: $to, stations: $stations, vehicleType: $vehicleType, tripPreferences: $tripPreferences, totalDistanceKm: $totalDistanceKm, durationMinutes: $durationMinutes, gaps: $gaps, etaMinutes: $etaMinutes, tollsEstimate: $tollsEstimate, fuelEstimateCost: $fuelEstimateCost, chargingEstimate: $chargingEstimate, weatherTag: $weatherTag, trafficLevel: $trafficLevel, encodedRoutePolyline: $encodedRoutePolyline, tollCorridorName: $tollCorridorName, noTollsOnRoute: $noTollsOnRoute, fuelEfficiencyKmpl: $fuelEfficiencyKmpl)';
+    return 'PlanState.result(from: $from, to: $to, stations: $stations, vehicleType: $vehicleType, tripPreferences: $tripPreferences, totalDistanceKm: $totalDistanceKm, durationMinutes: $durationMinutes, gaps: $gaps, etaMinutes: $etaMinutes, hasTolls: $hasTolls, fuelEstimateCost: $fuelEstimateCost, chargingEstimate: $chargingEstimate, weatherTag: $weatherTag, trafficLevel: $trafficLevel, encodedRoutePolyline: $encodedRoutePolyline, tollCorridorName: $tollCorridorName, fuelEfficiencyKmpl: $fuelEfficiencyKmpl, routeOptions: $routeOptions, selectedRouteIndex: $selectedRouteIndex, isUpdatingRoute: $isUpdatingRoute, vehicle: $vehicle, routeMatchedToGps: $routeMatchedToGps)';
   }
 
   @override
@@ -876,8 +978,8 @@ class _$PlanResultImpl implements PlanResult {
             const DeepCollectionEquality().equals(other._gaps, _gaps) &&
             (identical(other.etaMinutes, etaMinutes) ||
                 other.etaMinutes == etaMinutes) &&
-            (identical(other.tollsEstimate, tollsEstimate) ||
-                other.tollsEstimate == tollsEstimate) &&
+            (identical(other.hasTolls, hasTolls) ||
+                other.hasTolls == hasTolls) &&
             (identical(other.fuelEstimateCost, fuelEstimateCost) ||
                 other.fuelEstimateCost == fuelEstimateCost) &&
             (identical(other.chargingEstimate, chargingEstimate) ||
@@ -890,14 +992,23 @@ class _$PlanResultImpl implements PlanResult {
                 other.encodedRoutePolyline == encodedRoutePolyline) &&
             (identical(other.tollCorridorName, tollCorridorName) ||
                 other.tollCorridorName == tollCorridorName) &&
-            (identical(other.noTollsOnRoute, noTollsOnRoute) ||
-                other.noTollsOnRoute == noTollsOnRoute) &&
             (identical(other.fuelEfficiencyKmpl, fuelEfficiencyKmpl) ||
-                other.fuelEfficiencyKmpl == fuelEfficiencyKmpl));
+                other.fuelEfficiencyKmpl == fuelEfficiencyKmpl) &&
+            const DeepCollectionEquality().equals(
+              other._routeOptions,
+              _routeOptions,
+            ) &&
+            (identical(other.selectedRouteIndex, selectedRouteIndex) ||
+                other.selectedRouteIndex == selectedRouteIndex) &&
+            (identical(other.isUpdatingRoute, isUpdatingRoute) ||
+                other.isUpdatingRoute == isUpdatingRoute) &&
+            (identical(other.vehicle, vehicle) || other.vehicle == vehicle) &&
+            (identical(other.routeMatchedToGps, routeMatchedToGps) ||
+                other.routeMatchedToGps == routeMatchedToGps));
   }
 
   @override
-  int get hashCode => Object.hash(
+  int get hashCode => Object.hashAll([
     runtimeType,
     from,
     to,
@@ -908,16 +1019,20 @@ class _$PlanResultImpl implements PlanResult {
     durationMinutes,
     const DeepCollectionEquality().hash(_gaps),
     etaMinutes,
-    tollsEstimate,
+    hasTolls,
     fuelEstimateCost,
     chargingEstimate,
     weatherTag,
     trafficLevel,
     encodedRoutePolyline,
     tollCorridorName,
-    noTollsOnRoute,
     fuelEfficiencyKmpl,
-  );
+    const DeepCollectionEquality().hash(_routeOptions),
+    selectedRouteIndex,
+    isUpdatingRoute,
+    vehicle,
+    routeMatchedToGps,
+  ]);
 
   /// Create a copy of PlanState
   /// with the given fields replaced by the non-null parameter values.
@@ -943,15 +1058,19 @@ class _$PlanResultImpl implements PlanResult {
       int durationMinutes,
       List<ChargingGap> gaps,
       int? etaMinutes,
-      double? tollsEstimate,
+      bool? hasTolls,
       double? fuelEstimateCost,
       double? chargingEstimate,
       String? weatherTag,
       String? trafficLevel,
       String? encodedRoutePolyline,
       String? tollCorridorName,
-      bool noTollsOnRoute,
       double? fuelEfficiencyKmpl,
+      List<RouteOption> routeOptions,
+      int selectedRouteIndex,
+      bool isUpdatingRoute,
+      Vehicle? vehicle,
+      bool routeMatchedToGps,
     )
     result,
     required TResult Function(String from, String to, VehicleType? vehicleType)
@@ -968,15 +1087,19 @@ class _$PlanResultImpl implements PlanResult {
       durationMinutes,
       gaps,
       etaMinutes,
-      tollsEstimate,
+      hasTolls,
       fuelEstimateCost,
       chargingEstimate,
       weatherTag,
       trafficLevel,
       encodedRoutePolyline,
       tollCorridorName,
-      noTollsOnRoute,
       fuelEfficiencyKmpl,
+      routeOptions,
+      selectedRouteIndex,
+      isUpdatingRoute,
+      vehicle,
+      routeMatchedToGps,
     );
   }
 
@@ -996,15 +1119,19 @@ class _$PlanResultImpl implements PlanResult {
       int durationMinutes,
       List<ChargingGap> gaps,
       int? etaMinutes,
-      double? tollsEstimate,
+      bool? hasTolls,
       double? fuelEstimateCost,
       double? chargingEstimate,
       String? weatherTag,
       String? trafficLevel,
       String? encodedRoutePolyline,
       String? tollCorridorName,
-      bool noTollsOnRoute,
       double? fuelEfficiencyKmpl,
+      List<RouteOption> routeOptions,
+      int selectedRouteIndex,
+      bool isUpdatingRoute,
+      Vehicle? vehicle,
+      bool routeMatchedToGps,
     )?
     result,
     TResult? Function(String from, String to, VehicleType? vehicleType)? empty,
@@ -1020,15 +1147,19 @@ class _$PlanResultImpl implements PlanResult {
       durationMinutes,
       gaps,
       etaMinutes,
-      tollsEstimate,
+      hasTolls,
       fuelEstimateCost,
       chargingEstimate,
       weatherTag,
       trafficLevel,
       encodedRoutePolyline,
       tollCorridorName,
-      noTollsOnRoute,
       fuelEfficiencyKmpl,
+      routeOptions,
+      selectedRouteIndex,
+      isUpdatingRoute,
+      vehicle,
+      routeMatchedToGps,
     );
   }
 
@@ -1048,15 +1179,19 @@ class _$PlanResultImpl implements PlanResult {
       int durationMinutes,
       List<ChargingGap> gaps,
       int? etaMinutes,
-      double? tollsEstimate,
+      bool? hasTolls,
       double? fuelEstimateCost,
       double? chargingEstimate,
       String? weatherTag,
       String? trafficLevel,
       String? encodedRoutePolyline,
       String? tollCorridorName,
-      bool noTollsOnRoute,
       double? fuelEfficiencyKmpl,
+      List<RouteOption> routeOptions,
+      int selectedRouteIndex,
+      bool isUpdatingRoute,
+      Vehicle? vehicle,
+      bool routeMatchedToGps,
     )?
     result,
     TResult Function(String from, String to, VehicleType? vehicleType)? empty,
@@ -1074,15 +1209,19 @@ class _$PlanResultImpl implements PlanResult {
         durationMinutes,
         gaps,
         etaMinutes,
-        tollsEstimate,
+        hasTolls,
         fuelEstimateCost,
         chargingEstimate,
         weatherTag,
         trafficLevel,
         encodedRoutePolyline,
         tollCorridorName,
-        noTollsOnRoute,
         fuelEfficiencyKmpl,
+        routeOptions,
+        selectedRouteIndex,
+        isUpdatingRoute,
+        vehicle,
+        routeMatchedToGps,
       );
     }
     return orElse();
@@ -1140,15 +1279,19 @@ abstract class PlanResult implements PlanState {
     required final int durationMinutes,
     final List<ChargingGap> gaps,
     final int? etaMinutes,
-    final double? tollsEstimate,
+    final bool? hasTolls,
     final double? fuelEstimateCost,
     final double? chargingEstimate,
     final String? weatherTag,
     final String? trafficLevel,
     final String? encodedRoutePolyline,
     final String? tollCorridorName,
-    final bool noTollsOnRoute,
     final double? fuelEfficiencyKmpl,
+    final List<RouteOption> routeOptions,
+    final int selectedRouteIndex,
+    final bool isUpdatingRoute,
+    final Vehicle? vehicle,
+    final bool routeMatchedToGps,
   }) = _$PlanResultImpl;
 
   String get from;
@@ -1163,8 +1306,8 @@ abstract class PlanResult implements PlanState {
   /// Total journey time including estimated charging/fuel stops (minutes).
   int? get etaMinutes;
 
-  /// Estimated toll cost for the route (₹). Null for bikes.
-  double? get tollsEstimate;
+  /// Toll roads on route. Null for bikes; true/false for cars.
+  bool? get hasTolls;
 
   /// Estimated fuel cost (₹) using vehicle.fuelEfficiencyKmpl. Null for EVs.
   double? get fuelEstimateCost;
@@ -1181,15 +1324,22 @@ abstract class PlanResult implements PlanState {
   /// Google-encoded route polyline for corridor cache + alert engine (P1-028).
   String? get encodedRoutePolyline;
 
-  /// P2-042 — Matched toll corridor name (e.g. "Mumbai–Pune Expressway").
-  /// Null when the estimate comes from Google or no tolls were found.
+  /// P2-042 — Matched toll corridor name when [hasTolls] is true.
   String? get tollCorridorName;
-
-  /// True when no tolls were detected on the route (non-bike only).
-  bool get noTollsOnRoute;
 
   /// km/l used for the fuel estimate (profile override or vehicle default).
   double? get fuelEfficiencyKmpl;
+
+  /// Driving alternatives from Google (Batch 3).
+  List<RouteOption> get routeOptions;
+  int get selectedRouteIndex;
+  bool get isUpdatingRoute;
+
+  /// Vehicle used for fuel estimates; preserved across route switches.
+  Vehicle? get vehicle;
+
+  /// True when [selectedRouteIndex] was chosen via GPS corridor match.
+  bool get routeMatchedToGps;
 
   /// Create a copy of PlanState
   /// with the given fields replaced by the non-null parameter values.
@@ -1304,15 +1454,19 @@ class _$PlanEmptyImpl implements PlanEmpty {
       int durationMinutes,
       List<ChargingGap> gaps,
       int? etaMinutes,
-      double? tollsEstimate,
+      bool? hasTolls,
       double? fuelEstimateCost,
       double? chargingEstimate,
       String? weatherTag,
       String? trafficLevel,
       String? encodedRoutePolyline,
       String? tollCorridorName,
-      bool noTollsOnRoute,
       double? fuelEfficiencyKmpl,
+      List<RouteOption> routeOptions,
+      int selectedRouteIndex,
+      bool isUpdatingRoute,
+      Vehicle? vehicle,
+      bool routeMatchedToGps,
     )
     result,
     required TResult Function(String from, String to, VehicleType? vehicleType)
@@ -1338,15 +1492,19 @@ class _$PlanEmptyImpl implements PlanEmpty {
       int durationMinutes,
       List<ChargingGap> gaps,
       int? etaMinutes,
-      double? tollsEstimate,
+      bool? hasTolls,
       double? fuelEstimateCost,
       double? chargingEstimate,
       String? weatherTag,
       String? trafficLevel,
       String? encodedRoutePolyline,
       String? tollCorridorName,
-      bool noTollsOnRoute,
       double? fuelEfficiencyKmpl,
+      List<RouteOption> routeOptions,
+      int selectedRouteIndex,
+      bool isUpdatingRoute,
+      Vehicle? vehicle,
+      bool routeMatchedToGps,
     )?
     result,
     TResult? Function(String from, String to, VehicleType? vehicleType)? empty,
@@ -1371,15 +1529,19 @@ class _$PlanEmptyImpl implements PlanEmpty {
       int durationMinutes,
       List<ChargingGap> gaps,
       int? etaMinutes,
-      double? tollsEstimate,
+      bool? hasTolls,
       double? fuelEstimateCost,
       double? chargingEstimate,
       String? weatherTag,
       String? trafficLevel,
       String? encodedRoutePolyline,
       String? tollCorridorName,
-      bool noTollsOnRoute,
       double? fuelEfficiencyKmpl,
+      List<RouteOption> routeOptions,
+      int selectedRouteIndex,
+      bool isUpdatingRoute,
+      Vehicle? vehicle,
+      bool routeMatchedToGps,
     )?
     result,
     TResult Function(String from, String to, VehicleType? vehicleType)? empty,
@@ -1534,15 +1696,19 @@ class _$PlanErrorImpl implements PlanError {
       int durationMinutes,
       List<ChargingGap> gaps,
       int? etaMinutes,
-      double? tollsEstimate,
+      bool? hasTolls,
       double? fuelEstimateCost,
       double? chargingEstimate,
       String? weatherTag,
       String? trafficLevel,
       String? encodedRoutePolyline,
       String? tollCorridorName,
-      bool noTollsOnRoute,
       double? fuelEfficiencyKmpl,
+      List<RouteOption> routeOptions,
+      int selectedRouteIndex,
+      bool isUpdatingRoute,
+      Vehicle? vehicle,
+      bool routeMatchedToGps,
     )
     result,
     required TResult Function(String from, String to, VehicleType? vehicleType)
@@ -1568,15 +1734,19 @@ class _$PlanErrorImpl implements PlanError {
       int durationMinutes,
       List<ChargingGap> gaps,
       int? etaMinutes,
-      double? tollsEstimate,
+      bool? hasTolls,
       double? fuelEstimateCost,
       double? chargingEstimate,
       String? weatherTag,
       String? trafficLevel,
       String? encodedRoutePolyline,
       String? tollCorridorName,
-      bool noTollsOnRoute,
       double? fuelEfficiencyKmpl,
+      List<RouteOption> routeOptions,
+      int selectedRouteIndex,
+      bool isUpdatingRoute,
+      Vehicle? vehicle,
+      bool routeMatchedToGps,
     )?
     result,
     TResult? Function(String from, String to, VehicleType? vehicleType)? empty,
@@ -1601,15 +1771,19 @@ class _$PlanErrorImpl implements PlanError {
       int durationMinutes,
       List<ChargingGap> gaps,
       int? etaMinutes,
-      double? tollsEstimate,
+      bool? hasTolls,
       double? fuelEstimateCost,
       double? chargingEstimate,
       String? weatherTag,
       String? trafficLevel,
       String? encodedRoutePolyline,
       String? tollCorridorName,
-      bool noTollsOnRoute,
       double? fuelEfficiencyKmpl,
+      List<RouteOption> routeOptions,
+      int selectedRouteIndex,
+      bool isUpdatingRoute,
+      Vehicle? vehicle,
+      bool routeMatchedToGps,
     )?
     result,
     TResult Function(String from, String to, VehicleType? vehicleType)? empty,

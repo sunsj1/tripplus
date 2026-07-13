@@ -45,7 +45,10 @@ mixin _$Trip {
   /// Total ETA including stop time (minutes). Null only if estimator failed.
   int? get etaMinutes => throw _privateConstructorUsedError;
 
-  /// Estimated toll cost (₹). Null for bikes.
+  /// Toll roads on route. Null for bikes.
+  bool? get hasTolls => throw _privateConstructorUsedError;
+
+  /// Legacy toll ₹ — Hive back-compat for trips saved before Hotline Batch 1.
   double? get tollsEstimate => throw _privateConstructorUsedError;
 
   /// Estimated fuel or charging cost (₹).
@@ -98,6 +101,7 @@ abstract class $TripCopyWith<$Res> {
     double totalDistanceKm,
     int drivingMinutes,
     int? etaMinutes,
+    bool? hasTolls,
     double? tollsEstimate,
     double? tripCostEstimate,
     bool isCostCharging,
@@ -136,6 +140,7 @@ class _$TripCopyWithImpl<$Res, $Val extends Trip>
     Object? totalDistanceKm = null,
     Object? drivingMinutes = null,
     Object? etaMinutes = freezed,
+    Object? hasTolls = freezed,
     Object? tollsEstimate = freezed,
     Object? tripCostEstimate = freezed,
     Object? isCostCharging = null,
@@ -181,6 +186,10 @@ class _$TripCopyWithImpl<$Res, $Val extends Trip>
                 ? _value.etaMinutes
                 : etaMinutes // ignore: cast_nullable_to_non_nullable
                       as int?,
+            hasTolls: freezed == hasTolls
+                ? _value.hasTolls
+                : hasTolls // ignore: cast_nullable_to_non_nullable
+                      as bool?,
             tollsEstimate: freezed == tollsEstimate
                 ? _value.tollsEstimate
                 : tollsEstimate // ignore: cast_nullable_to_non_nullable
@@ -254,6 +263,7 @@ abstract class _$$TripImplCopyWith<$Res> implements $TripCopyWith<$Res> {
     double totalDistanceKm,
     int drivingMinutes,
     int? etaMinutes,
+    bool? hasTolls,
     double? tollsEstimate,
     double? tripCostEstimate,
     bool isCostCharging,
@@ -290,6 +300,7 @@ class __$$TripImplCopyWithImpl<$Res>
     Object? totalDistanceKm = null,
     Object? drivingMinutes = null,
     Object? etaMinutes = freezed,
+    Object? hasTolls = freezed,
     Object? tollsEstimate = freezed,
     Object? tripCostEstimate = freezed,
     Object? isCostCharging = null,
@@ -335,6 +346,10 @@ class __$$TripImplCopyWithImpl<$Res>
             ? _value.etaMinutes
             : etaMinutes // ignore: cast_nullable_to_non_nullable
                   as int?,
+        hasTolls: freezed == hasTolls
+            ? _value.hasTolls
+            : hasTolls // ignore: cast_nullable_to_non_nullable
+                  as bool?,
         tollsEstimate: freezed == tollsEstimate
             ? _value.tollsEstimate
             : tollsEstimate // ignore: cast_nullable_to_non_nullable
@@ -392,6 +407,7 @@ class _$TripImpl extends _Trip {
     required this.totalDistanceKm,
     required this.drivingMinutes,
     this.etaMinutes,
+    this.hasTolls,
     this.tollsEstimate,
     this.tripCostEstimate,
     this.isCostCharging = false,
@@ -441,7 +457,11 @@ class _$TripImpl extends _Trip {
   @override
   final int? etaMinutes;
 
-  /// Estimated toll cost (₹). Null for bikes.
+  /// Toll roads on route. Null for bikes.
+  @override
+  final bool? hasTolls;
+
+  /// Legacy toll ₹ — Hive back-compat for trips saved before Hotline Batch 1.
   @override
   final double? tollsEstimate;
 
@@ -494,7 +514,7 @@ class _$TripImpl extends _Trip {
 
   @override
   String toString() {
-    return 'Trip(id: $id, from: $from, to: $to, vehicle: $vehicle, status: $status, totalDistanceKm: $totalDistanceKm, drivingMinutes: $drivingMinutes, etaMinutes: $etaMinutes, tollsEstimate: $tollsEstimate, tripCostEstimate: $tripCostEstimate, isCostCharging: $isCostCharging, stationCount: $stationCount, createdAt: $createdAt, startedAt: $startedAt, pausedAt: $pausedAt, completedAt: $completedAt, elapsedPausedMs: $elapsedPausedMs, firedAlerts: $firedAlerts)';
+    return 'Trip(id: $id, from: $from, to: $to, vehicle: $vehicle, status: $status, totalDistanceKm: $totalDistanceKm, drivingMinutes: $drivingMinutes, etaMinutes: $etaMinutes, hasTolls: $hasTolls, tollsEstimate: $tollsEstimate, tripCostEstimate: $tripCostEstimate, isCostCharging: $isCostCharging, stationCount: $stationCount, createdAt: $createdAt, startedAt: $startedAt, pausedAt: $pausedAt, completedAt: $completedAt, elapsedPausedMs: $elapsedPausedMs, firedAlerts: $firedAlerts)';
   }
 
   @override
@@ -513,6 +533,8 @@ class _$TripImpl extends _Trip {
                 other.drivingMinutes == drivingMinutes) &&
             (identical(other.etaMinutes, etaMinutes) ||
                 other.etaMinutes == etaMinutes) &&
+            (identical(other.hasTolls, hasTolls) ||
+                other.hasTolls == hasTolls) &&
             (identical(other.tollsEstimate, tollsEstimate) ||
                 other.tollsEstimate == tollsEstimate) &&
             (identical(other.tripCostEstimate, tripCostEstimate) ||
@@ -539,7 +561,7 @@ class _$TripImpl extends _Trip {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
+  int get hashCode => Object.hashAll([
     runtimeType,
     id,
     from,
@@ -549,6 +571,7 @@ class _$TripImpl extends _Trip {
     totalDistanceKm,
     drivingMinutes,
     etaMinutes,
+    hasTolls,
     tollsEstimate,
     tripCostEstimate,
     isCostCharging,
@@ -559,7 +582,7 @@ class _$TripImpl extends _Trip {
     completedAt,
     elapsedPausedMs,
     const DeepCollectionEquality().hash(_firedAlerts),
-  );
+  ]);
 
   /// Create a copy of Trip
   /// with the given fields replaced by the non-null parameter values.
@@ -585,6 +608,7 @@ abstract class _Trip extends Trip {
     required final double totalDistanceKm,
     required final int drivingMinutes,
     final int? etaMinutes,
+    final bool? hasTolls,
     final double? tollsEstimate,
     final double? tripCostEstimate,
     final bool isCostCharging,
@@ -631,7 +655,11 @@ abstract class _Trip extends Trip {
   @override
   int? get etaMinutes;
 
-  /// Estimated toll cost (₹). Null for bikes.
+  /// Toll roads on route. Null for bikes.
+  @override
+  bool? get hasTolls;
+
+  /// Legacy toll ₹ — Hive back-compat for trips saved before Hotline Batch 1.
   @override
   double? get tollsEstimate;
 

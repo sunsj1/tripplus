@@ -53,5 +53,6 @@ final planControllerProvider =
     StateNotifierProvider<PlanController, PlanState>((ref) {
   return PlanController(
     routeService: ref.watch(routeStationServiceProvider),
+    directions: ref.watch(directionsServiceProvider),
   );
 });

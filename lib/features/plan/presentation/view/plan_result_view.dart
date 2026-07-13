@@ -37,6 +37,8 @@ PlanResult _toPlanResult(PlanResultView v) => PlanResult(
       trafficLevel: v.trafficLevel,
       encodedRoutePolyline: v.encodedRoutePolyline,
       tollCorridorName: v.tollCorridorName,
+      noTollsOnRoute: v.noTollsOnRoute,
+      fuelEfficiencyKmpl: v.fuelEfficiencyKmpl,
     );
 
 class PlanResultView extends ConsumerWidget {
@@ -58,10 +60,22 @@ class PlanResultView extends ConsumerWidget {
   final String? weatherTag;
   final String? trafficLevel;
   final String? encodedRoutePolyline;
-  /// P2-042 — Matched toll corridor name; null on flat fallback.
+  /// P2-042 — Matched toll corridor name; null on Google estimate / no tolls.
   final String? tollCorridorName;
+  final bool noTollsOnRoute;
+  final double? fuelEfficiencyKmpl;
 
   bool get _isEv => TripPlanCopy.isEv(vehicleType);
+
+  String _tollContextLine(String corridorName) {
+    if (corridorName == 'Google Maps estimate') {
+      return 'Toll estimate from Google Maps';
+    }
+    if (corridorName.startsWith('Tolls likely')) {
+      return corridorName;
+    }
+    return 'Via $corridorName';
+  }
 
   const PlanResultView({
     super.key,
@@ -82,6 +96,8 @@ class PlanResultView extends ConsumerWidget {
     this.trafficLevel,
     this.encodedRoutePolyline,
     this.tollCorridorName,
+    this.noTollsOnRoute = false,
+    this.fuelEfficiencyKmpl,
   });
 
   ChargingStation? get _nearestStation {
@@ -123,12 +139,14 @@ class PlanResultView extends ConsumerWidget {
               _TripDashboardStatRow(
                 etaMinutes: etaMinutes,
                 tollsEstimate: tollsEstimate,
+                noTollsOnRoute: noTollsOnRoute,
                 costEstimate: fuelEstimateCost ?? chargingEstimate,
                 isCharging: chargingEstimate != null,
                 trafficLevel: trafficLevel,
+                fuelEfficiencyKmpl: fuelEfficiencyKmpl,
               ),
-              // P2-042 — Corridor name beneath the stat row when matched.
-              if (tollCorridorName != null) ...[
+              // P2-042 — Toll context beneath the stat row.
+              if (tollCorridorName != null || noTollsOnRoute) ...[
                 const SizedBox(height: 6),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -139,13 +157,15 @@ class PlanResultView extends ConsumerWidget {
                       const SizedBox(width: 4),
                       Expanded(
                         child: Text(
-                          'Via $tollCorridorName',
+                          noTollsOnRoute
+                              ? 'No tolls detected on this route'
+                              : _tollContextLine(tollCorridorName!),
                           style: AppTextStyles.bodySmall.copyWith(
                             fontSize: 10.5,
                             color: AppColors.textTertiary,
                             fontWeight: FontWeight.w600,
                           ),
-                          maxLines: 1,
+                          maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
@@ -743,16 +763,20 @@ String _fmtRupees(double amount) {
 class _TripDashboardStatRow extends StatelessWidget {
   final int? etaMinutes;
   final double? tollsEstimate;
+  final bool noTollsOnRoute;
   final double? costEstimate;
   final bool isCharging;
   final String? trafficLevel;
+  final double? fuelEfficiencyKmpl;
 
   const _TripDashboardStatRow({
     this.etaMinutes,
     this.tollsEstimate,
+    this.noTollsOnRoute = false,
     this.costEstimate,
     required this.isCharging,
     this.trafficLevel,
+    this.fuelEfficiencyKmpl,
   });
 
   Color _trafficColor(String? level) => switch (level) {
@@ -836,8 +860,21 @@ class _TripDashboardStatRow extends StatelessWidget {
           value: '~${_fmtRupees(tollsEstimate!)}',
         ),
       );
+    } else if (noTollsOnRoute) {
+      add(
+        StatCard(
+          compact: true,
+          icon: Icons.toll_outlined,
+          iconColor: AppColors.textTertiary,
+          label: 'Tolls',
+          value: 'None',
+        ),
+      );
     }
     if (costEstimate != null) {
+      final fuelLabel = !isCharging && fuelEfficiencyKmpl != null
+          ? 'Fuel · ${fuelEfficiencyKmpl!.round()} km/l'
+          : (isCharging ? 'Charging' : 'Fuel');
       add(
         StatCard(
           compact: true,
@@ -845,7 +882,7 @@ class _TripDashboardStatRow extends StatelessWidget {
               ? Icons.electric_bolt_outlined
               : Icons.local_gas_station_outlined,
           iconColor: isCharging ? AppColors.accentTeal : AppColors.primary,
-          label: isCharging ? 'Charging' : 'Fuel',
+          label: fuelLabel,
           value: '~${_fmtRupees(costEstimate!)}',
         ),
       );

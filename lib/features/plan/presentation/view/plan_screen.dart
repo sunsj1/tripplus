@@ -16,6 +16,8 @@ import 'package:journeyplus/features/plan/presentation/view/plan_result_view.dar
 import 'package:journeyplus/core/utils/trip_plan_copy.dart';
 import 'package:journeyplus/features/plan/presentation/widget/route_input_card.dart';
 import 'package:journeyplus/features/profile/presentation/controller/profile_providers.dart';
+import 'package:journeyplus/features/trip/presentation/controller/active_trip_state.dart';
+import 'package:journeyplus/features/trip/presentation/controller/trip_providers.dart';
 import 'package:journeyplus/features/trip/presentation/controller/trip_replan_provider.dart';
 
 class PlanScreen extends ConsumerStatefulWidget {
@@ -130,6 +132,16 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
       ref.read(tripReplanRequestProvider.notifier).state = null;
     });
 
+    // After ending a trip, return the Plan tab to the route input screen.
+    ref.listen<ActiveTripState>(activeTripControllerProvider, (prev, next) {
+      if (next is! ActiveTripCompleted) return;
+      if (prev is ActiveTripRunning ||
+          prev is ActiveTripPaused ||
+          prev is ActiveTripReady) {
+        ref.read(planControllerProvider.notifier).reset();
+      }
+    });
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -158,6 +170,8 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
             :final trafficLevel,
             :final encodedRoutePolyline,
             :final tollCorridorName,
+            :final noTollsOnRoute,
+            :final fuelEfficiencyKmpl,
           ) =>
             PlanResultView(
               from: from,
@@ -177,6 +191,8 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
               trafficLevel: trafficLevel,
               encodedRoutePolyline: encodedRoutePolyline,
               tollCorridorName: tollCorridorName,
+              noTollsOnRoute: noTollsOnRoute,
+              fuelEfficiencyKmpl: fuelEfficiencyKmpl,
             ),
           PlanEmpty() => EmptyStateScreen(onSearchAgain: _onReset),
           PlanError(:final message) => _buildErrorView(message),

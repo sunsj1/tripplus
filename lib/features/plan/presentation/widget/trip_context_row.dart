@@ -6,7 +6,7 @@ import 'package:journeyplus/core/theme/app_text_styles.dart';
 import 'package:journeyplus/core/utils/trip_plan_copy.dart';
 import 'package:journeyplus/core/widgets/fuel_brand_picker.dart';
 
-/// Vehicle row, optional fuel-brand grid (petrol/diesel), and preference chips.
+/// Vehicle body (car vs bike), fuel type for cars, and preference chips.
 /// Changes sync to the saved profile + Firestore via [PlanScreen].
 class TripContextRow extends StatelessWidget {
   const TripContextRow({
@@ -22,11 +22,26 @@ class TripContextRow extends StatelessWidget {
   final ValueChanged<Vehicle> onVehicleChanged;
   final ValueChanged<UserPreferences> onPreferencesChanged;
 
+  bool get _isBike => vehicle?.type == VehicleType.bike;
   bool get _isEv => TripPlanCopy.isEv(vehicle?.type);
 
   bool get _showsFuelBrands {
     final t = vehicle?.type;
     return t == VehicleType.petrol || t == VehicleType.diesel;
+  }
+
+  Vehicle _withType(VehicleType type) =>
+      vehicle?.copyWith(type: type) ?? Vehicle(type: type);
+
+  void _selectBody({required bool bike}) {
+    if (bike) {
+      onVehicleChanged(_withType(VehicleType.bike));
+      return;
+    }
+    final current = vehicle?.type;
+    if (current == null || current == VehicleType.bike) {
+      onVehicleChanged(_withType(VehicleType.petrol));
+    }
   }
 
   @override
@@ -36,12 +51,20 @@ class TripContextRow extends StatelessWidget {
       children: [
         _Label('VEHICLE'),
         const SizedBox(height: 8),
-        _VehicleRow(
-          selected: vehicle?.type,
-          onTap: (t) => onVehicleChanged(
-            vehicle?.copyWith(type: t) ?? Vehicle(type: t),
-          ),
+        _BodyClassRow(
+          isBike: _isBike,
+          onSelectCar: () => _selectBody(bike: false),
+          onSelectBike: () => _selectBody(bike: true),
         ),
+        if (!_isBike) ...[
+          const SizedBox(height: 12),
+          _Label('FUEL TYPE'),
+          const SizedBox(height: 8),
+          _FuelTypeRow(
+            selected: vehicle?.type,
+            onTap: (t) => onVehicleChanged(_withType(t)),
+          ),
+        ],
         if (_showsFuelBrands) ...[
           const SizedBox(height: 16),
           FuelBrandPicker(
@@ -132,10 +155,106 @@ class _Label extends StatelessWidget {
   }
 }
 
-class _VehicleRow extends StatelessWidget {
-  const _VehicleRow({required this.selected, required this.onTap});
+class _BodyClassRow extends StatelessWidget {
+  const _BodyClassRow({
+    required this.isBike,
+    required this.onSelectCar,
+    required this.onSelectBike,
+  });
+
+  final bool isBike;
+  final VoidCallback onSelectCar;
+  final VoidCallback onSelectBike;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: _BodyChip(
+            icon: Icons.directions_car_outlined,
+            label: 'Car',
+            selected: !isBike,
+            onTap: onSelectCar,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: _BodyChip(
+            icon: Icons.two_wheeler,
+            label: 'Bike',
+            selected: isBike,
+            onTap: onSelectBike,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _BodyChip extends StatelessWidget {
+  const _BodyChip({
+    required this.icon,
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 120),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        decoration: BoxDecoration(
+          color: selected ? AppColors.primarySurface : AppColors.surface,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: selected ? AppColors.primary : AppColors.border,
+            width: selected ? 1.5 : 1,
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 20,
+              color: selected ? AppColors.primary : AppColors.textSecondary,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              label,
+              style: AppTextStyles.bodySmall.copyWith(
+                color: selected ? AppColors.primary : AppColors.textPrimary,
+                fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _FuelTypeRow extends StatelessWidget {
+  const _FuelTypeRow({required this.selected, required this.onTap});
+
   final VehicleType? selected;
   final ValueChanged<VehicleType> onTap;
+
+  static const _carFuelTypes = [
+    VehicleType.petrol,
+    VehicleType.diesel,
+    VehicleType.ev,
+  ];
 
   IconData _iconFor(VehicleType t) {
     switch (t) {
@@ -153,7 +272,7 @@ class _VehicleRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: VehicleType.values.map((t) {
+      children: _carFuelTypes.map((t) {
         final isSelected = selected == t;
         return Expanded(
           child: Padding(

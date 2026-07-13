@@ -39,6 +39,8 @@ mixin _$PlanState {
       String? trafficLevel,
       String? encodedRoutePolyline,
       String? tollCorridorName,
+      bool noTollsOnRoute,
+      double? fuelEfficiencyKmpl,
     )
     result,
     required TResult Function(String from, String to, VehicleType? vehicleType)
@@ -67,6 +69,8 @@ mixin _$PlanState {
       String? trafficLevel,
       String? encodedRoutePolyline,
       String? tollCorridorName,
+      bool noTollsOnRoute,
+      double? fuelEfficiencyKmpl,
     )?
     result,
     TResult? Function(String from, String to, VehicleType? vehicleType)? empty,
@@ -94,6 +98,8 @@ mixin _$PlanState {
       String? trafficLevel,
       String? encodedRoutePolyline,
       String? tollCorridorName,
+      bool noTollsOnRoute,
+      double? fuelEfficiencyKmpl,
     )?
     result,
     TResult Function(String from, String to, VehicleType? vehicleType)? empty,
@@ -210,6 +216,8 @@ class _$PlanIdleImpl implements PlanIdle {
       String? trafficLevel,
       String? encodedRoutePolyline,
       String? tollCorridorName,
+      bool noTollsOnRoute,
+      double? fuelEfficiencyKmpl,
     )
     result,
     required TResult Function(String from, String to, VehicleType? vehicleType)
@@ -242,6 +250,8 @@ class _$PlanIdleImpl implements PlanIdle {
       String? trafficLevel,
       String? encodedRoutePolyline,
       String? tollCorridorName,
+      bool noTollsOnRoute,
+      double? fuelEfficiencyKmpl,
     )?
     result,
     TResult? Function(String from, String to, VehicleType? vehicleType)? empty,
@@ -273,6 +283,8 @@ class _$PlanIdleImpl implements PlanIdle {
       String? trafficLevel,
       String? encodedRoutePolyline,
       String? tollCorridorName,
+      bool noTollsOnRoute,
+      double? fuelEfficiencyKmpl,
     )?
     result,
     TResult Function(String from, String to, VehicleType? vehicleType)? empty,
@@ -446,6 +458,8 @@ class _$PlanCalculatingImpl implements PlanCalculating {
       String? trafficLevel,
       String? encodedRoutePolyline,
       String? tollCorridorName,
+      bool noTollsOnRoute,
+      double? fuelEfficiencyKmpl,
     )
     result,
     required TResult Function(String from, String to, VehicleType? vehicleType)
@@ -478,6 +492,8 @@ class _$PlanCalculatingImpl implements PlanCalculating {
       String? trafficLevel,
       String? encodedRoutePolyline,
       String? tollCorridorName,
+      bool noTollsOnRoute,
+      double? fuelEfficiencyKmpl,
     )?
     result,
     TResult? Function(String from, String to, VehicleType? vehicleType)? empty,
@@ -509,6 +525,8 @@ class _$PlanCalculatingImpl implements PlanCalculating {
       String? trafficLevel,
       String? encodedRoutePolyline,
       String? tollCorridorName,
+      bool noTollsOnRoute,
+      double? fuelEfficiencyKmpl,
     )?
     result,
     TResult Function(String from, String to, VehicleType? vehicleType)? empty,
@@ -604,6 +622,8 @@ abstract class _$$PlanResultImplCopyWith<$Res> {
     String? trafficLevel,
     String? encodedRoutePolyline,
     String? tollCorridorName,
+    bool noTollsOnRoute,
+    double? fuelEfficiencyKmpl,
   });
 
   $UserPreferencesCopyWith<$Res>? get tripPreferences;
@@ -639,6 +659,8 @@ class __$$PlanResultImplCopyWithImpl<$Res>
     Object? trafficLevel = freezed,
     Object? encodedRoutePolyline = freezed,
     Object? tollCorridorName = freezed,
+    Object? noTollsOnRoute = null,
+    Object? fuelEfficiencyKmpl = freezed,
   }) {
     return _then(
       _$PlanResultImpl(
@@ -706,6 +728,14 @@ class __$$PlanResultImplCopyWithImpl<$Res>
             ? _value.tollCorridorName
             : tollCorridorName // ignore: cast_nullable_to_non_nullable
                   as String?,
+        noTollsOnRoute: null == noTollsOnRoute
+            ? _value.noTollsOnRoute
+            : noTollsOnRoute // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        fuelEfficiencyKmpl: freezed == fuelEfficiencyKmpl
+            ? _value.fuelEfficiencyKmpl
+            : fuelEfficiencyKmpl // ignore: cast_nullable_to_non_nullable
+                  as double?,
       ),
     );
   }
@@ -745,6 +775,8 @@ class _$PlanResultImpl implements PlanResult {
     this.trafficLevel,
     this.encodedRoutePolyline,
     this.tollCorridorName,
+    this.noTollsOnRoute = false,
+    this.fuelEfficiencyKmpl,
   }) : _stations = stations,
        _gaps = gaps;
 
@@ -807,13 +839,22 @@ class _$PlanResultImpl implements PlanResult {
   final String? encodedRoutePolyline;
 
   /// P2-042 — Matched toll corridor name (e.g. "Mumbai–Pune Expressway").
-  /// Null when the toll estimate is the legacy flat fallback.
+  /// Null when the estimate comes from Google or no tolls were found.
   @override
   final String? tollCorridorName;
 
+  /// True when no tolls were detected on the route (non-bike only).
+  @override
+  @JsonKey()
+  final bool noTollsOnRoute;
+
+  /// km/l used for the fuel estimate (profile override or vehicle default).
+  @override
+  final double? fuelEfficiencyKmpl;
+
   @override
   String toString() {
-    return 'PlanState.result(from: $from, to: $to, stations: $stations, vehicleType: $vehicleType, tripPreferences: $tripPreferences, totalDistanceKm: $totalDistanceKm, durationMinutes: $durationMinutes, gaps: $gaps, etaMinutes: $etaMinutes, tollsEstimate: $tollsEstimate, fuelEstimateCost: $fuelEstimateCost, chargingEstimate: $chargingEstimate, weatherTag: $weatherTag, trafficLevel: $trafficLevel, encodedRoutePolyline: $encodedRoutePolyline, tollCorridorName: $tollCorridorName)';
+    return 'PlanState.result(from: $from, to: $to, stations: $stations, vehicleType: $vehicleType, tripPreferences: $tripPreferences, totalDistanceKm: $totalDistanceKm, durationMinutes: $durationMinutes, gaps: $gaps, etaMinutes: $etaMinutes, tollsEstimate: $tollsEstimate, fuelEstimateCost: $fuelEstimateCost, chargingEstimate: $chargingEstimate, weatherTag: $weatherTag, trafficLevel: $trafficLevel, encodedRoutePolyline: $encodedRoutePolyline, tollCorridorName: $tollCorridorName, noTollsOnRoute: $noTollsOnRoute, fuelEfficiencyKmpl: $fuelEfficiencyKmpl)';
   }
 
   @override
@@ -848,7 +889,11 @@ class _$PlanResultImpl implements PlanResult {
             (identical(other.encodedRoutePolyline, encodedRoutePolyline) ||
                 other.encodedRoutePolyline == encodedRoutePolyline) &&
             (identical(other.tollCorridorName, tollCorridorName) ||
-                other.tollCorridorName == tollCorridorName));
+                other.tollCorridorName == tollCorridorName) &&
+            (identical(other.noTollsOnRoute, noTollsOnRoute) ||
+                other.noTollsOnRoute == noTollsOnRoute) &&
+            (identical(other.fuelEfficiencyKmpl, fuelEfficiencyKmpl) ||
+                other.fuelEfficiencyKmpl == fuelEfficiencyKmpl));
   }
 
   @override
@@ -870,6 +915,8 @@ class _$PlanResultImpl implements PlanResult {
     trafficLevel,
     encodedRoutePolyline,
     tollCorridorName,
+    noTollsOnRoute,
+    fuelEfficiencyKmpl,
   );
 
   /// Create a copy of PlanState
@@ -903,6 +950,8 @@ class _$PlanResultImpl implements PlanResult {
       String? trafficLevel,
       String? encodedRoutePolyline,
       String? tollCorridorName,
+      bool noTollsOnRoute,
+      double? fuelEfficiencyKmpl,
     )
     result,
     required TResult Function(String from, String to, VehicleType? vehicleType)
@@ -926,6 +975,8 @@ class _$PlanResultImpl implements PlanResult {
       trafficLevel,
       encodedRoutePolyline,
       tollCorridorName,
+      noTollsOnRoute,
+      fuelEfficiencyKmpl,
     );
   }
 
@@ -952,6 +1003,8 @@ class _$PlanResultImpl implements PlanResult {
       String? trafficLevel,
       String? encodedRoutePolyline,
       String? tollCorridorName,
+      bool noTollsOnRoute,
+      double? fuelEfficiencyKmpl,
     )?
     result,
     TResult? Function(String from, String to, VehicleType? vehicleType)? empty,
@@ -974,6 +1027,8 @@ class _$PlanResultImpl implements PlanResult {
       trafficLevel,
       encodedRoutePolyline,
       tollCorridorName,
+      noTollsOnRoute,
+      fuelEfficiencyKmpl,
     );
   }
 
@@ -1000,6 +1055,8 @@ class _$PlanResultImpl implements PlanResult {
       String? trafficLevel,
       String? encodedRoutePolyline,
       String? tollCorridorName,
+      bool noTollsOnRoute,
+      double? fuelEfficiencyKmpl,
     )?
     result,
     TResult Function(String from, String to, VehicleType? vehicleType)? empty,
@@ -1024,6 +1081,8 @@ class _$PlanResultImpl implements PlanResult {
         trafficLevel,
         encodedRoutePolyline,
         tollCorridorName,
+        noTollsOnRoute,
+        fuelEfficiencyKmpl,
       );
     }
     return orElse();
@@ -1088,6 +1147,8 @@ abstract class PlanResult implements PlanState {
     final String? trafficLevel,
     final String? encodedRoutePolyline,
     final String? tollCorridorName,
+    final bool noTollsOnRoute,
+    final double? fuelEfficiencyKmpl,
   }) = _$PlanResultImpl;
 
   String get from;
@@ -1121,8 +1182,14 @@ abstract class PlanResult implements PlanState {
   String? get encodedRoutePolyline;
 
   /// P2-042 — Matched toll corridor name (e.g. "Mumbai–Pune Expressway").
-  /// Null when the toll estimate is the legacy flat fallback.
+  /// Null when the estimate comes from Google or no tolls were found.
   String? get tollCorridorName;
+
+  /// True when no tolls were detected on the route (non-bike only).
+  bool get noTollsOnRoute;
+
+  /// km/l used for the fuel estimate (profile override or vehicle default).
+  double? get fuelEfficiencyKmpl;
 
   /// Create a copy of PlanState
   /// with the given fields replaced by the non-null parameter values.
@@ -1244,6 +1311,8 @@ class _$PlanEmptyImpl implements PlanEmpty {
       String? trafficLevel,
       String? encodedRoutePolyline,
       String? tollCorridorName,
+      bool noTollsOnRoute,
+      double? fuelEfficiencyKmpl,
     )
     result,
     required TResult Function(String from, String to, VehicleType? vehicleType)
@@ -1276,6 +1345,8 @@ class _$PlanEmptyImpl implements PlanEmpty {
       String? trafficLevel,
       String? encodedRoutePolyline,
       String? tollCorridorName,
+      bool noTollsOnRoute,
+      double? fuelEfficiencyKmpl,
     )?
     result,
     TResult? Function(String from, String to, VehicleType? vehicleType)? empty,
@@ -1307,6 +1378,8 @@ class _$PlanEmptyImpl implements PlanEmpty {
       String? trafficLevel,
       String? encodedRoutePolyline,
       String? tollCorridorName,
+      bool noTollsOnRoute,
+      double? fuelEfficiencyKmpl,
     )?
     result,
     TResult Function(String from, String to, VehicleType? vehicleType)? empty,
@@ -1468,6 +1541,8 @@ class _$PlanErrorImpl implements PlanError {
       String? trafficLevel,
       String? encodedRoutePolyline,
       String? tollCorridorName,
+      bool noTollsOnRoute,
+      double? fuelEfficiencyKmpl,
     )
     result,
     required TResult Function(String from, String to, VehicleType? vehicleType)
@@ -1500,6 +1575,8 @@ class _$PlanErrorImpl implements PlanError {
       String? trafficLevel,
       String? encodedRoutePolyline,
       String? tollCorridorName,
+      bool noTollsOnRoute,
+      double? fuelEfficiencyKmpl,
     )?
     result,
     TResult? Function(String from, String to, VehicleType? vehicleType)? empty,
@@ -1531,6 +1608,8 @@ class _$PlanErrorImpl implements PlanError {
       String? trafficLevel,
       String? encodedRoutePolyline,
       String? tollCorridorName,
+      bool noTollsOnRoute,
+      double? fuelEfficiencyKmpl,
     )?
     result,
     TResult Function(String from, String to, VehicleType? vehicleType)? empty,

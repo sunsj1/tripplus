@@ -7,14 +7,30 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:840443034452:android:04abcc0ecfcdb88f1ba6c1",
+        "mobilesdk_app_id": "1:840443034452:android:cf427643582e84231ba6c1",
         "android_client_info": {
           "package_name": "com.journeyplus.journeyplus"
         }
       },
       "oauth_client": [
         {
-          "client_id": "840443034452-3trr1un08bcghtme3ke0tej73nru46qq.apps.googleusercontent.com",
+          "client_id": "840443034452-4elqsr2rs8n6efcl85b4h7u56nfd41ke.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.journeyplus.journeyplus",
+            "certificate_hash": "bcd6ae2ccb45406187d5e5bf480859adcd09c389"
+          }
+        },
+        {
+          "client_id": "840443034452-el8ihdi3ss2er3o64mu4p43lmg9nej34.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.journeyplus.journeyplus",
+            "certificate_hash": "9894f9266cd03dc6aa030d7577c675d0daa4fde1"
+          }
+        },
+        {
+          "client_id": "840443034452-g2ndrvs28s4k5pm6i6qkqeuj4pkcvltt.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.journeyplus.journeyplus",
@@ -39,7 +55,7 @@
               "client_type": 3
             },
             {
-              "client_id": "840443034452-onmuspsi946895fufcf1i3velu3jj8qg.apps.googleusercontent.com",
+              "client_id": "840443034452-4nujp8e8hrlae9pu9r4218b713vdbtb2.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
                 "bundle_id": "com.journeyplus.journeyplus"

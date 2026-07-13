@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:journeyplus/core/constants/app_links.dart';
 import 'package:journeyplus/core/theme/app_colors.dart';
 import 'package:journeyplus/core/theme/app_text_styles.dart';
-import 'package:journeyplus/features/profile/presentation/view/privacy_policy_screen.dart';
+import 'package:journeyplus/core/widgets/legal_webview_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AboutJourneyPlusScreen extends StatelessWidget {
   const AboutJourneyPlusScreen({super.key});
@@ -64,18 +66,47 @@ class AboutJourneyPlusScreen extends StatelessWidget {
                   'devices. Trip summaries and caches stay on your phone unless '
                   'you choose to share community reports at a stop.',
             ),
-            TextButton(
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute<void>(
-                  builder: (_) => const PrivacyPolicyScreen(),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                OutlinedButton(
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => LegalWebViewScreen.privacy(),
+                    ),
+                  ),
+                  child: const Text('Privacy policy'),
                 ),
-              ),
-              child: const Text('Read full privacy & location policy'),
+                OutlinedButton(
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => LegalWebViewScreen.terms(),
+                    ),
+                  ),
+                  child: const Text('Terms & conditions'),
+                ),
+                OutlinedButton.icon(
+                  onPressed: () => _launchEmail(context),
+                  icon: const Icon(Icons.mail_outline, size: 18),
+                  label: Text(AppLinks.supportEmail),
+                ),
+              ],
             ),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> _launchEmail(BuildContext context) async {
+    final ok =
+        await launchUrl(AppLinks.supportEmailUri, mode: LaunchMode.externalApplication);
+    if (!ok && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not open email app')),
+      );
+    }
   }
 }
 

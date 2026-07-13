@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "840443034452",
+    "project_id": "tripplus-8aff2",
+    "storage_bucket": "tripplus-8aff2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:840443034452:android:cf427643582e84231ba6c1",
+        "android_client_info": {
+          "package_name": "com.journeyplus.journeyplus"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "840443034452-g2ndrvs28s4k5pm6i6qkqeuj4pkcvltt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.journeyplus.journeyplus",
+            "certificate_hash": "3f3faefa34678660604c1b9d87533a591f346504"
+          }
+        },
+        {
+          "client_id": "840443034452-jt9qf67ncks1udij4s44n1kldhu3trsi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDG7cZmPekYfjPdbOHiV9-NVcu9DxEH9GU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "840443034452-jt9qf67ncks1udij4s44n1kldhu3trsi.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "840443034452-4nujp8e8hrlae9pu9r4218b713vdbtb2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.journeyplus.journeyplus"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,9 @@
+# Copy to android/key.properties and fill in after running:
+#   ./android/scripts/generate_release_keystore.sh
+#
+# Never commit key.properties or *.keystore to git.
+
+storePassword=YOUR_KEYSTORE_PASSWORD
+keyPassword=YOUR_KEY_PASSWORD
+keyAlias=journeyplus
+storeFile=journeyplus-release.keystore

@@ -39,8 +39,12 @@ sealed class PlanState with _$PlanState {
     /// Google-encoded route polyline for corridor cache + alert engine (P1-028).
     String? encodedRoutePolyline,
     /// P2-042 — Matched toll corridor name (e.g. "Mumbai–Pune Expressway").
-    /// Null when the toll estimate is the legacy flat fallback.
+    /// Null when the estimate comes from Google or no tolls were found.
     String? tollCorridorName,
+    /// True when no tolls were detected on the route (non-bike only).
+    @Default(false) bool noTollsOnRoute,
+    /// km/l used for the fuel estimate (profile override or vehicle default).
+    double? fuelEfficiencyKmpl,
     // ---------------------------------------------------------------------------
   }) = PlanResult;
   const factory PlanState.empty({

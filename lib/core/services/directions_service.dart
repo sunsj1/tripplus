@@ -45,6 +45,20 @@ class RouteInfo {
   }
 }
 
+/// Toll detection/pricing from Google Routes API (`extraComputations: TOLLS`).
+class RouteTollInfo {
+  const RouteTollInfo({
+    required this.detected,
+    this.estimatedRupees,
+  });
+
+  /// True when Google reports toll roads on the route.
+  final bool detected;
+
+  /// INR estimate when Google returns pricing; null when unknown.
+  final double? estimatedRupees;
+}
+
 class DirectionsService {
   final Dio _dio;
   final _logger = Logger();
@@ -63,6 +77,80 @@ class DirectionsService {
       }
     }
     return _straightLineFallback(origin, destination);
+  }
+
+  /// Queries Google Routes API v2 for toll presence and optional INR pricing.
+  /// Returns null when the API key is missing or the request fails.
+  Future<RouteTollInfo?> getRouteTollInfo(
+    LatLng origin,
+    LatLng destination,
+  ) async {
+    if (!ApiConstants.isGoogleMapsKeyConfigured) return null;
+
+    try {
+      _logger.d('Fetching toll info via Google Routes API');
+      final response = await _dio.post<Map<String, dynamic>>(
+        'https://routes.googleapis.com/directions/v2:computeRoutes',
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Goog-Api-Key': ApiConstants.googleMapsApiKey,
+            'X-Goog-FieldMask': 'routes.travelAdvisory.tollInfo',
+          },
+        ),
+        data: {
+          'origin': {
+            'location': {
+              'latLng': {
+                'latitude': origin.latitude,
+                'longitude': origin.longitude,
+              },
+            },
+          },
+          'destination': {
+            'location': {
+              'latLng': {
+                'latitude': destination.latitude,
+                'longitude': destination.longitude,
+              },
+            },
+          },
+          'travelMode': 'DRIVE',
+          'extraComputations': ['TOLLS'],
+        },
+      );
+
+      final routes = response.data?['routes'] as List?;
+      if (routes == null || routes.isEmpty) return null;
+
+      final tollInfo = (routes.first as Map<String, dynamic>)['travelAdvisory']
+          ?['tollInfo'] as Map<String, dynamic>?;
+      if (tollInfo == null) {
+        return const RouteTollInfo(detected: false);
+      }
+
+      final prices = tollInfo['estimatedPrice'] as List?;
+      if (prices == null || prices.isEmpty) {
+        return const RouteTollInfo(detected: true);
+      }
+
+      var totalInr = 0.0;
+      for (final raw in prices) {
+        final price = raw as Map<String, dynamic>;
+        if (price['currencyCode'] != 'INR') continue;
+        final units = int.tryParse('${price['units'] ?? 0}') ?? 0;
+        final nanos = (price['nanos'] as num?)?.toDouble() ?? 0;
+        totalInr += units + nanos / 1e9;
+      }
+
+      return RouteTollInfo(
+        detected: true,
+        estimatedRupees: totalInr > 0 ? totalInr : null,
+      );
+    } catch (e) {
+      _logger.w('Google Routes toll lookup failed ($e)');
+      return null;
+    }
   }
 
   Future<RouteInfo> _getGoogleRoute(LatLng origin, LatLng destination) async {

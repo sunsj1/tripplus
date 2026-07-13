@@ -5,13 +5,13 @@ import 'package:journeyplus/features/tolls/domain/toll_corridor.dart';
 /// P2-042 — Result of corridor matching for a single route.
 class TollEstimate {
   const TollEstimate({
-    required this.totalRupees,
+    this.totalRupees,
     required this.matchedCorridor,
     required this.isCorridorMatch,
   });
 
-  /// Estimated toll cost in ₹ (car class). Always > 0 for non-bike vehicles.
-  final double totalRupees;
+  /// Estimated toll cost in ₹ (car class). Null when no toll corridor matched.
+  final double? totalRupees;
 
   /// Name of the matched corridor, e.g. "Mumbai–Pune Expressway". Null on
   /// fallback (flat rate, no corridor matched).
@@ -28,8 +28,6 @@ class TollEstimate {
 class TollEstimator {
   const TollEstimator();
 
-  /// Flat-rate fallback (legacy ₹1.5/km).
-  static const _fallbackRatePerKm = 1.5;
   static const _minMatchFraction = 0.5;
 
   TollEstimate estimate({
@@ -37,8 +35,8 @@ class TollEstimator {
     required double totalDistanceKm,
   }) {
     if (polylinePoints.length < 2 || totalDistanceKm <= 0) {
-      return TollEstimate(
-        totalRupees: totalDistanceKm * _fallbackRatePerKm,
+      return const TollEstimate(
+        totalRupees: null,
         matchedCorridor: null,
         isCorridorMatch: false,
       );
@@ -71,8 +69,8 @@ class TollEstimator {
       );
     }
 
-    return TollEstimate(
-      totalRupees: totalDistanceKm * _fallbackRatePerKm,
+    return const TollEstimate(
+      totalRupees: null,
       matchedCorridor: null,
       isCorridorMatch: false,
     );

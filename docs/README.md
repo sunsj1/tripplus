@@ -20,9 +20,16 @@ docs/
 │   ├── feature_map.md            ← Every feature slice, status, task IDs
 │   ├── tech_stack.md             ← Libraries used + versions + reasons
 │   └── folder_structure.md       ← Where things go in lib/
-└── design/                       ← *how* it looks
-    ├── README.md                 ← How to use the master prompt
-    └── UI_GENERATION_PROMPT.md   ← Master prompt for Stitch / Figma AI / v0 / etc.
+├── design/                       ← *how* it looks
+│   ├── README.md                 ← How to use the master prompt
+│   └── UI_GENERATION_PROMPT.md   ← Master prompt for Stitch / Figma AI / v0 / etc.
+├── legal/                        ← Store-required policies (host privacy_policy.html)
+│   ├── privacy_policy.md
+│   └── privacy_policy.html
+└── release/                      ← Play Store / App Store publishing
+    ├── play_store_setup.md
+    ├── store_listing.md
+    └── data_safety.md
 ```
 
 ## Where to start

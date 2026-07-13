@@ -30,6 +30,22 @@ extension VehicleTypeX on VehicleType {
 
   bool get isElectric => this == VehicleType.ev;
   bool get burnsFuel => !isElectric;
+  bool get isBike => this == VehicleType.bike;
+  bool get isCarClass => !isBike && !isElectric;
+
+  /// Typical Indian highway average when the user has not set a custom value.
+  double get defaultFuelEfficiencyKmpl {
+    switch (this) {
+      case VehicleType.bike:
+        return 50.0;
+      case VehicleType.petrol:
+        return 14.0;
+      case VehicleType.diesel:
+        return 17.0;
+      case VehicleType.ev:
+        return 0;
+    }
+  }
 }
 
 @freezed
@@ -49,4 +65,8 @@ abstract class Vehicle with _$Vehicle {
 
   bool get isElectric => type.isElectric;
   bool get burnsFuel => type.burnsFuel;
+
+  /// User override when set; otherwise a vehicle-type default (bike ≠ car).
+  double get effectiveFuelEfficiencyKmpl =>
+      fuelEfficiencyKmpl ?? type.defaultFuelEfficiencyKmpl;
 }

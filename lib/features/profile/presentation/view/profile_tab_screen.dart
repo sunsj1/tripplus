@@ -5,7 +5,7 @@ import 'package:journeyplus/core/theme/app_text_styles.dart';
 import 'package:journeyplus/core/widgets/app_top_bar.dart';
 import 'package:journeyplus/features/auth/presentation/providers/auth_providers.dart';
 import 'package:journeyplus/features/profile/presentation/view/about_journeyplus_screen.dart';
-import 'package:journeyplus/features/profile/presentation/view/privacy_policy_screen.dart';
+import 'package:journeyplus/core/widgets/legal_webview_screen.dart';
 import 'package:journeyplus/features/profile/presentation/view/profile_preferences_screen.dart';
 import 'package:journeyplus/features/profile/presentation/view/trip_history_screen.dart';
 import 'package:journeyplus/features/settings/presentation/view/settings_screen.dart';
@@ -100,7 +100,17 @@ class ProfileTabScreen extends ConsumerWidget {
                     subtitle: 'How we use GPS — and what we never store',
                     onTap: () => Navigator.of(context).push(
                       MaterialPageRoute<void>(
-                        builder: (_) => const PrivacyPolicyScreen(),
+                        builder: (_) => LegalWebViewScreen.privacy(),
+                      ),
+                    ),
+                  ),
+                  _MenuTile(
+                    icon: Icons.gavel_outlined,
+                    title: 'Terms & conditions',
+                    subtitle: 'Usage terms for JourneyPlus',
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => LegalWebViewScreen.terms(),
                       ),
                     ),
                   ),

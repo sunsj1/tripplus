@@ -1,7 +1,7 @@
 name: journeyplus
 description: "AI Highway Companion for Indian road trips"
 publish_to: 'none'
-version: 1.0.0+1
+version: 1.0.0+3
 
 environment:
   sdk: ^3.11.4
@@ -67,6 +67,9 @@ dependencies:
   # Deep links (emergency dial, external maps)
   url_launcher: ^6.3.1
 
+  # Legal pages (privacy, terms) from journeyplus.in
+  webview_flutter: ^4.13.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -77,6 +80,10 @@ dev_dependencies:
   freezed: ^2.5.7
   json_serializable: ^6.9.0
 
+  # Brand assets — launcher icons & native splash (dart run …)
+  flutter_launcher_icons: ^0.14.4
+  flutter_native_splash: ^2.4.6
+
 flutter:
   uses-material-design: true
 
@@ -84,3 +91,29 @@ flutter:
     - .env
     # P2-060 — bundled hidden-gem corridor dataset
     - assets/hidden_gems/corridor_gems.json
+    # Brand identity (logos referenced by launcher/splash generators below)
+    - assets/logo/
+    - assets/logo/png/
+
+# ── Launcher icon (source: assets/logo/png/) ──────────────────────────────────
+# Regenerate: dart run flutter_launcher_icons
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: assets/logo/png/app-icon-1024.png
+  adaptive_icon_background: "#1B5E20"
+  adaptive_icon_foreground: assets/logo/png/logo-mark-512.png
+  min_sdk_android: 21
+  remove_alpha_ios: true
+
+# ── Native splash (brand green + route mark) ─────────────────────────────────
+# Regenerate: dart run flutter_native_splash:create
+flutter_native_splash:
+  color: "#1B5E20"
+  image: assets/logo/png/logo-mark-512.png
+  android_12:
+    color: "#1B5E20"
+    image: assets/logo/png/logo-mark-512.png
+  ios: true
+  android: true
+  web: false

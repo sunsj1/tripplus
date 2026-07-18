@@ -6,6 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:image_picker_android/image_picker_android.dart';
+import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
 import 'package:journeyplus/core/constants/cache_constants.dart';
 import 'package:journeyplus/core/theme/app_theme.dart';
 import 'package:journeyplus/features/auth/presentation/view/auth_gate.dart';
@@ -21,6 +23,13 @@ import 'package:journeyplus/firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Community reports need one-off gallery pick only — never broad media access.
+  // Forces Android system Photo Picker (Play policy for infrequent media access).
+  final imagePickerImplementation = ImagePickerPlatform.instance;
+  if (imagePickerImplementation is ImagePickerAndroid) {
+    imagePickerImplementation.useAndroidPhotoPicker = true;
+  }
 
   // Dart's [Firebase.apps] can lag behind native; the OS may already have registered
   // [DEFAULT] from GoogleService-Info / google-services.json. Hot restart can also

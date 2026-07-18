@@ -68,8 +68,11 @@ Must match hosted privacy policy (`docs/legal/privacy_policy.html`).
 - `ACCESS_FINE_LOCATION` / `ACCESS_COARSE_LOCATION`
 - `FOREGROUND_SERVICE` / `FOREGROUND_SERVICE_LOCATION`
 - `POST_NOTIFICATIONS`
-- `CAMERA` (optional community report photo from camera; gallery uses system photo picker)
+- `CAMERA` (optional community report photo from camera)
 - `INTERNET`
+
+**Not declared** (and stripped from merged manifest): `READ_MEDIA_IMAGES`, `READ_MEDIA_VIDEO`, `READ_EXTERNAL_STORAGE`.
+Gallery attach for community reports uses the **Android system Photo Picker** only (`ImagePickerAndroid.useAndroidPhotoPicker = true`) — one-time infrequent access, no broad media permission.
 
 ---
 

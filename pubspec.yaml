@@ -1,7 +1,7 @@
 name: journeyplus
 description: "AI Highway Companion for Indian road trips"
 publish_to: 'none'
-version: 1.0.0+3
+version: 1.0.0+4
 
 environment:
   sdk: ^3.11.4
@@ -27,6 +27,8 @@ dependencies:
   json_annotation: ^4.9.0
   fpdart: ^1.1.0
   image_picker: ^1.1.2
+  image_picker_android: ^0.8.13
+  image_picker_platform_interface: ^2.11.0
   flutter_image_compress: ^2.3.0
 
   # Location

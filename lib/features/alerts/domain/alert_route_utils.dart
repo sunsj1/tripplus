@@ -1,7 +1,6 @@
-import 'dart:math';
-
 import 'package:journeyplus/core/domain/poi.dart';
-import 'package:journeyplus/core/utils/location_helper.dart';
+import 'package:journeyplus/core/domain/trip_position.dart';
+import 'package:journeyplus/core/utils/corridor_geometry.dart';
 import 'package:journeyplus/core/utils/polyline_decoder.dart';
 
 /// Shared geometry helpers for distance-based alert rules.
@@ -12,73 +11,29 @@ class AlertRouteUtils {
   /// [RouteStationService] corridor gap detection.
   static const double gapThresholdKm = 40;
 
+  /// Driver progress along [polyline], shared by alerts and corridor lists.
+  ///
+  /// Returns null for a missing/invalid corridor rather than projecting against
+  /// a single point. Consumers can then show an explicit degraded state.
+  static double? currentDistanceAlongRouteKm(
+    TripPosition position,
+    List<LatLng> polyline,
+  ) {
+    if (polyline.length < 2) return null;
+    return distanceAlongRoute(polyline, position.latLng);
+  }
+
   /// Approximate distance from route start to [point] by projecting onto the
-  /// polyline (same algorithm as [RouteStationService._distanceAlongRoute]).
+  /// polyline.
   static double distanceAlongRoute(List<LatLng> polyline, LatLng point) {
-    if (polyline.length < 2) {
-      return LocationHelper.distanceInKm(
-        polyline.first.latitude,
-        polyline.first.longitude,
-        point.latitude,
-        point.longitude,
-      );
-    }
-
-    double cumulativeKm = 0;
-    double bestProjection = 0;
-    double bestPerpendicularDist = double.infinity;
-
-    for (var i = 0; i < polyline.length - 1; i++) {
-      final segLen = _haversine(polyline[i], polyline[i + 1]);
-      final dToPoint = _haversine(polyline[i], point);
-      final dFromEnd = _haversine(point, polyline[i + 1]);
-
-      if (segLen > 0) {
-        final t = ((dToPoint * dToPoint -
-                    dFromEnd * dFromEnd +
-                    segLen * segLen) /
-                (2 * segLen))
-            .clamp(0.0, segLen);
-        final perpDist = sqrt(max(0, dToPoint * dToPoint - t * t));
-
-        if (perpDist < bestPerpendicularDist) {
-          bestPerpendicularDist = perpDist;
-          bestProjection = cumulativeKm + t;
-        }
-      }
-
-      cumulativeKm += segLen;
-    }
-
-    return bestProjection;
+    return CorridorGeometry.distanceAlongRoute(polyline, point);
   }
 
   /// P2-002 — Shortest perpendicular distance (km) from [point] to the route
   /// polyline. Used by the ghat rule to decide whether the route actually
   /// passes through a known ghat section (vs. one merely near the corridor).
   static double nearestApproachKm(List<LatLng> polyline, LatLng point) {
-    if (polyline.length < 2) {
-      return _haversine(polyline.first, point);
-    }
-
-    double best = double.infinity;
-    for (var i = 0; i < polyline.length - 1; i++) {
-      final segLen = _haversine(polyline[i], polyline[i + 1]);
-      final dStart = _haversine(polyline[i], point);
-      final dEnd = _haversine(point, polyline[i + 1]);
-
-      double perp;
-      if (segLen <= 0) {
-        perp = dStart;
-      } else {
-        final t = ((dStart * dStart - dEnd * dEnd + segLen * segLen) /
-                (2 * segLen))
-            .clamp(0.0, segLen);
-        perp = sqrt(max(0, dStart * dStart - t * t));
-      }
-      if (perp < best) best = perp;
-    }
-    return best;
+    return CorridorGeometry.nearestApproachKm(polyline, point);
   }
 
   /// POIs strictly ahead of [currentKm] on the route, sorted by distance.
@@ -87,8 +42,9 @@ class AlertRouteUtils {
         .where((p) => (p.distanceAlongRouteKm ?? -1) > currentKm)
         .toList()
       ..sort(
-        (a, b) => (a.distanceAlongRouteKm ?? 0)
-            .compareTo(b.distanceAlongRouteKm ?? 0),
+        (a, b) => (a.distanceAlongRouteKm ?? 0).compareTo(
+          b.distanceAlongRouteKm ?? 0,
+        ),
       );
   }
 
@@ -103,16 +59,13 @@ class AlertRouteUtils {
     double windowKm,
   ) {
     final cutoff = currentKm + windowKm;
-    return pois
-        .where((p) {
-          final km = p.distanceAlongRouteKm;
-          return km != null && km > currentKm && km <= cutoff;
-        })
-        .toList()
-      ..sort(
-        (a, b) => (a.distanceAlongRouteKm ?? 0)
-            .compareTo(b.distanceAlongRouteKm ?? 0),
-      );
+    return pois.where((p) {
+      final km = p.distanceAlongRouteKm;
+      return km != null && km > currentKm && km <= cutoff;
+    }).toList()..sort(
+      (a, b) =>
+          (a.distanceAlongRouteKm ?? 0).compareTo(b.distanceAlongRouteKm ?? 0),
+    );
   }
 
   /// Largest gap (km) between consecutive POIs from [currentKm] to route end.
@@ -144,14 +97,5 @@ class AlertRouteUtils {
     }
 
     return maxGap;
-  }
-
-  static double _haversine(LatLng a, LatLng b) {
-    return LocationHelper.distanceInKm(
-      a.latitude,
-      a.longitude,
-      b.latitude,
-      b.longitude,
-    );
   }
 }

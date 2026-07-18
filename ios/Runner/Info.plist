@@ -40,9 +40,11 @@
 		<key>LSRequiresIPhoneOS</key>
 		<true/>
 		<key>NSLocationAlwaysUsageDescription</key>
-		<string>JourneyPlus needs your location to find nearby EV charging stations.</string>
+		<string>JourneyPlus uses your location only during an active trip to keep ahead-of-route stops and safety alerts working when the app is in the background or your iPhone is locked.</string>
+		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+		<string>JourneyPlus uses your location only during an active trip to keep ahead-of-route stops and safety alerts working when the app is in the background or your iPhone is locked.</string>
 		<key>NSLocationWhenInUseUsageDescription</key>
-		<string>JourneyPlus needs your location to find nearby EV charging stations.</string>
+		<string>JourneyPlus uses your location during an active trip to show only stops ahead and warn you about fuel, charging, weather, and road risks.</string>
 		<key>NSPhotoLibraryUsageDescription</key>
 		<string>JourneyPlus uses your photo library so you can attach one optional picture to a community station report.</string>
 		<key>NSCameraUsageDescription</key>
@@ -71,7 +73,9 @@
 		<key>UIApplicationSupportsIndirectInputEvents</key>
 		<true/>
 		<key>UIBackgroundModes</key>
-		<array/>
+		<array>
+			<string>location</string>
+		</array>
 		<key>UILaunchStoryboardName</key>
 		<string>LaunchScreen</string>
 		<key>UIMainStoryboardFile</key>

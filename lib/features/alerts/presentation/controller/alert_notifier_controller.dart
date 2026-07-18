@@ -27,18 +27,19 @@ import 'package:journeyplus/features/weather/presentation/controller/weather_pro
 ///
 /// P2-006 — Per-type cooldown replaces the Phase 1 "fire once per trip"
 /// permanent deduplication. The same alert type can re-fire after
-/// [_cooldown] has elapsed, allowing e.g. a second fuel-low warning if the
+/// [cooldown] has elapsed, allowing e.g. a second fuel-low warning if the
 /// driver ignored the first one and is now in a worse situation.
 class AlertNotifierController extends StateNotifier<AlertNotifierState> {
   AlertNotifierController(this._ref) : super(const AlertNotifierState());
 
   /// P2-006 — Minimum gap between two firings of the same alert type.
-  static const _cooldown = Duration(minutes: 20);
+  static const cooldown = Duration(minutes: 20);
 
   final Ref _ref;
   Timer? _pollTimer;
   RouteInfo? _route;
   Map<PoiCategory, List<Poi>>? _pois;
+
   /// P2-005 — Per-segment weather, fetched once per trip.
   List<RouteWeatherSegment>? _weather;
   DateTime? _weatherFetchedAt;
@@ -94,7 +95,7 @@ class AlertNotifierController extends StateNotifier<AlertNotifierState> {
     final trip = tripState.trip;
     if (trip == null || tripState is! ActiveTripRunning) return;
 
-    final position = _ref.read(activeTripControllerProvider.notifier).lastPosition;
+    final position = _ref.read(tripPositionProvider);
     if (position == null) return;
 
     _evaluating = true;
@@ -110,7 +111,7 @@ class AlertNotifierController extends StateNotifier<AlertNotifierState> {
       final alerts = engine.evaluate(
         AlertEngineInput(
           activeRoute: route,
-          currentLocation: LatLng(position.latitude, position.longitude),
+          currentLocation: position.latLng,
           vehicle: trip.vehicle,
           preferences: profile.preferences,
           upcomingPois: pois,
@@ -126,9 +127,9 @@ class AlertNotifierController extends StateNotifier<AlertNotifierState> {
       for (final alert in alerts) {
         // P2-053 — Honour user mute settings (master switch + per-type).
         if (settings.isMuted(alert.type)) continue;
-        // P2-006 — Cooldown: skip if the same type fired within [_cooldown].
+        // P2-006 — Cooldown: skip if the same type fired within [cooldown].
         final lastFired = _lastFiredAt[alert.type];
-        if (lastFired != null && now.difference(lastFired) < _cooldown) {
+        if (lastFired != null && now.difference(lastFired) < cooldown) {
           continue;
         }
         await _deliver(alert, trip, settings);
@@ -143,7 +144,9 @@ class AlertNotifierController extends StateNotifier<AlertNotifierState> {
     // second evaluation can't slip through before the await resolves.
     _lastFiredAt[alert.type] = DateTime.now();
 
-    await _ref.read(activeTripControllerProvider.notifier).recordFiredAlert(alert);
+    await _ref
+        .read(activeTripControllerProvider.notifier)
+        .recordFiredAlert(alert);
 
     // P2-053 — Skip system notifications when the user disabled them.
     if (settings.systemNotificationsEnabled) {
@@ -258,4 +261,3 @@ class AlertNotifierController extends StateNotifier<AlertNotifierState> {
     super.dispose();
   }
 }
-

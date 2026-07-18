@@ -12,6 +12,7 @@ import 'package:journeyplus/features/trip/domain/models/trip_status.dart';
 import 'package:journeyplus/features/trip/presentation/controller/active_trip_state.dart';
 import 'package:journeyplus/features/trip/presentation/controller/trip_providers.dart';
 import 'package:journeyplus/features/trip/presentation/utils/share_trip.dart';
+import 'package:journeyplus/features/trip/presentation/utils/start_trip_with_location.dart';
 import 'package:journeyplus/features/trip/presentation/utils/trip_formatters.dart';
 import 'package:journeyplus/features/trip/presentation/widget/trip_elapsed_panel.dart';
 import 'package:journeyplus/features/trip/presentation/widget/trip_end_dialog.dart';
@@ -32,10 +33,14 @@ class TripTabScreen extends ConsumerWidget {
         child: switch (tripState) {
           ActiveTripIdle() => _IdleView(onPlanTrip: onPlanTrip),
           ActiveTripReady(:final trip) => _ReadyView(trip: trip),
-          ActiveTripRunning(:final trip) =>
-            _ActiveDashboard(trip: trip, onPlanTrip: onPlanTrip),
-          ActiveTripPaused(:final trip) =>
-            _ActiveDashboard(trip: trip, onPlanTrip: onPlanTrip),
+          ActiveTripRunning(:final trip) => _ActiveDashboard(
+            trip: trip,
+            onPlanTrip: onPlanTrip,
+          ),
+          ActiveTripPaused(:final trip) => _ActiveDashboard(
+            trip: trip,
+            onPlanTrip: onPlanTrip,
+          ),
           ActiveTripCompleted(:final trip) => _CompletedView(trip: trip),
         },
       ),
@@ -98,8 +103,7 @@ class _IdleView extends StatelessWidget {
             const SizedBox(height: 20),
             // Location permission hint — sets expectations before the trip starts.
             Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               decoration: BoxDecoration(
                 color: AppColors.surface,
                 borderRadius: BorderRadius.circular(12),
@@ -166,7 +170,7 @@ class _ReadyView extends ConsumerWidget {
               width: double.infinity,
               height: 52,
               child: FilledButton.icon(
-                onPressed: () => controller.startTrip(),
+                onPressed: () => startTripWithLocation(context, controller),
                 style: FilledButton.styleFrom(
                   backgroundColor: AppColors.primary,
                 ),
@@ -288,9 +292,11 @@ class _ActiveDashboard extends ConsumerWidget {
                             ? AppColors.warning
                             : AppColors.primary,
                       ),
-                      icon: Icon(isRunning
-                          ? Icons.pause_rounded
-                          : Icons.play_arrow_rounded),
+                      icon: Icon(
+                        isRunning
+                            ? Icons.pause_rounded
+                            : Icons.play_arrow_rounded,
+                      ),
                       label: Text(isRunning ? 'Pause' : 'Resume'),
                     ),
                   ),
@@ -361,9 +367,7 @@ class _CompletedView extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 16),
-          Center(
-            child: Text('Trip complete!', style: AppTextStyles.h3),
-          ),
+          Center(child: Text('Trip complete!', style: AppTextStyles.h3)),
           const SizedBox(height: 4),
           Center(
             child: Text(
@@ -419,8 +423,7 @@ class _CompletedView extends ConsumerWidget {
                   value: '₹${trip.tripCostEstimate!.round()}',
                 ),
               if (trip.displayHasTolls != null) ...[
-                if (trip.tripCostEstimate != null ||
-                    trip.stationCount > 0)
+                if (trip.tripCostEstimate != null || trip.stationCount > 0)
                   const SizedBox(width: 12),
                 StatCard(
                   icon: Icons.toll_outlined,
@@ -484,9 +487,7 @@ class _CompletedView extends ConsumerWidget {
                 ref.invalidate(tripHistoryProvider);
                 controller.dismissCompleted();
               },
-              style: FilledButton.styleFrom(
-                backgroundColor: AppColors.primary,
-              ),
+              style: FilledButton.styleFrom(backgroundColor: AppColors.primary),
               child: const Text('Done'),
             ),
           ),
@@ -652,18 +653,22 @@ class _EtaComparisonBanner extends StatelessWidget {
     final faster = diff < -10;
 
     final (icon, color, message) = onTime
-        ? (Icons.check_circle_outline, AppColors.success, 'On time vs. estimate')
+        ? (
+            Icons.check_circle_outline,
+            AppColors.success,
+            'On time vs. estimate',
+          )
         : faster
-            ? (
-                Icons.rocket_launch_outlined,
-                AppColors.success,
-                '${(-diff)} min faster than planned'
-              )
-            : (
-                Icons.schedule_outlined,
-                AppColors.warning,
-                '$diff min longer than planned'
-              );
+        ? (
+            Icons.rocket_launch_outlined,
+            AppColors.success,
+            '${(-diff)} min faster than planned',
+          )
+        : (
+            Icons.schedule_outlined,
+            AppColors.warning,
+            '$diff min longer than planned',
+          );
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
@@ -709,20 +714,19 @@ class _RouteDriftBanner extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final position =
-        ref.read(activeTripControllerProvider.notifier).lastPosition;
+    final position = ref.watch(tripPositionProvider);
     final cache = CorridorCacheBox.read();
-    if (position == null ||
-        cache == null ||
-        cache.encodedPolyline.isEmpty) {
+    if (position == null || cache == null || cache.encodedPolyline.isEmpty) {
       return const SizedBox.shrink();
     }
 
     final polyline = PolylineDecoder.decode(cache.encodedPolyline);
     if (polyline.length < 2) return const SizedBox.shrink();
 
-    final point = LatLng(position.latitude, position.longitude);
-    final driftKm = AlertRouteUtils.nearestApproachKm(polyline, point);
+    final driftKm = AlertRouteUtils.nearestApproachKm(
+      polyline,
+      position.latLng,
+    );
     if (driftKm <= _driftThresholdKm) return const SizedBox.shrink();
 
     return Padding(

@@ -8,6 +8,7 @@ import 'package:journeyplus/features/trip/domain/models/trip_status.dart';
 import 'package:journeyplus/features/trip/presentation/controller/active_trip_controller.dart';
 import 'package:journeyplus/features/trip/presentation/controller/active_trip_state.dart';
 import 'package:journeyplus/features/trip/presentation/controller/trip_providers.dart';
+import 'package:journeyplus/features/trip/presentation/utils/start_trip_with_location.dart';
 import 'package:journeyplus/features/trip/presentation/utils/trip_formatters.dart';
 import 'package:journeyplus/features/trip/presentation/widget/trip_elapsed_panel.dart';
 import 'package:journeyplus/features/trip/presentation/widget/trip_end_dialog.dart';
@@ -31,7 +32,8 @@ class RouteTripActions extends ConsumerWidget {
     final trip = tripState.trip;
     final controller = ref.read(activeTripControllerProvider.notifier);
 
-    final matches = trip != null &&
+    final matches =
+        trip != null &&
         tripMatchesRouteLabels(
           tripFrom: trip.from,
           tripTo: trip.to,
@@ -45,28 +47,28 @@ class RouteTripActions extends ConsumerWidget {
 
     return switch (trip.status) {
       TripStatus.notStarted => _ReadyActions(
-          onStart: () => controller.startTrip(),
-          onOpenTripTab: () => navigateToShellTab(ref, 1),
-        ),
+        onStart: () => startTripWithLocation(context, controller),
+        onOpenTripTab: () => navigateToShellTab(ref, 1),
+      ),
       TripStatus.active => _LiveActions(
-          trip: trip,
-          isRunning: true,
-          onPause: () => controller.pauseTrip(),
-          onEnd: () => _endTrip(context, ref, controller),
-        ),
+        trip: trip,
+        isRunning: true,
+        onPause: () => controller.pauseTrip(),
+        onEnd: () => _endTrip(context, ref, controller),
+      ),
       TripStatus.paused => _LiveActions(
-          trip: trip,
-          isRunning: false,
-          onPause: () => controller.resumeTrip(),
-          onEnd: () => _endTrip(context, ref, controller),
-        ),
+        trip: trip,
+        isRunning: false,
+        onPause: () => controller.resumeTrip(),
+        onEnd: () => _endTrip(context, ref, controller),
+      ),
       TripStatus.completed => _CompletedBanner(
-          trip: trip,
-          onDone: () {
-            ref.invalidate(tripHistoryProvider);
-            controller.dismissCompleted();
-          },
-        ),
+        trip: trip,
+        onDone: () {
+          ref.invalidate(tripHistoryProvider);
+          controller.dismissCompleted();
+        },
+      ),
     };
   }
 
@@ -109,10 +111,7 @@ class _StartTripButton extends StatelessWidget {
 }
 
 class _ReadyActions extends StatelessWidget {
-  const _ReadyActions({
-    required this.onStart,
-    required this.onOpenTripTab,
-  });
+  const _ReadyActions({required this.onStart, required this.onOpenTripTab});
 
   final VoidCallback onStart;
   final VoidCallback onOpenTripTab;
@@ -129,7 +128,9 @@ class _ReadyActions extends StatelessWidget {
             decoration: BoxDecoration(
               color: AppColors.warningSurface,
               borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: AppColors.warning.withValues(alpha: 0.2)),
+              border: Border.all(
+                color: AppColors.warning.withValues(alpha: 0.2),
+              ),
             ),
             child: Row(
               children: [
@@ -209,11 +210,14 @@ class _LiveActions extends StatelessWidget {
                   child: FilledButton.icon(
                     onPressed: onPause,
                     style: FilledButton.styleFrom(
-                      backgroundColor:
-                          isRunning ? AppColors.warning : AppColors.primary,
+                      backgroundColor: isRunning
+                          ? AppColors.warning
+                          : AppColors.primary,
                     ),
                     icon: Icon(
-                      isRunning ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                      isRunning
+                          ? Icons.pause_rounded
+                          : Icons.play_arrow_rounded,
                     ),
                     label: Text(isRunning ? 'Pause' : 'Resume'),
                   ),
@@ -264,8 +268,10 @@ class _CompletedBanner extends StatelessWidget {
           children: [
             Row(
               children: [
-                const Icon(Icons.check_circle_outline,
-                    color: AppColors.primary),
+                const Icon(
+                  Icons.check_circle_outline,
+                  color: AppColors.primary,
+                ),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(

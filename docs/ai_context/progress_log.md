@@ -6,6 +6,109 @@
 
 ---
 
+## Hotline Wave 2 · Batches A1/A2 — Background trip location
+
+- **Started:** 2026-07-18
+- **Finished (implementation):** 2026-07-18
+- **Tasks completed:** `HA-010`–`HA-013`, `HA-020`–`HA-023`
+- **Manual QA moved to A7:** `HA-014`, `HA-024`
+
+### Android (A1)
+
+- Active-trip `AndroidSettings`: high accuracy, 25 m filter, 10 s interval.
+- Ongoing “JourneyPlus trip active” Geolocator foreground notification,
+  wake lock, and separate plugin channel (`geolocator_channel_01`).
+- `WAKE_LOCK`, FGS, and FGS-location permissions verified.
+- Merged debug manifest contains `GeolocatorLocationService` with
+  `foregroundServiceType="location"`.
+- Start/resume/restore starts tracking; pause/end cancels it.
+
+### iOS (A2)
+
+- `UIBackgroundModes/location` enabled.
+- `AppleSettings`: best-for-navigation, automotive navigation, no automatic
+  pause, background updates + indicator enabled.
+- Purpose strings now explain active-trip alerts/ahead stops; modern
+  Always-and-When-In-Use key included.
+- Trip start requests When In Use first and explains the optional Always
+  upgrade with an Open Settings CTA.
+
+### Verification
+
+- Android debug APK build ✅
+- Android emulator launch + runtime errors ✅ (none)
+- iOS debug device build (`--no-codesign`) ✅
+- Info.plist validation ✅
+- Full analysis ✅
+- Full tests ✅ **59/59**
+
+### Physical-device blockers (A7 sign-off)
+
+- No physical Android device connected for Pixel/Samsung 5-minute lock test.
+- Connected iPhone refused deployment because Developer Mode is disabled.
+  Enable **Settings → Privacy & Security → Developer Mode**, then run `HA-024`.
+
+### Next
+
+- Batch **A3** — evaluate alerts on live position ticks and finish notification
+  delivery/deep-link wiring.
+
+---
+
+## Hotline Wave 2 · Batch A0 — Live GPS foundation
+
+- **Started:** 2026-07-18
+- **Finished:** 2026-07-18
+- **Tasks completed:** `HA-001`–`HA-005`
+- **Theme:** One reactive GPS source for alerts and all future ahead-corridor filtering.
+
+### Shipped
+
+- `TripPosition` immutable core model + `tripPositionProvider`; every accepted
+  Geolocator tick now publishes Riverpod state.
+- Restored running trips start the stream and request an immediate position;
+  session tokens reject late callbacks after restart/dispose, and timestamps
+  prevent an older one-shot fix overwriting a newer stream fix.
+- Active-trip distance filter tuned from 50 m → 25 m (only active while running).
+- `CorridorGeometry` is now the canonical polyline projection; removed the
+  duplicate station-service implementation.
+- Alert evaluation and route-drift UI consume the shared trip position.
+- `live_trip_position_test.dart` covers provider reactivity, restore seeding,
+  stream ticks, async races, invalid corridors, behind POIs, sorting, and window.
+
+### Verification
+
+- `dart run build_runner build --delete-conflicting-outputs` ✅
+- Full project analysis ✅ (no errors)
+- Full test suite ✅ **53/53**
+
+### Next
+
+- Batch **A1** — Android foreground service (`HA-010`–`HA-014`).
+
+---
+
+## Hotline Wave 2 — Plan created (alerts + ahead corridor)
+
+- **Started:** 2026-07-18
+- **Finished:** 2026-07-18
+- **Theme:** Turn notification/ahead-list audit into an executable batch plan; archive completed Wave 1 doc.
+
+### What changed
+
+- Deleted `docs/Hotline fixes.md` (Wave 1 multi-route batches 1–8 already ✅).
+- Created `docs/hotline_fixes/`:
+  - `README.md` — overview, confidence targets, execution order
+  - `requirements.md` — marketed promises R1–R11 vs gaps
+  - `batches.md` — A0–A7, tasks `HA-001`…`HA-075`, dependencies
+- Pointed `docs/context/current_state.md` at Wave 2; Wave 1 summarised as done.
+
+### Next
+
+- Start **Batch A0** (`HA-001` live `TripPosition` Riverpod state).
+
+---
+
 ## Hotline fixes · Batches 7–8 — Fuel polish + verification
 
 - **Started:** 2026-06-24

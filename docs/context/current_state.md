@@ -3,38 +3,57 @@
 > **Update this file** whenever a task materially changes the user-visible surface or the architecture.
 > AI agents read this first to avoid re-discovering what's already built.
 
-**Last updated:** 2026-06-24 (Hotline fixes Batches 1–8 — multi-route, toll Yes/No, GPS match, map preview, fuel polish).
+**Last updated:** 2026-07-18 (Hotline Wave 2 Batches A1/A2 — Android/iOS background location).
 
 ---
 
-## Hotline fixes (2026-06-24) — Batches 1–8 ✅
+## Hotline Wave 2 (2026-07-18) — Live travel reliability 🔵
 
-Production-critical plan/trip UX shipped from `docs/Hotline fixes.md`:
+Active plan: [`docs/hotline_fixes/`](../hotline_fixes/README.md) (batches A0–A7).
+
+| Focus | Why |
+|-------|-----|
+| Live `TripPosition` ✅ | Riverpod-watchable GPS snapshot; immediate fix on trip restore; canonical corridor projection |
+| Android FGS 🟡 | Implementation/build/runtime startup ✅; physical lock-screen drive pending A7 |
+| iOS background location 🟡 | Native implementation/build ✅; physical iPhone has Developer Mode disabled |
+| Alert evaluate-on-tick + delivery polish | Local notifications only work if evaluation stays alive |
+| Live ahead-on-corridor POIs | Fuel/chargers/stops must trim to stops ahead of live GPS |
+
+**A1/A2 verification:** Android debug APK ✅; merged Geolocator service has
+`foregroundServiceType="location"` ✅; Android emulator startup has no runtime
+errors ✅; iOS no-codesign device build ✅; full analysis clean; **59/59 tests**.
+
+**Next batch:** A3 — Alert delivery on position ticks (`HA-030`…).
+
+---
+
+## Hotline Wave 1 (2026-06-24) — Batches 1–8 ✅
+
+Multi-route / toll / fuel hotline **done**. Old `docs/Hotline fixes.md` removed; history lives in `progress_log.md`.
 
 | Area | What shipped |
 |------|----------------|
 | **Tolls** | Yes/No only — no ₹ toll estimates anywhere |
-| **Multi-route** | Google-style route alternatives list; per-route recompute (km, ETA, fuel, traffic, weather, EV stations) |
-| **GPS match** | Auto-selects route closest to current position; "Matched to your current road" label |
-| **Map preview** | Optional full-screen map with all polylines; tap to select |
-| **Fuel / vehicle** | Bike vs car defaults (50 vs 14 km/l); profile optional custom mileage; "Using default X km/l" hint on plan dashboard |
-| **Trip lifecycle** | Plan tab resets to input after trip end; drift banner when GPS leaves corridor |
+| **Multi-route** | Google-style route alternatives list; per-route recompute |
+| **GPS match** | Auto-selects route closest to current position |
+| **Map preview** | Optional full-screen map with all polylines |
+| **Fuel / vehicle** | Bike vs car defaults; profile optional custom mileage |
 
-**Remaining before Play push:** Batch 0 (release AAB / stale `GeneratedPluginRegistrant`), device checklist in Hotline fixes §Batch 8, Routes API billing on Google Cloud.
+**Still open from Wave 1 (release hygiene, not Wave 2):** release AAB / stale registrant if needed; Routes API billing; Wave 1 device checklist.
 
 ---
 
 ## TL;DR
 
-**Phase 1 ✅ + Phase 2 ✅ — both complete and verified.** Smart Highway Companion has evolved into a Predictive & Personalised Intelligence app: alert engine v2 with ghat/night/fatigue rules, weather + traffic-aware ETA, tolls v1, personalised POI ranking with "Why we recommend" explainer, mode-aware filters (Family / Women-Safe / Bike), curated hidden gems carousel, trip share + history + settings, observability via Crashlytics custom keys, a11y semantics on nav/chips/map controls, and zoom-based map clustering.
+**Phase 1 ✅ + Phase 2 ✅ — both complete and verified.** Hotline Wave 1 (multi-route) ✅. **Hotline Wave 2** is the active reliability track: background alerts + live ahead corridor lists — see [`docs/hotline_fixes/`](../hotline_fixes/README.md).
 
-**Phase reports rollup:** [`docs/PHASE_REPORTS.md`](../PHASE_REPORTS.md) — single source of truth for each completed phase. Updated at every phase sign-off.
+**Phase reports rollup:** [`docs/PHASE_REPORTS.md`](../PHASE_REPORTS.md).
 
 **Verification gates:**
 - Phase 1 — [`docs/PHASE_1_E2E_VERIFICATION.md`](../PHASE_1_E2E_VERIFICATION.md)
 - Phase 2 — [`docs/PHASE_2_E2E_VERIFICATION.md`](../PHASE_2_E2E_VERIFICATION.md)
 
-**Next:** Phase 3 — AI Travel Copilot — planning only. Open the Phase 3 batches file when ready to start.
+**Next:** Complete Hotline Wave 2 batches A0→A7 before treating marketed travel alerts as production-true. Phase 3 AI Copilot remains planning-only until then.
 
 ---
 

@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:journeyplus/core/domain/poi.dart';
 import 'package:journeyplus/core/services/route_poi_service.dart';
-import 'package:journeyplus/core/utils/polyline_decoder.dart';
-import 'package:journeyplus/features/alerts/domain/alert_route_utils.dart';
+import 'package:journeyplus/core/utils/corridor_ahead.dart';
+import 'package:journeyplus/features/charging/domain/models/charging_station.dart';
 import 'package:journeyplus/features/plan/presentation/controller/plan_providers.dart'
     show
         directionsServiceProvider,
@@ -15,8 +15,6 @@ import 'package:journeyplus/features/pois/data/repository/google_places_poi_sour
 import 'package:journeyplus/features/pois/data/repository/poi_repository.dart';
 import 'package:journeyplus/features/pois/presentation/controller/poi_category_controller.dart';
 import 'package:journeyplus/features/pois/presentation/controller/poi_category_ui_state.dart';
-import 'package:journeyplus/features/trip/data/local_db/corridor_cache_box.dart';
-import 'package:journeyplus/features/trip/presentation/controller/active_trip_state.dart';
 import 'package:journeyplus/features/trip/presentation/controller/trip_providers.dart';
 
 /// Public seam for the POI feature. Bound to [GooglePlacesPoiSource].
@@ -36,18 +34,12 @@ final routePoiServiceProvider = Provider<RoutePoiService>((ref) {
 
 /// Per-category controller. AutoDispose so brief previews don't leak.
 ///
-/// P2 edge-case: when a trip is actively running, the factory computes the
-/// driver's current distance along the route (using the corridor cache polyline
-/// + GPS position from [ActiveTripController.lastPosition]) and passes it to
-/// [PoiCategoryController] so the list is filtered to stops *ahead* only.
-///
-/// All computation is synchronous — Hive reads and haversine math — so the
-/// provider factory stays non-async.
+/// Watches [tripCorridorProgressProvider] so ahead trimming updates on every
+/// GPS tick without re-fetching Places.
 final poiCategoryControllerProvider = StateNotifierProvider.autoDispose
     .family<PoiCategoryController, PoiCategoryUiState, PoiCategory>(
   (ref, category) {
-    // Plan context for route-aware fetch.
-    final planState = ref.read(planControllerProvider);
+    final planState = ref.watch(planControllerProvider);
     String? from;
     String? to;
     if (planState is PlanResult) {
@@ -55,36 +47,47 @@ final poiCategoryControllerProvider = StateNotifierProvider.autoDispose
       to = planState.to;
     }
 
-    // P2 edge-case — compute driver's position along the route when a trip
-    // is actively running.  All steps are synchronous.
-    double? currentPositionKm;
+    // Read once for seed; listen below so GPS ticks re-trim without Places refetch.
+    final progress = ref.read(tripCorridorProgressProvider);
 
-    final tripState = ref.read(activeTripControllerProvider);
-    if (tripState is ActiveTripRunning) {
-      final lastPos =
-          ref.read(activeTripControllerProvider.notifier).lastPosition;
-
-      if (lastPos != null) {
-        final cache = CorridorCacheBox.read();
-        if (cache != null && cache.encodedPolyline.isNotEmpty) {
-          final points = PolylineDecoder.decode(cache.encodedPolyline);
-          if (points.length >= 2) {
-            currentPositionKm = AlertRouteUtils.distanceAlongRoute(
-              points,
-              LatLng(lastPos.latitude, lastPos.longitude),
-            );
-          }
-        }
-      }
-    }
-
-    return PoiCategoryController(
+    final controller = PoiCategoryController(
       category: category,
       routePoiService: ref.watch(routePoiServiceProvider),
       poiRepository: ref.watch(poiRepositoryProvider),
       planFrom: from,
       planTo: to,
-      currentPositionKm: currentPositionKm,
+      tripRunning: progress.tripRunning,
+      currentPositionKm: progress.currentKm,
+      waitingForGps: progress.waitingForGps,
     );
+
+    ref.listen<TripCorridorProgress>(tripCorridorProgressProvider, (_, next) {
+      controller.updateProgress(
+        tripRunning: next.tripRunning,
+        currentPositionKm: next.currentKm,
+        waitingForGps: next.waitingForGps,
+      );
+    });
+
+    return controller;
   },
 );
+
+/// Plan EV stations trimmed to ahead-of-driver when a trip is running.
+///
+/// Returns the full planned list when not on an active trip or when GPS is
+/// unavailable (callers should not claim “ahead” in that case).
+final aheadRouteStationsProvider = Provider<List<ChargingStation>>((ref) {
+  final planState = ref.watch(planControllerProvider);
+  if (planState is! PlanResult) return const [];
+
+  final stations = planState.stations;
+  final progress = ref.watch(tripCorridorProgressProvider);
+  if (!progress.canFilterAhead) return stations;
+
+  return CorridorAhead.filterByKm(
+    stations,
+    (s) => s.distanceKm,
+    progress.currentKm!,
+  );
+});

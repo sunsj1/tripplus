@@ -209,11 +209,13 @@ class ActiveTripController extends StateNotifier<ActiveTripState> {
     );
   }
 
-  /// Appends a fired [alert] to the active trip log (deduped by [AlertType]).
+  /// Appends a fired [alert] to the active trip log.
+  ///
+  /// HA-041 — every delivery is stored (including cooldown re-fires) so history
+  /// matches what the driver actually saw.
   Future<void> recordFiredAlert(Alert alert) async {
     final current = state.trip;
     if (current == null) return;
-    if (current.firedAlerts.any((a) => a.type == alert.type)) return;
 
     final updated = current.copyWith(
       firedAlerts: [...current.firedAlerts, alert],

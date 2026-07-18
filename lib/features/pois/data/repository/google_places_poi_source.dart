@@ -6,6 +6,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:logger/logger.dart';
 import 'package:journeyplus/core/constants/api_constants.dart';
 import 'package:journeyplus/core/domain/poi.dart';
+import 'package:journeyplus/core/utils/corridor_geometry.dart';
 import 'package:journeyplus/core/utils/failure.dart';
 import 'package:journeyplus/core/utils/polyline_decoder.dart' show LatLng;
 import 'package:journeyplus/features/pois/data/repository/poi_repository.dart';
@@ -84,7 +85,7 @@ class GooglePlacesPoiSource implements PoiRepository {
       return left(firstFailure!);
     }
 
-    return right(dedup.values.toList());
+    return right(_withRouteDistances(dedup.values.toList(), polyline));
   }
 
   @override
@@ -199,7 +200,7 @@ class GooglePlacesPoiSource implements PoiRepository {
     if (firstFailure != null && dedup.isEmpty) {
       return left(firstFailure!);
     }
-    return right(dedup.values.toList());
+    return right(_withRouteDistances(dedup.values.toList(), polyline));
   }
 
   @override
@@ -302,6 +303,18 @@ class GooglePlacesPoiSource implements PoiRepository {
       return Failure.network(e.message ?? 'Network error.');
     }
     return Failure.platform(e.message ?? e.toString());
+  }
+
+  List<Poi> _withRouteDistances(List<Poi> pois, List<LatLng> polyline) {
+    return [
+      for (final p in pois)
+        p.copyWith(
+          distanceAlongRouteKm: CorridorGeometry.distanceAlongRoute(
+            polyline,
+            LatLng(p.latitude, p.longitude),
+          ),
+        ),
+    ];
   }
 
   Poi _mapToPoi(

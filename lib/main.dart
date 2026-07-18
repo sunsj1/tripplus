@@ -16,6 +16,7 @@ import 'package:journeyplus/features/personalization/data/brand_affinity_box.dar
 import 'package:journeyplus/features/profile/data/local_db/profile_box.dart';
 import 'package:journeyplus/features/settings/data/local_db/settings_box.dart';
 import 'package:journeyplus/core/services/local_notification_service.dart';
+import 'package:journeyplus/features/alerts/presentation/controller/alerts_providers.dart';
 import 'package:journeyplus/features/trip/data/local_db/corridor_cache_box.dart';
 import 'package:journeyplus/features/trip/data/local_db/trip_box.dart';
 import 'package:journeyplus/features/trip/data/local_db/trip_history_box.dart';
@@ -46,8 +47,9 @@ void main() async {
   // context, breadcrumb logging) is Phase 2's P2-071. Debug builds skip
   // collection so local crashes don't pollute the dashboard. Note: Android
   // native uploads also need the Crashlytics gradle plugin — wired in P2-071.
-  await FirebaseCrashlytics.instance
-      .setCrashlyticsCollectionEnabled(!kDebugMode);
+  await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(
+    !kDebugMode,
+  );
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
   PlatformDispatcher.instance.onError = (error, stack) {
     FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
@@ -66,17 +68,28 @@ void main() async {
   await Hive.openBox(CacheConstants.chargingBoxName);
   await Hive.openBox<dynamic>(CommunitySubmitQueue.boxName);
   await Hive.openBox<dynamic>(ProfileBox.boxName);
-  await Hive.openBox<dynamic>(TripBox.boxName);          // P1-040 active_trip box
+  await Hive.openBox<dynamic>(TripBox.boxName); // P1-040 active_trip box
   await Hive.openBox<dynamic>(TripHistoryBox.boxName);
-  await Hive.openBox<dynamic>(CorridorCacheBox.boxName); // P1-043 corridor_cache box
-  await Hive.openBox<dynamic>(SettingsBox.boxName);      // P2-053 app_settings box
-  await Hive.openBox<dynamic>(BrandAffinityBox.boxName); // P2-013 brand_affinity box
+  await Hive.openBox<dynamic>(
+    CorridorCacheBox.boxName,
+  ); // P1-043 corridor_cache box
+  await Hive.openBox<dynamic>(SettingsBox.boxName); // P2-053 app_settings box
+  await Hive.openBox<dynamic>(
+    BrandAffinityBox.boxName,
+  ); // P2-013 brand_affinity box
 
-  // P1-027 — local notifications for predictive alerts (delivery in P1-028).
+  // P1-027 / HA-031 — one shared notification instance for the whole app.
   final notifications = LocalNotificationService();
   await notifications.initialize();
 
-  runApp(const ProviderScope(child: JourneyPlusApp()));
+  runApp(
+    ProviderScope(
+      overrides: [
+        localNotificationServiceProvider.overrideWithValue(notifications),
+      ],
+      child: const JourneyPlusApp(),
+    ),
+  );
 }
 
 class JourneyPlusApp extends StatelessWidget {

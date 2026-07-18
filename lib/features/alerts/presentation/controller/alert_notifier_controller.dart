@@ -1,13 +1,16 @@
 import 'dart:async';
 
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:journeyplus/core/domain/poi.dart';
 import 'package:journeyplus/core/services/directions_service.dart';
 import 'package:journeyplus/core/telemetry/app_telemetry.dart';
 import 'package:journeyplus/core/utils/polyline_decoder.dart';
 import 'package:journeyplus/features/alerts/domain/alert.dart';
+import 'package:journeyplus/features/alerts/domain/alert_delivery_gate.dart';
 import 'package:journeyplus/features/alerts/domain/alert_engine.dart';
 import 'package:journeyplus/features/alerts/domain/alert_engine_input.dart';
+import 'package:journeyplus/features/alerts/domain/alert_notification_payload.dart';
 import 'package:journeyplus/features/alerts/domain/alert_notifier_state.dart';
 import 'package:journeyplus/features/alerts/presentation/controller/alerts_providers.dart';
 import 'package:journeyplus/features/plan/presentation/controller/plan_providers.dart';
@@ -22,21 +25,25 @@ import 'package:journeyplus/features/trip/presentation/controller/trip_providers
 import 'package:journeyplus/features/weather/domain/route_weather_segment.dart';
 import 'package:journeyplus/features/weather/presentation/controller/weather_providers.dart';
 
-/// Polls location + [AlertEngine] while a trip is active; fires local
-/// notifications and drives the in-app banner.
+/// Evaluates [AlertEngine] while a trip is active; fires local notifications
+/// and drives the in-app banner.
 ///
-/// P2-006 — Per-type cooldown replaces the Phase 1 "fire once per trip"
-/// permanent deduplication. The same alert type can re-fire after
-/// [cooldown] has elapsed, allowing e.g. a second fuel-low warning if the
-/// driver ignored the first one and is now in a worse situation.
+/// HA-030 — Position ticks are the primary trigger (debounced). A 30s timer
+/// remains as a sparse fallback when GPS is quiet.
+///
+/// P2-006 / HA-035 — Per-type cooldown via [AlertDeliveryGate].
 class AlertNotifierController extends StateNotifier<AlertNotifierState> {
   AlertNotifierController(this._ref) : super(const AlertNotifierState());
 
-  /// P2-006 — Minimum gap between two firings of the same alert type.
-  static const cooldown = Duration(minutes: 20);
+  /// Alias kept for existing tests and call sites.
+  static const cooldown = AlertDeliveryGate.cooldown;
+
+  /// Collapses rapid GPS ticks into one evaluation.
+  static const positionDebounce = Duration(seconds: 5);
 
   final Ref _ref;
   Timer? _pollTimer;
+  Timer? _positionDebounce;
   RouteInfo? _route;
   Map<PoiCategory, List<Poi>>? _pois;
 
@@ -54,7 +61,9 @@ class AlertNotifierController extends StateNotifier<AlertNotifierState> {
       _pois = null;
       _weather = null;
       _weatherFetchedAt = null;
-      _lastFiredAt.clear(); // P2-006 — reset cooldowns for next trip
+      _lastFiredAt.clear();
+      _positionDebounce?.cancel();
+      _positionDebounce = null;
       state = const AlertNotifierState();
     }
 
@@ -67,14 +76,27 @@ class AlertNotifierController extends StateNotifier<AlertNotifierState> {
     _pollTimer?.cancel();
     _pollTimer = Timer.periodic(
       const Duration(seconds: 30),
-      (_) => _evaluateNow(),
+      (_) => _evaluateNow(trigger: 'timer'),
     );
-    unawaited(_evaluateNow());
+    unawaited(_evaluateNow(trigger: 'start'));
   }
 
   void stopPolling() {
     _pollTimer?.cancel();
     _pollTimer = null;
+    _positionDebounce?.cancel();
+    _positionDebounce = null;
+  }
+
+  /// HA-030 — Called when [tripPositionProvider] publishes a new fix.
+  void onPositionTick() {
+    final tripState = _ref.read(activeTripControllerProvider);
+    if (tripState is! ActiveTripRunning) return;
+
+    _positionDebounce?.cancel();
+    _positionDebounce = Timer(positionDebounce, () {
+      unawaited(_evaluateNow(trigger: 'position'));
+    });
   }
 
   void dismissBanner() {
@@ -89,19 +111,26 @@ class AlertNotifierController extends StateNotifier<AlertNotifierState> {
     await _ref.read(localNotificationServiceProvider).requestPermissions();
   }
 
-  Future<void> _evaluateNow() async {
+  Future<void> _evaluateNow({required String trigger}) async {
     if (_evaluating) return;
     final tripState = _ref.read(activeTripControllerProvider);
     final trip = tripState.trip;
+    // HA-033 — paused / idle / completed never evaluate.
     if (trip == null || tripState is! ActiveTripRunning) return;
 
     final position = _ref.read(tripPositionProvider);
-    if (position == null) return;
+    if (position == null) {
+      AppTelemetry.alertEvalSkippedNoGps(trigger: trigger);
+      return;
+    }
 
     _evaluating = true;
     try {
       final route = await _ensureRoute(trip);
-      if (route == null) return;
+      if (route == null) {
+        AppTelemetry.alertEvalSkipped(reason: 'no_route', trigger: trigger);
+        return;
+      }
 
       final pois = await _ensurePois(trip, route);
       final weather = await _ensureWeather(trip, route);
@@ -115,21 +144,22 @@ class AlertNotifierController extends StateNotifier<AlertNotifierState> {
           vehicle: trip.vehicle,
           preferences: profile.preferences,
           upcomingPois: pois,
-          // P2-004 — continuous driving time (paused time already excluded).
           drivingDuration: trip.elapsed,
-          // P2-005 — pre-fetched weather along the corridor.
           upcomingWeather: weather,
         ),
       );
 
+      AppTelemetry.alertEvalOk(trigger: trigger, alertCount: alerts.length);
+
       final settings = _ref.read(settingsControllerProvider);
       final now = DateTime.now();
       for (final alert in alerts) {
-        // P2-053 — Honour user mute settings (master switch + per-type).
-        if (settings.isMuted(alert.type)) continue;
-        // P2-006 — Cooldown: skip if the same type fired within [cooldown].
-        final lastFired = _lastFiredAt[alert.type];
-        if (lastFired != null && now.difference(lastFired) < cooldown) {
+        if (!AlertDeliveryGate.shouldDeliver(
+          settings: settings,
+          type: alert.type,
+          lastFiredAt: _lastFiredAt,
+          now: now,
+        )) {
           continue;
         }
         await _deliver(alert, trip, settings);
@@ -140,22 +170,34 @@ class AlertNotifierController extends StateNotifier<AlertNotifierState> {
   }
 
   Future<void> _deliver(Alert alert, Trip trip, AppSettings settings) async {
-    // P2-006 — Record cooldown timestamp before any async work so a rapid
-    // second evaluation can't slip through before the await resolves.
+    // Record cooldown before awaits so concurrent ticks cannot double-fire.
     _lastFiredAt[alert.type] = DateTime.now();
 
     await _ref
         .read(activeTripControllerProvider.notifier)
         .recordFiredAlert(alert);
 
-    // P2-053 — Skip system notifications when the user disabled them.
-    if (settings.systemNotificationsEnabled) {
+    final inBackground =
+        WidgetsBinding.instance.lifecycleState != AppLifecycleState.resumed;
+
+    if (AlertDeliveryGate.shouldShowSystemNotification(settings)) {
       final notifications = _ref.read(localNotificationServiceProvider);
+      final payload = AlertNotificationPayload(
+        tripId: trip.id,
+        alertType: alert.type,
+      );
       await notifications.showTripAlert(
         notificationId: alert.type.index,
         title: alert.type.label,
         body: alert.message,
+        payload: payload.encode(),
       );
+      if (inBackground) {
+        AppTelemetry.alertFiredBackground(
+          type: alert.type,
+          severity: alert.severity,
+        );
+      }
     }
 
     AppTelemetry.alertFired(type: alert.type, severity: alert.severity);
@@ -210,7 +252,7 @@ class AlertNotifierController extends StateNotifier<AlertNotifierState> {
       if (trip.vehicle.isElectric) PoiCategory.ev,
       PoiCategory.restaurant,
       PoiCategory.pureVeg,
-      PoiCategory.hotel, // P2-003 — night rule suggests hotels as safe stops
+      PoiCategory.hotel,
     ];
 
     for (final category in categories) {
@@ -225,8 +267,6 @@ class AlertNotifierController extends StateNotifier<AlertNotifierState> {
     return map;
   }
 
-  /// P2-005 — Fetch weather samples along the corridor. Cache for [_weatherTtl]
-  /// so polling doesn't hammer Open-Meteo every 30 seconds.
   static const _weatherTtl = Duration(minutes: 20);
 
   Future<List<RouteWeatherSegment>> _ensureWeather(
@@ -258,6 +298,7 @@ class AlertNotifierController extends StateNotifier<AlertNotifierState> {
   @override
   void dispose() {
     _pollTimer?.cancel();
+    _positionDebounce?.cancel();
     super.dispose();
   }
 }

@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:journeyplus/core/theme/app_colors.dart';
 import 'package:journeyplus/core/theme/app_text_styles.dart';
 import 'package:journeyplus/features/alerts/domain/alert.dart';
@@ -80,8 +82,46 @@ class SettingsScreen extends ConsumerWidget {
                       ? controller.setSystemNotificationsEnabled
                       : null,
                 ),
+                const Divider(height: 4),
+                const ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: Icon(Icons.trip_origin_outlined,
+                      color: AppColors.primary),
+                  title: Text('Trip tracking notification'),
+                  subtitle: Text(
+                    'While a trip is running, Android shows “JourneyPlus trip '
+                    'tracking” so corridor alerts can continue in the '
+                    'background. Keep that notification enabled for '
+                    'locked-screen and Maps-background alerts.',
+                  ),
+                  isThreeLine: true,
+                ),
               ],
             ),
+            if (defaultTargetPlatform == TargetPlatform.android) ...[
+              const SizedBox(height: 12),
+              _SectionLabel('BACKGROUND RELIABILITY'),
+              _Card(
+                children: [
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: const Icon(Icons.battery_saver_outlined,
+                        color: AppColors.primary),
+                    title: const Text('Some phones pause tracking'),
+                    subtitle: const Text(
+                      'Xiaomi, Oppo, Vivo and similar OEMs may stop '
+                      'background location unless battery is unrestricted '
+                      'or autostart is allowed. Open app settings to check.',
+                    ),
+                    isThreeLine: true,
+                    trailing: TextButton(
+                      onPressed: Geolocator.openAppSettings,
+                      child: const Text('Open'),
+                    ),
+                  ),
+                ],
+              ),
+            ],
             const SizedBox(height: 12),
             _SectionLabel('PER-ALERT MUTE'),
             _Card(

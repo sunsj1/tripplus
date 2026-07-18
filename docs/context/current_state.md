@@ -3,7 +3,7 @@
 > **Update this file** whenever a task materially changes the user-visible surface or the architecture.
 > AI agents read this first to avoid re-discovering what's already built.
 
-**Last updated:** 2026-07-18 (Hotline Wave 2 Batches A1/A2 — Android/iOS background location).
+**Last updated:** 2026-07-18 (Hotline Wave 2 Batches A3–A6 — alert delivery, ahead lists, UX).
 
 ---
 
@@ -11,19 +11,20 @@
 
 Active plan: [`docs/hotline_fixes/`](../hotline_fixes/README.md) (batches A0–A7).
 
-| Focus | Why |
-|-------|-----|
-| Live `TripPosition` ✅ | Riverpod-watchable GPS snapshot; immediate fix on trip restore; canonical corridor projection |
-| Android FGS 🟡 | Implementation/build/runtime startup ✅; physical lock-screen drive pending A7 |
-| iOS background location 🟡 | Native implementation/build ✅; physical iPhone has Developer Mode disabled |
-| Alert evaluate-on-tick + delivery polish | Local notifications only work if evaluation stays alive |
-| Live ahead-on-corridor POIs | Fuel/chargers/stops must trim to stops ahead of live GPS |
+| Focus | Status |
+|-------|--------|
+| Live `TripPosition` (A0) | ✅ |
+| Android FGS (A1) | 🟡 impl done; physical lock-screen QA → A7 |
+| iOS background location (A2) | 🟡 impl done; physical iPhone QA → A7 |
+| Alert evaluate-on-tick + delivery (A3) | ✅ (tray-while-locked still A7) |
+| Engine / fatigue / history (A4) | ✅ |
+| Live ahead-on-corridor POIs (A5) | ✅ |
+| Permission / stale-GPS UX (A6) | ✅ |
+| Device QA & marketing sign-off (A7) | ⬜ next |
 
-**A1/A2 verification:** Android debug APK ✅; merged Geolocator service has
-`foregroundServiceType="location"` ✅; Android emulator startup has no runtime
-errors ✅; iOS no-codesign device build ✅; full analysis clean; **59/59 tests**.
+**Verification (A3–A6):** `flutter analyze` clean; **68/68** tests.
 
-**Next batch:** A3 — Alert delivery on position ticks (`HA-030`…).
+**Next:** A7 physical device matrix (`HA-070`…) — lock screen, Maps background, ahead-list trim, notification tap.
 
 ---
 
@@ -53,7 +54,7 @@ Multi-route / toll / fuel hotline **done**. Old `docs/Hotline fixes.md` removed;
 - Phase 1 — [`docs/PHASE_1_E2E_VERIFICATION.md`](../PHASE_1_E2E_VERIFICATION.md)
 - Phase 2 — [`docs/PHASE_2_E2E_VERIFICATION.md`](../PHASE_2_E2E_VERIFICATION.md)
 
-**Next:** Complete Hotline Wave 2 batches A0→A7 before treating marketed travel alerts as production-true. Phase 3 AI Copilot remains planning-only until then.
+**Next:** Complete Hotline Wave 2 **Batch A7** (device QA) before treating marketed travel alerts as production-true. Phase 3 AI Copilot remains planning-only until then.
 
 ---
 
@@ -126,7 +127,7 @@ Multi-route / toll / fuel hotline **done**. Old `docs/Hotline fixes.md` removed;
 - ✅ `P2-001` — `AlertEngine` pre-filters POIs to a 100 km upcoming window before any rule evaluates. New `AlertRouteUtils.poisInWindow()`. `AlertEngineInput.upcomingWindowKm` field.
 - ✅ `P2-006` — 20-minute per-type cooldown in `AlertNotifierController` (`_lastFiredAt` map) replaces Phase 1's fire-once-per-trip dedup. Resets on trip end.
 - ✅ `P2-007` — `TripAlertBanner` severity tiers: critical (manual dismiss), warning (auto 8s), info (slim pill auto 5s).
-- ✅ Edge case — active-trip POI category lists filter to stops **ahead** of the driver's GPS position (`PoiQuerySource.aheadOnRoute`); falls back to full corridor near destination.
+- ✅ Edge case — active-trip POI lists watch live GPS and trim with hysteresis (`PoiQuerySource.aheadOnRoute`); waiting-for-GPS badge when projection unavailable (no silent full-corridor “ahead”).
 
 See `docs/batches/phase_2_batches.md` for the full Phase 2 plan.
 

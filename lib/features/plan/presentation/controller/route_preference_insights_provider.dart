@@ -3,12 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:journeyplus/core/domain/poi.dart';
 import 'package:journeyplus/core/domain/user_preferences.dart';
 import 'package:journeyplus/core/services/directions_service.dart';
+import 'package:journeyplus/core/utils/corridor_ahead.dart';
 import 'package:journeyplus/core/utils/polyline_decoder.dart';
 import 'package:journeyplus/core/utils/trip_plan_copy.dart';
 import 'package:journeyplus/features/charging/domain/models/charging_station.dart';
 import 'package:journeyplus/features/plan/domain/preference_corridor_insight.dart';
 import 'package:journeyplus/features/plan/presentation/controller/plan_state.dart';
 import 'package:journeyplus/features/pois/presentation/controller/pois_providers.dart';
+import 'package:journeyplus/features/trip/presentation/controller/trip_providers.dart';
 
 @immutable
 class RoutePreferenceInsightsKey {
@@ -84,6 +86,7 @@ final routePreferenceInsightsProvider = FutureProvider.autoDispose
 
     final route = _routeFromPlan(key.plan);
     final service = ref.read(routePoiServiceProvider);
+    final progress = ref.watch(tripCorridorProgressProvider);
     const corridorKm = 5.0;
 
     final insights = <PreferenceCorridorInsight>[];
@@ -122,6 +125,10 @@ final routePreferenceInsightsProvider = FutureProvider.autoDispose
         }
       } else {
         loaded = false;
+      }
+
+      if (progress.canFilterAhead) {
+        pois = CorridorAhead.filterPois(pois, progress.currentKm!);
       }
 
       insights.add(

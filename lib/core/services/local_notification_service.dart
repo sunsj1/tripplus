@@ -1,15 +1,19 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 /// Thin wrapper around [FlutterLocalNotificationsPlugin] for JourneyPlus alerts.
 ///
-/// Initialized from [main] (`P1-027`). [AlertNotifier] (`P1-028`) calls
-/// [showTripAlert] when the engine fires a new alert.
+/// Constructed once in [main] and injected into Riverpod so every feature
+/// shares the same initialised plugin instance.
 class LocalNotificationService {
   LocalNotificationService() : _plugin = FlutterLocalNotificationsPlugin();
 
   final FlutterLocalNotificationsPlugin _plugin;
+  final StreamController<String?> _tapController =
+      StreamController<String?>.broadcast();
 
   static const _androidChannelId = 'journeyplus_alerts';
   static const _androidChannelName = 'Trip alerts';
@@ -17,14 +21,30 @@ class LocalNotificationService {
       'Predictive highway alerts during an active trip';
 
   bool _initialized = false;
+  String? _launchPayload;
 
   bool get isInitialized => _initialized;
+
+  /// Live taps while the app is running.
+  Stream<String?> get taps => _tapController.stream;
+
+  /// Payload that launched the app from a killed state, if any.
+  String? get launchPayload => _launchPayload;
+
+  /// Consumes [launchPayload] so cold-start routing happens once.
+  String? takeLaunchPayload() {
+    final payload = _launchPayload;
+    _launchPayload = null;
+    return payload;
+  }
 
   /// Platform setup — safe to call once at app start.
   Future<void> initialize() async {
     if (_initialized) return;
 
-    const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const androidSettings = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
     const iosSettings = DarwinInitializationSettings(
       requestAlertPermission: false,
       requestBadgePermission: false,
@@ -32,16 +52,19 @@ class LocalNotificationService {
     );
 
     await _plugin.initialize(
-      const InitializationSettings(
-        android: androidSettings,
-        iOS: iosSettings,
-      ),
+      const InitializationSettings(android: androidSettings, iOS: iosSettings),
       onDidReceiveNotificationResponse: _onNotificationTapped,
     );
 
+    final launch = await _plugin.getNotificationAppLaunchDetails();
+    if (launch?.didNotificationLaunchApp == true) {
+      _launchPayload = launch!.notificationResponse?.payload;
+    }
+
     await _plugin
         .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
+          AndroidFlutterLocalNotificationsPlugin
+        >()
         ?.createNotificationChannel(
           const AndroidNotificationChannel(
             _androidChannelId,
@@ -58,8 +81,10 @@ class LocalNotificationService {
   /// iOS). No-op on unsupported platforms.
   Future<bool> requestPermissions() async {
     if (defaultTargetPlatform == TargetPlatform.android) {
-      final android = _plugin.resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>();
+      final android = _plugin
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >();
       if (android != null) {
         final granted = await android.requestNotificationsPermission();
         if (granted == true) return true;
@@ -69,8 +94,10 @@ class LocalNotificationService {
     }
 
     if (defaultTargetPlatform == TargetPlatform.iOS) {
-      final ios = _plugin.resolvePlatformSpecificImplementation<
-          IOSFlutterLocalNotificationsPlugin>();
+      final ios = _plugin
+          .resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin
+          >();
       if (ios != null) {
         final granted = await ios.requestPermissions(
           alert: true,
@@ -89,6 +116,7 @@ class LocalNotificationService {
     required int notificationId,
     required String title,
     required String body,
+    String? payload,
   }) async {
     if (!_initialized) {
       await initialize();
@@ -112,14 +140,18 @@ class LocalNotificationService {
       notificationId,
       title,
       body,
-      const NotificationDetails(
-        android: androidDetails,
-        iOS: iosDetails,
-      ),
+      const NotificationDetails(android: androidDetails, iOS: iosDetails),
+      payload: payload,
     );
   }
 
   void _onNotificationTapped(NotificationResponse response) {
-    // Deep-link routing wired in P1-028 (AlertNotifier).
+    if (!_tapController.isClosed) {
+      _tapController.add(response.payload);
+    }
+  }
+
+  Future<void> dispose() async {
+    await _tapController.close();
   }
 }

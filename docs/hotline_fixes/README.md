@@ -58,7 +58,7 @@ A0 (GPS foundation)
 
 **Full travel reliability (alerts + ahead lists):** all batches **A0 → A7** (~7–10 days)
 
-**Current:** A0 ✅ · A1/A2 implementation ✅, physical lock-screen sign-off 🟡 in A7 · **Next:** A3 🔵 (alert delivery on position ticks).
+**Current:** A0 ✅ · A1/A2 🟡 (physical QA → A7) · A3–A6 ✅ · **Next:** A7 🔵 (device matrix + marketing sign-off).
 
 ---
 

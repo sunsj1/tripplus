@@ -5,36 +5,31 @@ import 'package:journeyplus/core/domain/vehicle.dart';
 import 'package:journeyplus/core/services/directions_service.dart';
 import 'package:journeyplus/core/utils/polyline_decoder.dart';
 import 'package:journeyplus/features/alerts/domain/alert.dart';
+import 'package:journeyplus/features/alerts/domain/alert_delivery_gate.dart';
 import 'package:journeyplus/features/alerts/domain/alert_engine.dart';
 import 'package:journeyplus/features/alerts/domain/alert_engine_input.dart';
+import 'package:journeyplus/features/alerts/domain/alert_notification_payload.dart';
 import 'package:journeyplus/features/alerts/domain/alert_route_utils.dart';
 import 'package:journeyplus/features/alerts/presentation/controller/alert_notifier_controller.dart';
 import 'package:journeyplus/features/settings/domain/app_settings.dart';
 import 'package:journeyplus/features/weather/domain/route_weather_segment.dart';
 
-/// Pure delivery gate mirroring [AlertNotifierController] mute + cooldown.
-/// Kept here so scenario tests pin production behaviour without Riverpod.
-class _DeliveryGate {
-  _DeliveryGate({required this.settings});
+/// Stateful wrapper around [AlertDeliveryGate] for multi-step cooldown tests.
+class _DeliverySession {
+  _DeliverySession({required this.settings});
 
   final AppSettings settings;
   final Map<AlertType, DateTime> lastFiredAt = {};
 
-  /// Returns whether the alert should be delivered (banner and/or system notif).
-  bool shouldDeliver(Alert alert, DateTime now) {
-    if (settings.isMuted(alert.type)) return false;
-    final last = lastFiredAt[alert.type];
-    if (last != null &&
-        now.difference(last) < AlertNotifierController.cooldown) {
-      return false;
-    }
-    lastFiredAt[alert.type] = now;
-    return true;
-  }
-
-  bool shouldShowSystemNotification(Alert alert) {
-    if (!shouldDeliver(alert, DateTime.now())) return false;
-    return settings.systemNotificationsEnabled;
+  bool tryDeliver(AlertType type, DateTime now) {
+    final ok = AlertDeliveryGate.shouldDeliver(
+      settings: settings,
+      type: type,
+      lastFiredAt: lastFiredAt,
+      now: now,
+    );
+    if (ok) lastFiredAt[type] = now;
+    return ok;
   }
 }
 
@@ -328,7 +323,7 @@ void main() {
   });
 
   group('Scenario: Fatigue', () {
-    test('fires in 5-minute band after 3h continuous driving', () {
+    test('fires after 3h continuous driving', () {
       final alerts = engine.evaluate(
         input(drivingDuration: const Duration(hours: 3, minutes: 2)),
       );
@@ -342,12 +337,12 @@ void main() {
       expect(alerts.where((a) => a.type == AlertType.fatigue), isEmpty);
     });
 
-    test('silent outside the 5-minute post-boundary band', () {
-      // 3h + 10m → past the band; next fire only at 6h.
+    test('still fires after old 5-minute band (HA-040 late tick)', () {
+      // First evaluation at 3h10m must still be eligible; cooldown collapses spam.
       final alerts = engine.evaluate(
         input(drivingDuration: const Duration(hours: 3, minutes: 10)),
       );
-      expect(alerts.where((a) => a.type == AlertType.fatigue), isEmpty);
+      expect(alerts.any((a) => a.type == AlertType.fatigue), isTrue);
     });
   });
 
@@ -433,14 +428,6 @@ void main() {
   // ── Delivery / mute / cooldown scenarios ───────────────────────────────────
 
   group('Scenario: Settings mute & system notification toggle', () {
-    Alert sample(AlertType type) => Alert(
-      id: 'a1',
-      type: type,
-      severity: AlertSeverity.warning,
-      message: 'test',
-      triggeredAt: DateTime(2026, 5, 30),
-    );
-
     test('master alertsEnabled=false mutes all types', () {
       const settings = AppSettings(alertsEnabled: false);
       expect(settings.isMuted(AlertType.fuelLow), isTrue);
@@ -457,83 +444,75 @@ void main() {
       'systemNotificationsEnabled=false still allows banner delivery gate',
       () {
         const settings = AppSettings(systemNotificationsEnabled: false);
-        final gate = _DeliveryGate(settings: settings);
-        final alert = sample(AlertType.fuelLow);
-        expect(gate.shouldDeliver(alert, DateTime(2026, 5, 30, 12)), isTrue);
-        // Banner yes; system notif gated separately in controller.
-        expect(settings.systemNotificationsEnabled, isFalse);
+        final session = _DeliverySession(settings: settings);
+        expect(
+          session.tryDeliver(AlertType.fuelLow, DateTime(2026, 5, 30, 12)),
+          isTrue,
+        );
+        expect(
+          AlertDeliveryGate.shouldShowSystemNotification(settings),
+          isFalse,
+        );
       },
     );
   });
 
   group('Scenario: 20-minute cooldown (P2-006)', () {
     test('same type blocked within cooldown', () {
-      final gate = _DeliveryGate(settings: const AppSettings());
-      final alert = Alert(
-        id: '1',
-        type: AlertType.fuelLow,
-        severity: AlertSeverity.warning,
-        message: 'fuel',
-        triggeredAt: DateTime(2026, 5, 30),
-      );
+      final session = _DeliverySession(settings: const AppSettings());
       final t0 = DateTime(2026, 5, 30, 12);
-      expect(gate.shouldDeliver(alert, t0), isTrue);
+      expect(session.tryDeliver(AlertType.fuelLow, t0), isTrue);
       expect(
-        gate.shouldDeliver(alert, t0.add(const Duration(minutes: 10))),
+        session.tryDeliver(
+          AlertType.fuelLow,
+          t0.add(const Duration(minutes: 10)),
+        ),
         isFalse,
       );
     });
 
     test('same type allowed after cooldown elapses', () {
-      final gate = _DeliveryGate(settings: const AppSettings());
-      final alert = Alert(
-        id: '1',
-        type: AlertType.fuelLow,
-        severity: AlertSeverity.warning,
-        message: 'fuel',
-        triggeredAt: DateTime(2026, 5, 30),
-      );
+      final session = _DeliverySession(settings: const AppSettings());
       final t0 = DateTime(2026, 5, 30, 12);
-      expect(gate.shouldDeliver(alert, t0), isTrue);
+      expect(session.tryDeliver(AlertType.fuelLow, t0), isTrue);
       expect(
-        gate.shouldDeliver(alert, t0.add(const Duration(minutes: 20))),
+        session.tryDeliver(
+          AlertType.fuelLow,
+          t0.add(const Duration(minutes: 20)),
+        ),
         isTrue,
       );
     });
 
     test('different types are independent', () {
-      final gate = _DeliveryGate(settings: const AppSettings());
+      final session = _DeliverySession(settings: const AppSettings());
       final t0 = DateTime(2026, 5, 30, 12);
-      expect(
-        gate.shouldDeliver(
-          Alert(
-            id: '1',
-            type: AlertType.fuelLow,
-            severity: AlertSeverity.warning,
-            message: 'fuel',
-            triggeredAt: t0,
-          ),
-          t0,
-        ),
-        isTrue,
-      );
-      expect(
-        gate.shouldDeliver(
-          Alert(
-            id: '2',
-            type: AlertType.ghat,
-            severity: AlertSeverity.warning,
-            message: 'ghat',
-            triggeredAt: t0,
-          ),
-          t0,
-        ),
-        isTrue,
-      );
+      expect(session.tryDeliver(AlertType.fuelLow, t0), isTrue);
+      expect(session.tryDeliver(AlertType.ghat, t0), isTrue);
     });
 
-    test('cooldown duration matches controller constant (20 min)', () {
-      expect(AlertNotifierController.cooldown, const Duration(minutes: 20));
+    test('cooldown duration matches production gate (20 min)', () {
+      expect(AlertDeliveryGate.cooldown, const Duration(minutes: 20));
+      expect(AlertNotifierController.cooldown, AlertDeliveryGate.cooldown);
+    });
+  });
+
+  group('Scenario: notification deep link payload', () {
+    test('encodes and parses trip + alert type', () {
+      const payload = AlertNotificationPayload(
+        tripId: 'trip-123',
+        alertType: AlertType.fuelLow,
+      );
+      final parsed = AlertNotificationPayload.tryParse(payload.encode());
+      expect(parsed, isNotNull);
+      expect(parsed!.tripId, 'trip-123');
+      expect(parsed.alertType, AlertType.fuelLow);
+    });
+
+    test('rejects malformed payloads', () {
+      expect(AlertNotificationPayload.tryParse(null), isNull);
+      expect(AlertNotificationPayload.tryParse(''), isNull);
+      expect(AlertNotificationPayload.tryParse('not_ours|a|b'), isNull);
     });
   });
 
@@ -567,10 +546,15 @@ void main() {
       expect(fcmImplemented, isFalse);
     });
 
-    test('notification tap deep-link is still a stub', () {
-      // LocalNotificationService._onNotificationTapped is empty.
-      const deepLinkWired = false;
-      expect(deepLinkWired, isFalse);
+    test('notification tap deep-link payload is wired', () {
+      const payload = AlertNotificationPayload(
+        tripId: 't1',
+        alertType: AlertType.weather,
+      );
+      expect(
+        AlertNotificationPayload.tryParse(payload.encode())?.alertType,
+        AlertType.weather,
+      );
     });
   });
 }

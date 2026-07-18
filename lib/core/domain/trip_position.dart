@@ -31,4 +31,8 @@ abstract class TripPosition with _$TripPosition {
   );
 
   LatLng get latLng => LatLng(latitude, longitude);
+
+  /// True when this fix is older than [maxAge] (alerts / ahead lists degraded).
+  bool isStale({Duration maxAge = const Duration(seconds: 60)}) =>
+      DateTime.now().toUtc().difference(capturedAt.toUtc()) > maxAge;
 }

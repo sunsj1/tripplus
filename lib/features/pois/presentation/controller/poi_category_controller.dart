@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:journeyplus/core/domain/poi.dart';
 import 'package:journeyplus/core/services/route_poi_service.dart';
+import 'package:journeyplus/core/utils/corridor_ahead.dart';
 import 'package:journeyplus/core/utils/failure.dart';
 import 'package:journeyplus/core/utils/location_helper.dart';
 import 'package:journeyplus/features/pois/data/repository/poi_repository.dart';
@@ -9,9 +10,8 @@ import 'package:journeyplus/features/pois/presentation/controller/poi_category_u
 /// Drives the [PoiCategoryScreen] for one [PoiCategory].
 ///
 /// Query strategy selection:
-/// - Active trip running → route-aware fetch, then filtered to POIs **ahead**
-///   of the driver's current GPS position ([currentPositionKm]).
-/// - Plan present (no active trip) → full corridor fetch along the planned route.
+/// - Plan present → corridor fetch; while a trip is running, re-trimmed to
+///   stops ahead of live GPS ([updateProgress]).
 /// - No plan → nearest-first radial search from current location.
 /// - EV without a plan → explicit empty state (EV needs corridor context).
 class PoiCategoryController extends StateNotifier<PoiCategoryUiState> {
@@ -21,12 +21,17 @@ class PoiCategoryController extends StateNotifier<PoiCategoryUiState> {
     required PoiRepository poiRepository,
     required String? planFrom,
     required String? planTo,
-    this.currentPositionKm,
+    bool tripRunning = false,
+    double? currentPositionKm,
+    bool waitingForGps = false,
   })  : _category = category,
         _routePoiService = routePoiService,
         _poiRepository = poiRepository,
         _planFrom = planFrom,
         _planTo = planTo,
+        _tripRunning = tripRunning,
+        _currentPositionKm = currentPositionKm,
+        _waitingForGps = waitingForGps,
         super(const PoiCategoryUiState.loading()) {
     refresh();
   }
@@ -37,14 +42,12 @@ class PoiCategoryController extends StateNotifier<PoiCategoryUiState> {
   final String? _planFrom;
   final String? _planTo;
 
-  /// P2 edge-case — distance (km) along the active route where the driver
-  /// currently is. When non-null and > 0, the fetched list is trimmed to only
-  /// POIs ahead of this position. Null = no active trip → show full corridor.
-  final double? currentPositionKm;
+  bool _tripRunning;
+  double? _currentPositionKm;
+  bool _waitingForGps;
 
-  /// Minimum progress (km) before "ahead" filtering activates. Below this the
-  /// driver is so close to the start that showing the full list is better UX.
-  static const _minProgressKmForFilter = 5.0;
+  /// Full corridor fetch result — re-filtered on each GPS progress update.
+  List<Poi>? _corridorPois;
 
   bool get _hasPlan =>
       _planFrom != null &&
@@ -52,12 +55,21 @@ class PoiCategoryController extends StateNotifier<PoiCategoryUiState> {
       _planFrom.isNotEmpty &&
       _planTo.isNotEmpty;
 
-  bool get _shouldFilterAhead =>
-      currentPositionKm != null &&
-      currentPositionKm! >= _minProgressKmForFilter;
+  /// Live GPS progress while a trip is running — does not re-hit Places.
+  void updateProgress({
+    required bool tripRunning,
+    double? currentPositionKm,
+    bool waitingForGps = false,
+  }) {
+    _tripRunning = tripRunning;
+    _currentPositionKm = currentPositionKm;
+    _waitingForGps = waitingForGps;
+    _emitCorridorState();
+  }
 
   Future<void> refresh() async {
     state = const PoiCategoryUiState.loading();
+    _corridorPois = null;
     if (_hasPlan) {
       await _loadAlongRoute();
     } else if (_category == PoiCategory.ev) {
@@ -76,44 +88,59 @@ class PoiCategoryController extends StateNotifier<PoiCategoryUiState> {
       to: _planTo!,
       category: _category,
     );
-    state = result.match(
-      (failure) => PoiCategoryUiState.errored(failure),
+    result.match(
+      (failure) {
+        state = PoiCategoryUiState.errored(failure);
+      },
       (data) {
         if (data.pois.isEmpty) {
-          return PoiCategoryUiState.empty(
+          state = PoiCategoryUiState.empty(
             reason:
                 'No ${_category.label.toLowerCase()} found along this corridor.',
           );
+          return;
         }
-
-        final sorted = _sortByDistance(data.pois);
-
-        // P2 edge-case — active trip is running: trim to POIs ahead of the
-        // driver's current GPS position so they never see stops they've passed.
-        if (_shouldFilterAhead) {
-          final ahead = sorted
-              .where((p) =>
-                  p.distanceAlongRouteKm == null ||
-                  p.distanceAlongRouteKm! > currentPositionKm!)
-              .toList();
-
-          // Fallback: if the filter leaves nothing (e.g. near destination),
-          // show the full sorted list so the screen isn't empty.
-          if (ahead.isNotEmpty) {
-            return PoiCategoryUiState.data(
-              pois: ahead,
-              source: PoiQuerySource.aheadOnRoute,
-              currentPositionKm: currentPositionKm,
-            );
-          }
-        }
-
-        return PoiCategoryUiState.data(
-          pois: sorted,
-          source: PoiQuerySource.alongRoute,
-          currentPositionKm: currentPositionKm,
-        );
+        _corridorPois = _sortByDistance(data.pois);
+        _emitCorridorState();
       },
+    );
+  }
+
+  void _emitCorridorState() {
+    final pois = _corridorPois;
+    if (pois == null) return;
+
+    if (!_tripRunning) {
+      state = PoiCategoryUiState.data(
+        pois: pois,
+        source: PoiQuerySource.alongRoute,
+        currentPositionKm: null,
+      );
+      return;
+    }
+
+    if (_waitingForGps || _currentPositionKm == null) {
+      state = PoiCategoryUiState.data(
+        pois: pois,
+        source: PoiQuerySource.waitingForGps,
+        currentPositionKm: null,
+      );
+      return;
+    }
+
+    final ahead = CorridorAhead.filterPois(pois, _currentPositionKm!);
+    if (ahead.isEmpty) {
+      state = PoiCategoryUiState.empty(
+        reason:
+            'No more ${_category.label.toLowerCase()} ahead on this corridor.',
+      );
+      return;
+    }
+
+    state = PoiCategoryUiState.data(
+      pois: ahead,
+      source: PoiQuerySource.aheadOnRoute,
+      currentPositionKm: _currentPositionKm,
     );
   }
 

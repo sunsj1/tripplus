@@ -6,6 +6,43 @@
 
 ---
 
+## Hotline Wave 2 · Batches A3–A6 — Delivery, ahead lists, UX
+
+- **Started:** 2026-07-18
+- **Finished (implementation):** 2026-07-18
+- **Tasks completed:** `HA-030`–`HA-035`, `HA-040`–`HA-043`, `HA-050`–`HA-055`, `HA-060`–`HA-063`
+- **Deferred to A7:** lock-screen tray proof (`HA-014`/`HA-024`/`HA-070`+)
+
+### A3 / A4 (alerts)
+
+- Evaluate on GPS ticks (debounced) + 30s fallback; shared `LocalNotificationService`.
+- Notification tap → Trip tab / Alert History (`jp_alert|…` payload).
+- Fatigue fires after ≥3h (no 5-min band); history appends every delivery.
+- Delivery gate + ghat fixture tests; telemetry hooks.
+
+### A5 (ahead lists)
+
+- `tripCorridorProgressProvider` + `CorridorAhead` (0.3 km hysteresis).
+- Google Places corridor results get `distanceAlongRouteKm`.
+- POI category / emergency / hidden gems / plan EV lists re-trim on live GPS
+  without Places refetch; `waitingForGps` badge when degraded.
+
+### A6 (UX)
+
+- Trip start prompts when notifications denied.
+- Shell `GpsStaleBanner` when trip running and GPS missing/stale (>60s).
+- Settings: trip-tracking notification copy + Android OEM battery tip.
+
+### Verification
+
+- Analyze clean; **68/68** tests.
+
+### Next
+
+- **A7** device matrix + marketing copy soft-landing.
+
+---
+
 ## Hotline Wave 2 · Batches A1/A2 — Background trip location
 
 - **Started:** 2026-07-18

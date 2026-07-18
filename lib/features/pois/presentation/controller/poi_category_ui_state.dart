@@ -14,10 +14,12 @@ enum PoiQuerySource {
   /// Radial search from the user's current location (no active trip).
   nearby,
 
-  /// P2 edge-case — active trip is running; list filtered to POIs strictly
-  /// ahead of the driver's current GPS position. Only shows stops you can
-  /// still reach, not ones you've already driven past.
+  /// Active trip running; list filtered to POIs ahead of live GPS.
   aheadOnRoute,
+
+  /// Active trip running but GPS/progress unavailable — full corridor shown
+  /// with an explicit degraded badge (never silent “ahead”).
+  waitingForGps,
 }
 
 extension PoiQuerySourceX on PoiQuerySource {
@@ -29,6 +31,8 @@ extension PoiQuerySourceX on PoiQuerySource {
         return 'Near you';
       case PoiQuerySource.aheadOnRoute:
         return 'Ahead on your route';
+      case PoiQuerySource.waitingForGps:
+        return 'Waiting for GPS to filter ahead stops';
     }
   }
 
@@ -40,6 +44,8 @@ extension PoiQuerySourceX on PoiQuerySource {
         return Icons.location_on;
       case PoiQuerySource.aheadOnRoute:
         return Icons.navigation_outlined;
+      case PoiQuerySource.waitingForGps:
+        return Icons.gps_not_fixed;
     }
   }
 }

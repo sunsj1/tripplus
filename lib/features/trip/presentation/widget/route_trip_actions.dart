@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:journeyplus/core/theme/app_colors.dart';
 import 'package:journeyplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/features/alerts/presentation/controller/alerts_providers.dart';
 import 'package:journeyplus/features/shell/presentation/controller/shell_providers.dart';
 import 'package:journeyplus/features/trip/domain/models/trip.dart';
 import 'package:journeyplus/features/trip/domain/models/trip_status.dart';
@@ -47,7 +48,11 @@ class RouteTripActions extends ConsumerWidget {
 
     return switch (trip.status) {
       TripStatus.notStarted => _ReadyActions(
-        onStart: () => startTripWithLocation(context, controller),
+        onStart: () => startTripWithLocation(
+          context,
+          controller,
+          notifications: ref.read(localNotificationServiceProvider),
+        ),
         onOpenTripTab: () => navigateToShellTab(ref, 1),
       ),
       TripStatus.active => _LiveActions(

@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:journeyplus/core/domain/poi.dart';
 import 'package:journeyplus/core/services/directions_service.dart';
 import 'package:journeyplus/core/services/geocoding_service.dart';
+import 'package:journeyplus/core/utils/corridor_ahead.dart';
 import 'package:journeyplus/core/utils/failure.dart';
 import 'package:journeyplus/core/utils/location_helper.dart';
 import 'package:journeyplus/core/utils/polyline_decoder.dart';
@@ -18,11 +19,17 @@ class EmergencyController extends StateNotifier<EmergencyUiState> {
     required DirectionsService directions,
     required String? planFrom,
     required String? planTo,
+    bool tripRunning = false,
+    double? currentPositionKm,
+    bool waitingForGps = false,
   })  : _poiRepository = poiRepository,
         _geocoding = geocoding,
         _directions = directions,
         _planFrom = planFrom,
         _planTo = planTo,
+        _tripRunning = tripRunning,
+        _currentPositionKm = currentPositionKm,
+        _waitingForGps = waitingForGps,
         super(const EmergencyLoading()) {
     refresh();
   }
@@ -32,6 +39,14 @@ class EmergencyController extends StateNotifier<EmergencyUiState> {
   final DirectionsService _directions;
   final String? _planFrom;
   final String? _planTo;
+
+  bool _tripRunning;
+  double? _currentPositionKm;
+  bool _waitingForGps;
+
+  String? _contextLabel;
+  List<EmergencySectionData>? _rawSections;
+  bool _loadedAlongRoute = false;
 
   static const _corridorKm = 12.0;
   static const _nearbyKm = 20.0;
@@ -45,8 +60,20 @@ class EmergencyController extends StateNotifier<EmergencyUiState> {
         to.isNotEmpty;
   }
 
+  void updateProgress({
+    required bool tripRunning,
+    double? currentPositionKm,
+    bool waitingForGps = false,
+  }) {
+    _tripRunning = tripRunning;
+    _currentPositionKm = currentPositionKm;
+    _waitingForGps = waitingForGps;
+    _emitFromCache();
+  }
+
   Future<void> refresh() async {
     state = const EmergencyLoading();
+    _rawSections = null;
     try {
       if (_hasPlan) {
         await _loadAlongRoute();
@@ -71,24 +98,22 @@ class EmergencyController extends StateNotifier<EmergencyUiState> {
     final destination = await _geocoding.geocode(to);
     final route = await _directions.getRoute(origin, destination);
     final polyline = route.polylinePoints;
-    final contextLabel = '$from → $to';
+    _contextLabel = '$from → $to';
+    _loadedAlongRoute = true;
 
     final sections = await Future.wait(
       EmergencyServiceType.values.map(
         (type) => _loadSectionAlongRoute(type, polyline),
       ),
     );
-
-    state = EmergencyData(
-      contextLabel: contextLabel,
-      source: PoiQuerySource.alongRoute,
-      hotlines: EmergencyHotline.indiaHotlines,
-      sections: sections,
-    );
+    _rawSections = sections;
+    _emitFromCache();
   }
 
   Future<void> _loadNearby() async {
     final pos = await LocationHelper.getCurrentLocation();
+    _loadedAlongRoute = false;
+    _contextLabel = 'Near your current location';
     final sections = await Future.wait(
       EmergencyServiceType.values.map(
         (type) => _loadSectionNearby(
@@ -98,12 +123,54 @@ class EmergencyController extends StateNotifier<EmergencyUiState> {
         ),
       ),
     );
-
+    _rawSections = sections;
     state = EmergencyData(
-      contextLabel: 'Near your current location',
+      contextLabel: _contextLabel!,
       source: PoiQuerySource.nearby,
       hotlines: EmergencyHotline.indiaHotlines,
       sections: sections,
+    );
+  }
+
+  void _emitFromCache() {
+    final sections = _rawSections;
+    final label = _contextLabel;
+    if (sections == null || label == null || !_loadedAlongRoute) return;
+
+    if (!_tripRunning) {
+      state = EmergencyData(
+        contextLabel: label,
+        source: PoiQuerySource.alongRoute,
+        hotlines: EmergencyHotline.indiaHotlines,
+        sections: sections,
+      );
+      return;
+    }
+
+    if (_waitingForGps || _currentPositionKm == null) {
+      state = EmergencyData(
+        contextLabel: label,
+        source: PoiQuerySource.waitingForGps,
+        hotlines: EmergencyHotline.indiaHotlines,
+        sections: sections,
+      );
+      return;
+    }
+
+    final filtered = [
+      for (final section in sections)
+        EmergencySectionData(
+          type: section.type,
+          failure: section.failure,
+          pois: CorridorAhead.filterPois(section.pois, _currentPositionKm!),
+        ),
+    ];
+
+    state = EmergencyData(
+      contextLabel: label,
+      source: PoiQuerySource.aheadOnRoute,
+      hotlines: EmergencyHotline.indiaHotlines,
+      sections: filtered,
     );
   }
 

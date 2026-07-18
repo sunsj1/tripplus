@@ -20,6 +20,7 @@ import 'package:journeyplus/features/stations/presentation/view/station_detail_s
 import 'package:journeyplus/features/weather/presentation/widget/route_weather_strip.dart';
 import 'package:journeyplus/features/stations/presentation/widget/station_list_tile.dart';
 import 'package:journeyplus/features/shell/presentation/controller/shell_providers.dart';
+import 'package:journeyplus/features/pois/presentation/controller/pois_providers.dart';
 import 'package:journeyplus/features/trip/presentation/controller/trip_providers.dart';
 import 'package:journeyplus/features/trip/presentation/widget/route_trip_actions.dart';
 
@@ -112,9 +113,9 @@ class PlanResultView extends ConsumerWidget {
     this.vehicle,
   });
 
-  ChargingStation? get _nearestStation {
-    if (stations.isEmpty) return null;
-    return stations.reduce((a, b) =>
+  ChargingStation? _nearestOf(List<ChargingStation> list) {
+    if (list.isEmpty) return null;
+    return list.reduce((a, b) =>
         (a.distanceKm ?? double.infinity) < (b.distanceKm ?? double.infinity)
             ? a
             : b);
@@ -123,7 +124,11 @@ class PlanResultView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final maxGap = _isEv && gaps.isNotEmpty ? gaps.first.gapKm : 0.0;
-    final nearest = _isEv ? _nearestStation : null;
+    final progress = ref.watch(tripCorridorProgressProvider);
+    final listStations = progress.canFilterAhead
+        ? ref.watch(aheadRouteStationsProvider)
+        : stations;
+    final nearest = _isEv ? _nearestOf(listStations) : null;
     final plan = _toPlanResult(this);
 
     return CustomScrollView(
@@ -184,7 +189,7 @@ class PlanResultView extends ConsumerWidget {
         // EV charger list with fast-charge filter chip
         if (_isEv)
           SliverToBoxAdapter(
-            child: _EvStationListSection(stations: stations),
+            child: _EvStationListSection(stations: listStations),
           ),
         const SliverToBoxAdapter(child: SizedBox(height: 24)),
       ],

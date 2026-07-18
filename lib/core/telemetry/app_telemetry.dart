@@ -29,8 +29,39 @@ class AppTelemetry {
     _log.i('alert.fired type=${type.name} severity=${severity.name}');
   }
 
+  static void alertFiredBackground({
+    required AlertType type,
+    required AlertSeverity severity,
+  }) {
+    _log.i(
+      'alert.fired_background type=${type.name} severity=${severity.name}',
+    );
+  }
+
+  static void alertEvalOk({required String trigger, required int alertCount}) {
+    _log.i('alert.eval_ok trigger=$trigger alertCount=$alertCount');
+  }
+
+  static void alertEvalSkippedNoGps({required String trigger}) {
+    _log.i('alert.eval_skipped_no_gps trigger=$trigger');
+  }
+
+  static void alertEvalSkipped({
+    required String reason,
+    required String trigger,
+  }) {
+    _log.i('alert.eval_skipped reason=$reason trigger=$trigger');
+  }
+
   static void alertBannerDismissed({required AlertType type}) {
     _log.i('alert.banner_dismissed type=${type.name}');
+  }
+
+  static void alertNotificationOpened({
+    required String tripId,
+    required AlertType type,
+  }) {
+    _log.i('alert.notification_opened tripId=$tripId type=${type.name}');
   }
 
   static void poiCategoryOpened({required PoiCategory category}) {

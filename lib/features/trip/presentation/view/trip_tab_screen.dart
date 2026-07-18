@@ -5,6 +5,7 @@ import 'package:journeyplus/core/theme/app_colors.dart';
 import 'package:journeyplus/features/alerts/domain/alert_route_utils.dart';
 import 'package:journeyplus/features/trip/data/local_db/corridor_cache_box.dart';
 import 'package:journeyplus/core/theme/app_text_styles.dart';
+import 'package:journeyplus/features/alerts/presentation/controller/alerts_providers.dart';
 import 'package:journeyplus/features/alerts/presentation/view/alert_history_screen.dart';
 import 'package:journeyplus/features/plan/presentation/widget/stat_card.dart';
 import 'package:journeyplus/features/trip/domain/models/trip.dart';
@@ -170,7 +171,11 @@ class _ReadyView extends ConsumerWidget {
               width: double.infinity,
               height: 52,
               child: FilledButton.icon(
-                onPressed: () => startTripWithLocation(context, controller),
+                onPressed: () => startTripWithLocation(
+                  context,
+                  controller,
+                  notifications: ref.read(localNotificationServiceProvider),
+                ),
                 style: FilledButton.styleFrom(
                   backgroundColor: AppColors.primary,
                 ),

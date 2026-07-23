@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:journeyplus/core/services/observability_providers.dart';
 import 'package:journeyplus/core/telemetry/app_telemetry.dart';
+import 'package:journeyplus/core/widgets/app_update_prompt.dart';
 import 'package:journeyplus/core/widgets/app_bottom_nav.dart';
 import 'package:journeyplus/core/widgets/gps_stale_banner.dart';
 import 'package:journeyplus/core/widgets/offline_banner.dart';
@@ -99,6 +100,7 @@ class _AppShellState extends ConsumerState<AppShell> {
     return Scaffold(
       body: Column(
         children: [
+          const AppUpdatePrompt(),
           const OfflineBanner(),
           const GpsStaleBanner(),
           const TripAlertBanner(),

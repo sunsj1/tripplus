@@ -71,4 +71,28 @@ class AppTelemetry {
   static void alertHistoryOpened({required String tripId}) {
     _log.i('alert.history_opened tripId=$tripId');
   }
+
+  static void appUpdateAvailable({
+    required int? versionCode,
+    required String mode,
+  }) {
+    _log.i(
+      'app_update.available versionCode=$versionCode mode=$mode',
+    );
+  }
+
+  static void appUpdateAccepted({required String mode}) {
+    _log.i('app_update.accepted mode=$mode');
+  }
+
+  static void appUpdateDeferred({required String reason}) {
+    _log.i('app_update.deferred reason=$reason');
+  }
+
+  static void appUpdateFailed({
+    required String stage,
+    required Object error,
+  }) {
+    _log.w('app_update.failed stage=$stage error=$error');
+  }
 }

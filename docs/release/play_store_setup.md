@@ -4,7 +4,7 @@ Step-by-step guide for publishing `com.journeyplus.journeyplus` on Google Play.
 
 **Package / application ID:** `com.journeyplus.journeyplus` (permanent — cannot change)  
 **Firebase project:** `tripplus-8aff2`  
-**Version:** `1.0.0+1` → versionName `1.0.0`, versionCode `1`
+**Version:** `1.0.1+5` → versionName `1.0.1`, versionCode `5`
 
 ---
 
@@ -81,6 +81,24 @@ Copy from [`store_listing.md`](store_listing.md).
 2. Add testers, install, verify: Google Sign-In, Maps, location, notifications.
 3. Check **Pre-launch report**.
 4. Promote to **Production** when ready → Submit for review.
+
+---
+
+## 7. In-app updates (included from `1.0.1+5`)
+
+JourneyPlus checks Google Play after the authenticated shell opens. When a
+newer version is available to that Play account/track, it shows an Update /
+Later dialog and uses Google Play's native update flow.
+
+For every future release:
+
+1. Increase both values in `pubspec.yaml` (for example `1.0.2+6`).
+2. Build and upload the signed AAB.
+3. Roll out the release to Internal testing or Production.
+
+No Play Store URL or remote flag is required. Google Play matches updates by
+`com.journeyplus.journeyplus` and `versionCode`. The dialog intentionally does
+not run for debug/sideloaded installs, iOS, or while an active trip is running.
 
 ---
 

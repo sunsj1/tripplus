@@ -1,7 +1,7 @@
 name: journeyplus
 description: "AI Highway Companion for Indian road trips"
 publish_to: 'none'
-version: 1.0.0+4
+version: 1.0.1+5
 
 environment:
   sdk: ^3.11.4
@@ -71,6 +71,7 @@ dependencies:
 
   # Legal pages (privacy, terms) from journeyplus.in
   webview_flutter: ^4.13.0
+  in_app_update: ^4.2.5
 
 dev_dependencies:
   flutter_test:
